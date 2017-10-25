@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/sandialabs/RetroSynth.svg?branch=master)](https://travis-ci.org/sandialabs/BioRetroSynth)
 
 # BioRetroSynth
@@ -44,4 +43,3 @@ BioRetrosynth is currently only tested to work under Python 2.6 and 2.7.
 BSD - 3-Clause Copyright 2017 Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government retains certain rights in this software.
 =======
 # RetSynth
->>>>>>> 7d061f91d0e90d93885e0ff4d54973d3a07d21d7
