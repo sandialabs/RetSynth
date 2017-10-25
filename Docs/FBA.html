@@ -1,0 +1,252 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>FBA module &#8212; BioRetroSynthesis 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fba-module">
+<h1>FBA module<a class="headerlink" href="#fba-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-FBA.build_model">
+<span id="fba-build-model"></span><h3>FBA.build_model<a class="headerlink" href="#module-FBA.build_model" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="FBA.build_model.BuildModel">
+<em class="property">class </em><code class="descclassname">FBA.build_model.</code><code class="descname">BuildModel</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Constructs a CobraPy FBA metabolic model for aspecific organism and runs FBA on new model</p>
+<dl class="method">
+<dt id="FBA.build_model.BuildModel.build_model">
+<code class="descname">build_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel.build_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds compounds and rxns to cobrapy FBA model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.build_model.BuildModel.run_flux">
+<code class="descname">run_flux</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel.run_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs FBA on model</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-FBA.optimize_target">
+<span id="fba-optimize-target"></span><h3>FBA.optimize_target<a class="headerlink" href="#module-FBA.optimize_target" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="FBA.optimize_target.OptimizeTarget">
+<em class="property">class </em><code class="descclassname">FBA.optimize_target.</code><code class="descname">OptimizeTarget</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>target_organism_ID</em>, <em>model</em>, <em>temp_rxns</em>, <em>temp_exmets</em>, <em>compounds_dict</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>KO=True</em>, <em>remove=True</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Adds compounds and reactions needed to produce target compound
+into previously constructed CobraPy FBA model and runs FBA</p>
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.add_external_metabolites">
+<code class="descname">add_external_metabolites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.add_external_metabolites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds compounds that need to be present to produce target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.add_external_reactions">
+<code class="descname">add_external_reactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.add_external_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds reactions that need to be present to produce target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.add_sink_reaction">
+<code class="descname">add_sink_reaction</code><span class="sig-paren">(</span><em>sink_cpd</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.add_sink_reaction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.perform_knockouts">
+<code class="descname">perform_knockouts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.perform_knockouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes each reaction one at a time and runs FBA to see if there is
+a difference in production of target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.remove_modifications">
+<code class="descname">remove_modifications</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.remove_modifications" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes external reactions and compounds from an FBA model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.run_fba">
+<code class="descname">run_fba</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.run_fba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs FBA on CobraPy FBA model with added reactions and compounds
+optimizing production of target compound and (maybe) biomass</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-FBA.compare_results">
+<span id="fba-compare-results"></span><h3>FBA.compare_results<a class="headerlink" href="#module-FBA.compare_results" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="FBA.compare_results.Compare">
+<em class="property">class </em><code class="descclassname">FBA.compare_results.</code><code class="descname">Compare</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>wtresults</em>, <em>exresults</em>, <em>ex_paths</em>, <em>DB</em>, <em>fold_threshold=1.5</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compare_results.Compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Compares flux values between simulation without added reactions and compounds and simulation
+with the reactions and compounds</p>
+<dl class="method">
+<dt id="FBA.compare_results.Compare.analyze_fluxes">
+<code class="descname">analyze_fluxes</code><span class="sig-paren">(</span><em>rxn</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compare_results.Compare.analyze_fluxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if flux differences between simulations is greater than 2.5 fold</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.compare_results.Compare.external_pathanalyze_fluxes">
+<code class="descname">external_pathanalyze_fluxes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compare_results.Compare.external_pathanalyze_fluxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the external (added reactions) path carrying the most flux</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.compare_results.Compare.get_flux_differences">
+<code class="descname">get_flux_differences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compare_results.Compare.get_flux_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets reactions for the flux difference is greater than 2.5 fold</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-FBA.compareKO_results">
+<span id="fba-compareko-results"></span><h3>FBA.compareKO_results<a class="headerlink" href="#module-FBA.compareKO_results" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="FBA.compareKO_results.CompareKO">
+<em class="property">class </em><code class="descclassname">FBA.compareKO_results.</code><code class="descname">CompareKO</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>wtresults</em>, <em>exresults</em>, <em>ex_paths</em>, <em>DB</em>, <em>fold_threshold=1.5</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Compares flux values between simulation with added reactions simulations
+for each reaction knockout</p>
+<dl class="method">
+<dt id="FBA.compareKO_results.CompareKO.analyze_fluxes">
+<code class="descname">analyze_fluxes</code><span class="sig-paren">(</span><em>r</em>, <em>rko</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO.analyze_fluxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if flux differences between simulations is greater than 2.5 fold</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.compareKO_results.CompareKO.external_pathanalyze_fluxes">
+<code class="descname">external_pathanalyze_fluxes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO.external_pathanalyze_fluxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts external path carrying the most flux</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="FBA.compareKO_results.CompareKO.get_flux_differences">
+<code class="descname">get_flux_differences</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO.get_flux_differences" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets reactions for the flux difference is greater than 2.5 fold</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-FBA.retrieve_producable_mets">
+<span id="fba-retrieve-producable-mets"></span><h3>FBA.retrieve_producable_mets<a class="headerlink" href="#module-FBA.retrieve_producable_mets" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="FBA.retrieve_producable_mets.RetrieveActiveRxnsCompounds">
+<code class="descclassname">FBA.retrieve_producable_mets.</code><code class="descname">RetrieveActiveRxnsCompounds</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>DB</em>, <em>output_queue</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.retrieve_producable_mets.RetrieveActiveRxnsCompounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies active compounds in an organism</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="FBA.retrieve_producable_mets.add_sink_reaction">
+<code class="descclassname">FBA.retrieve_producable_mets.</code><code class="descname">add_sink_reaction</code><span class="sig-paren">(</span><em>sink_cpd</em>, <em>compound_dict</em>, <em>model</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.retrieve_producable_mets.add_sink_reaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds reaction for optimizing production of a specified target compound,
+used to determine if compound can be produced or not on a provided media</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="FBA.retrieve_producable_mets.parse_solution">
+<code class="descclassname">FBA.retrieve_producable_mets.</code><code class="descname">parse_solution</code><span class="sig-paren">(</span><em>solution</em>, <em>cpd</em>, <em>removerxns</em>, <em>removecpds</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.retrieve_producable_mets.parse_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if compound can be produced</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index_main.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Sandia National Laboratories.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/FBA.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

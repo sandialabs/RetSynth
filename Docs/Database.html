@@ -1,0 +1,509 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Database module &#8212; BioRetroSynthesis 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="database-module">
+<h1>Database module<a class="headerlink" href="#database-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Database.generate_database">
+<span id="database-generate-database"></span><h3>Database.generate_database<a class="headerlink" href="#module-Database.generate_database" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.generate_database.Createdb">
+<em class="property">class </em><code class="descclassname">Database.generate_database.</code><code class="descname">Createdb</code><span class="sig-paren">(</span><em>db</em>, <em>dumpfile_dir</em>, <em>inchidb</em>, <em>rxntype</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.generate_database.Createdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Generates new sqlite database and creates table and indicies</p>
+<dl class="method">
+<dt id="Database.generate_database.Createdb.create_model_tbls">
+<code class="descname">create_model_tbls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.generate_database.Createdb.create_model_tbls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates tables and indicies in SQLite Database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.build_tablesMP">
+<span id="database-build-tablesmp"></span><h3>Database.build_tablesMP<a class="headerlink" href="#module-Database.build_tablesMP" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="Database.build_tablesMP.BuildTables">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">BuildTables</code><span class="sig-paren">(</span><em>sbml_dir</em>, <em>inchi</em>, <em>DBpath</em>, <em>rxntype='bio'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.BuildTables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts values from metabolic networks, xml into sqlite database</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.get_compartment_info">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">get_compartment_info</code><span class="sig-paren">(</span><em>compoundID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.get_compartment_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve compartment information for compound</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.get_inchi_values">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">get_inchi_values</code><span class="sig-paren">(</span><em>file_name</em>, <em>inchi_pubchem</em>, <em>no_inchi</em>, <em>CT</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.get_inchi_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve InChI values for compounds in metabolic networks</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.get_metabolic_clusters">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">get_metabolic_clusters</code><span class="sig-paren">(</span><em>org_cpds</em>, <em>org_rxns</em>, <em>model_id</em>, <em>metabolic_clusters</em>, <em>cluster_org</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.get_metabolic_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves metabolic cluster info</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.insert_comprehensive_model_results_2_db">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">insert_comprehensive_model_results_2_db</code><span class="sig-paren">(</span><em>DBpath</em>, <em>modelcompartments</em>, <em>modelcompounds_allinfo</em>, <em>rxn_info</em>, <em>all_rxn_cpds</em>, <em>inchi</em>, <em>inchi_pubchem</em>, <em>filenum</em>, <em>rxntype</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.insert_comprehensive_model_results_2_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts comprehensive compound and reaction information into tables</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.insert_individual_model_results_2_db">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">insert_individual_model_results_2_db</code><span class="sig-paren">(</span><em>DBpath</em>, <em>modelcompounds</em>, <em>modelreactions</em>, <em>genelist</em>, <em>proteinlist</em>, <em>mi</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.insert_individual_model_results_2_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts individual model information into tables</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.load_file_info_2_db">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">load_file_info_2_db</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.load_file_info_2_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open and insert information from metabolic networks
+(xml files) into database</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.parse_data_sbmlfile">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">parse_data_sbmlfile</code><span class="sig-paren">(</span><em>inchi</em>, <em>file_name</em>, <em>inchi_pubchem</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.parse_data_sbmlfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open metabolic network file (xml file) and parse information</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.process_compartments">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">process_compartments</code><span class="sig-paren">(</span><em>compartmentsoup</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.process_compartments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get compartments in xml file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.process_compounds">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">process_compounds</code><span class="sig-paren">(</span><em>speciessoup</em>, <em>mi</em>, <em>inchi</em>, <em>inchi_pubchem</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.process_compounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse compound information from metabolic network file (xml file)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.process_reactions">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">process_reactions</code><span class="sig-paren">(</span><em>reaction_soup</em>, <em>mi</em>, <em>inchi</em>, <em>inchi_pubchem</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.process_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse reaction information from metabolic network file (xml file)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.build_tablesMP.retrieve_metabolic_clusters">
+<code class="descclassname">Database.build_tablesMP.</code><code class="descname">retrieve_metabolic_clusters</code><span class="sig-paren">(</span><em>DBpath</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_tablesMP.retrieve_metabolic_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identifies and inserts metabolic clusters
+(organisms with the same compounds and reactions) into database</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.query">
+<span id="database-query"></span><h3>Database.query<a class="headerlink" href="#module-Database.query" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.query.Connector">
+<em class="property">class </em><code class="descclassname">Database.query.</code><code class="descname">Connector</code><span class="sig-paren">(</span><em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Connects to a generated database</p>
+<dl class="method">
+<dt id="Database.query.Connector.get_all_compounds">
+<code class="descname">get_all_compounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_compounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all compounds in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_all_models">
+<code class="descname">get_all_models</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all model IDs in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_all_reactions">
+<code class="descname">get_all_reactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all reactions in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_catalysts">
+<code class="descname">get_catalysts</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_catalysts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the catalyst of reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_compartment">
+<code class="descname">get_compartment</code><span class="sig-paren">(</span><em>compartment</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_compartment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the compartment ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_compound_ID">
+<code class="descname">get_compound_ID</code><span class="sig-paren">(</span><em>compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_compound_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves compound ID given a compound name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_compound_compartment">
+<code class="descname">get_compound_compartment</code><span class="sig-paren">(</span><em>compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_compound_compartment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the compartment that the compound is in</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_compound_name">
+<code class="descname">get_compound_name</code><span class="sig-paren">(</span><em>compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_compound_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves compound name given a compound ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_compounds_in_model">
+<code class="descname">get_compounds_in_model</code><span class="sig-paren">(</span><em>organism_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_compounds_in_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrives all compounds in a metabolic model given model ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_genes">
+<code class="descname">get_genes</code><span class="sig-paren">(</span><em>reaction_ID</em>, <em>organism_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves gene associations for a reaction
+of a given metabolic network (model ID)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_models_from_cluster">
+<code class="descname">get_models_from_cluster</code><span class="sig-paren">(</span><em>cluster</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_models_from_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves model IDs from a specified cluster in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_organism_ID">
+<code class="descname">get_organism_ID</code><span class="sig-paren">(</span><em>organism_name</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_organism_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves ID of metabolic model given a specific model name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_organism_name">
+<code class="descname">get_organism_name</code><span class="sig-paren">(</span><em>organism_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_organism_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves name of metabolic model given a specific model ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_pressure">
+<code class="descname">get_pressure</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the pressure reaction is performed at</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_products">
+<code class="descname">get_products</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_products" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves products (compound IDs) of a given reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_products_reactions">
+<code class="descname">get_products_reactions</code><span class="sig-paren">(</span><em>compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_products_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reactions that have a given compound (ID) as a product</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_proteins">
+<code class="descname">get_proteins</code><span class="sig-paren">(</span><em>reaction_ID</em>, <em>organism_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_proteins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves protein associations for a reaction of a given metabolic network (model ID)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reactants">
+<code class="descname">get_reactants</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reactants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reactants (compound IDs) of a given reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reactants_reactions">
+<code class="descname">get_reactants_reactions</code><span class="sig-paren">(</span><em>compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reactants_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reactions that have a given compound (ID) as a reactant</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reaction_name">
+<code class="descname">get_reaction_name</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reaction_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves name of the reaction given the reaction ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reaction_species">
+<code class="descname">get_reaction_species</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reaction_species" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves compound IDs that are in a given a reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reactions">
+<code class="descname">get_reactions</code><span class="sig-paren">(</span><em>compound_ID</em>, <em>is_prod</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reaction IDs that have a given compound ID as a reactant or product</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reactions_based_on_type">
+<code class="descname">get_reactions_based_on_type</code><span class="sig-paren">(</span><em>rxntype</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reactions_based_on_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reactions based on type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reactions_in_model">
+<code class="descname">get_reactions_in_model</code><span class="sig-paren">(</span><em>organism_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reactions_in_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all reactions in a metabolic model given model ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_reference">
+<code class="descname">get_reference</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the reference of reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_solvents">
+<code class="descname">get_solvents</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_solvents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves solvent of reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_stoichiometry">
+<code class="descname">get_stoichiometry</code><span class="sig-paren">(</span><em>reaction_ID</em>, <em>compound_ID</em>, <em>is_prod</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_stoichiometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves stoichiometry of a compound for a given reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_temperature">
+<code class="descname">get_temperature</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the temperaature reaction is performed at</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_time">
+<code class="descname">get_time</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the time that is required to perform reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_uniq_metabolic_clusters">
+<code class="descname">get_uniq_metabolic_clusters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_uniq_metabolic_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves unique metabolic clusters (organisms
+with the exact same metabolism) in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_yield">
+<code class="descname">get_yield</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves yield that was reported with reaction</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.is_reversible">
+<code class="descname">is_reversible</code><span class="sig-paren">(</span><em>organism_ID</em>, <em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.is_reversible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reverisbility information of a reaction
+in a specified metabolic model (model ID)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.is_reversible_all">
+<code class="descname">is_reversible_all</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.is_reversible_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reversibility information of a reaction independent of model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Database.query.test_db_4_error">
+<code class="descclassname">Database.query.</code><code class="descname">test_db_4_error</code><span class="sig-paren">(</span><em>cnx</em>, <em>query</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.test_db_4_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-Database.translate_metacyc">
+<span id="database-translate-metacyc"></span><h3>Database.translate_metacyc<a class="headerlink" href="#module-Database.translate_metacyc" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.translate_metacyc.MetaCyc">
+<em class="property">class </em><code class="descclassname">Database.translate_metacyc.</code><code class="descname">MetaCyc</code><span class="sig-paren">(</span><em>DB</em>, <em>inchidb</em>, <em>cnx</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Opens and parses metacyc xml file</p>
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.arrays">
+<code class="descname">arrays</code><span class="sig-paren">(</span><em>cpdID</em>, <em>compartment</em>, <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds compound to compound arrays</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.check_db">
+<code class="descname">check_db</code><span class="sig-paren">(</span><em>cpdID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.check_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks database for table original_db_cpdIDs if table exists and cpd ID exists
+the inchi value for that compound is retrieved</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.compound_translator">
+<code class="descname">compound_translator</code><span class="sig-paren">(</span><em>compound_ID</em>, <em>biocyc_ID</em>, <em>inchi_ID</em>, <em>name</em>, <em>compartment</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.compound_translator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if metacyc compound is in database, if it is not it adds it</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.fill_compound_arrays">
+<code class="descname">fill_compound_arrays</code><span class="sig-paren">(</span><em>ID</em>, <em>inchi</em>, <em>cpdID</em>, <em>name</em>, <em>compartment</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.fill_compound_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether or not to add compound to compound arrays which will
+later be added to the sqlite database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.fill_temp_array">
+<code class="descname">fill_temp_array</code><span class="sig-paren">(</span><em>krxn</em>, <em>cpdID</em>, <em>is_prod</em>, <em>stoic</em>, <em>temp_all_rxn_compound</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.fill_temp_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds reaction information from metacyc xml file to temporary reaction
+list which later gets inserted into database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.read_metacyc_file">
+<code class="descname">read_metacyc_file</code><span class="sig-paren">(</span><em>BIOCYC_translator</em>, <em>file_name</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.read_metacyc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads and parses metacyc SBML file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.retrieve_rxn_info">
+<code class="descname">retrieve_rxn_info</code><span class="sig-paren">(</span><em>rxn</em>, <em>rxnID</em>, <em>genes</em>, <em>proteins</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.retrieve_rxn_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses reaction information from metacyc xml file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_metacyc.MetaCyc.rxn_translator">
+<code class="descname">rxn_translator</code><span class="sig-paren">(</span><em>reaction_ID</em>, <em>temp_all_rxn_compound</em>, <em>revers</em>, <em>name</em>, <em>genes</em>, <em>proteins</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.MetaCyc.rxn_translator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if metacyc reaction is in database, if it is not it adds it</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="Database.translate_metacyc.Translate">
+<em class="property">class </em><code class="descclassname">Database.translate_metacyc.</code><code class="descname">Translate</code><span class="sig-paren">(</span><em>DBPath</em>, <em>DB</em>, <em>file_name</em>, <em>translation_file</em>, <em>inchidb</em>, <em>rxntype</em>, <em>add=True</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.Translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Translates metacyc compound and reaction IDs to Kbase compound and reaction IDs
+if a kbase database is used (ONLY WORKS WITH KBASE)</p>
+<dl class="method">
+<dt id="Database.translate_metacyc.Translate.add_metacyc_to_db">
+<code class="descname">add_metacyc_to_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_metacyc.Translate.add_metacyc_to_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds metacyc information to the database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.translate_kbase_genes">
+<span id="database-translate-kbase-genes"></span><h3>Database.translate_kbase_genes<a class="headerlink" href="#module-Database.translate_kbase_genes" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.translate_kbase_genes.TranslateKbaseGenes">
+<em class="property">class </em><code class="descclassname">Database.translate_kbase_genes.</code><code class="descname">TranslateKbaseGenes</code><span class="sig-paren">(</span><em>DB</em>, <em>file_gene_translate</em>, <em>OUTPUTPATH='/Users/lwhitmo/software/retrosynth/rs/Database'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_kbase_genes.TranslateKbaseGenes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Translate kbase gene IDs to there names</p>
+<dl class="method">
+<dt id="Database.translate_kbase_genes.TranslateKbaseGenes.open_translation_file">
+<code class="descname">open_translation_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_kbase_genes.TranslateKbaseGenes.open_translation_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens file that has translation information and processes the file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.translate_kbase_genes.TranslateKbaseGenes.translate_genes">
+<code class="descname">translate_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.translate_kbase_genes.TranslateKbaseGenes.translate_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all the genes in the database whose name needs to be
+identified</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index_main.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Sandia National Laboratories.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Database.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

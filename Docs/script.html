@@ -1,0 +1,132 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Parameter Documentation &#8212; BioRetroSynthesis 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parameter-documentation">
+<h1>Parameter Documentation<a class="headerlink" href="#parameter-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>RetroSynth’s primary script is: rs.py (main script)</p>
+<div class="section" id="retrosynth-parameters">
+<h2>RetroSynth Parameters<a class="headerlink" href="#retrosynth-parameters" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">--targets:</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">target</span> <span class="pre">molecules</span> <span class="pre">and</span> <span class="pre">the</span> <span class="pre">selected</span> <span class="pre">organisms</span></code></p>
+<p><code class="docutils literal"><span class="pre">--generate_database:</span> <span class="pre">Generates</span> <span class="pre">metabolic</span> <span class="pre">database</span></code></p>
+<p><code class="docutils literal"><span class="pre">--dump_directory:</span> <span class="pre">Directory</span> <span class="pre">of</span> <span class="pre">metabolic</span> <span class="pre">networks</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">construct</span> <span class="pre">metabolic</span> <span class="pre">database</span> <span class="pre">(xml</span> <span class="pre">files)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--database:</span> <span class="pre">Saved</span> <span class="pre">metabolic</span> <span class="pre">database</span> <span class="pre">(.db</span> <span class="pre">file)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--rdf_addition:</span> <span class="pre">Directory</span> <span class="pre">of</span> <span class="pre">metabolic</span> <span class="pre">networks</span> <span class="pre">in</span> <span class="pre">rdf</span> <span class="pre">files</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">added</span> <span class="pre">to</span> <span class="pre">a</span> <span class="pre">database</span></code></p>
+<p><code class="docutils literal"><span class="pre">--metacyc_addition:</span> <span class="pre">SBML</span> <span class="pre">file</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">metacyc</span> <span class="pre">database</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">integrated</span> <span class="pre">in</span> <span class="pre">to</span> <span class="pre">a</span> <span class="pre">metabolic</span> <span class="pre">database</span></code></p>
+<p><code class="docutils literal"><span class="pre">--translation_file:</span> <span class="pre">Translation</span> <span class="pre">file</span> <span class="pre">to</span> <span class="pre">connect</span> <span class="pre">metacyc</span> <span class="pre">and</span> <span class="pre">kbase</span> <span class="pre">IDs</span></code></p>
+<p><code class="docutils literal"><span class="pre">--generate_database_constraints:</span> <span class="pre">Generates</span> <span class="pre">full</span> <span class="pre">stoichometric</span> <span class="pre">matrix</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">metabolic</span> <span class="pre">database</span></code></p>
+<p><code class="docutils literal"><span class="pre">--database_constraints:</span> <span class="pre">Saved</span> <span class="pre">stoichmetric</span> <span class="pre">matrix</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">metabolic</span> <span class="pre">database</span> <span class="pre">(.constraints</span> <span class="pre">file)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--flux_balance_analysis:</span> <span class="pre">Run</span> <span class="pre">flux</span> <span class="pre">balance</span> <span class="pre">analysis</span></code></p>
+<p><code class="docutils literal"><span class="pre">--media_for_FBA:</span> <span class="pre">Run</span> <span class="pre">flux</span> <span class="pre">balance</span> <span class="pre">analysis</span> <span class="pre">on</span> <span class="pre">a</span> <span class="pre">glucose</span> <span class="pre">media</span></code></p>
+<p><code class="docutils literal"><span class="pre">--knockouts:</span> <span class="pre">Simulates</span> <span class="pre">metabolism</span> <span class="pre">using</span> <span class="pre">FBA</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">reaction</span> <span class="pre">knockout</span></code></p>
+<p><code class="docutils literal"><span class="pre">--limit_reactions:</span> <span class="pre">Limit</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">identified</span> <span class="pre">pathway</span></code></p>
+<p><code class="docutils literal"><span class="pre">--limit_cycles:</span> <span class="pre">Limits</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">cycle</span> <span class="pre">checks</span></code></p>
+<p><code class="docutils literal"><span class="pre">--inchidb:</span> <span class="pre">Retrieve</span> <span class="pre">InChI's</span> <span class="pre">and</span> <span class="pre">use</span> <span class="pre">them</span> <span class="pre">as</span> <span class="pre">compound</span> <span class="pre">IDs</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">database</span></code></p>
+<p><code class="docutils literal"><span class="pre">--output_path:</span> <span class="pre">Destination</span> <span class="pre">for</span> <span class="pre">output</span> <span class="pre">files</span></code></p>
+<p><code class="docutils literal"><span class="pre">--figures:</span> <span class="pre">generates</span> <span class="pre">figures</span></code></p>
+<p><code class="docutils literal"><span class="pre">--rdf_reaction_type:</span> <span class="pre">Defines</span> <span class="pre">type</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">being</span> <span class="pre">added</span> <span class="pre">to</span> <span class="pre">database</span> <span class="pre">from</span> <span class="pre">RDF</span> <span class="pre">files</span></code></p>
+<p><code class="docutils literal"><span class="pre">--reaction_type:</span> <span class="pre">Defines</span> <span class="pre">type</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">being</span> <span class="pre">added</span> <span class="pre">to</span> <span class="pre">database</span> <span class="pre">from</span> <span class="pre">xml</span> <span class="pre">files</span></code></p>
+<p><code class="docutils literal"><span class="pre">--evaluate_reactions:</span> <span class="pre">Defines</span> <span class="pre">which</span> <span class="pre">type</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">(bio,</span> <span class="pre">chem,</span> <span class="pre">or</span> <span class="pre">all</span> <span class="pre">(default))</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">evaluated</span> <span class="pre">in</span> <span class="pre">identifying</span> <span class="pre">shortest</span> <span class="pre">paths</span></code></p>
+<p><code class="docutils literal"><span class="pre">--start_compounds:</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">compounds</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">shortest</span> <span class="pre">path</span> <span class="pre">should</span> <span class="pre">start</span> <span class="pre">from</span> <span class="pre">(use</span> <span class="pre">in</span> <span class="pre">place</span> <span class="pre">of</span> <span class="pre">target</span> <span class="pre">organism)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--k_number_of_paths:</span> <span class="pre">Specifies</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">wanted</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">user</span></code></p>
+<p><code class="docutils literal"><span class="pre">--multiple_solutions:</span> <span class="pre">Find</span> <span class="pre">all</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">(True</span> <span class="pre">(defualt)</span> <span class="pre">or</span> <span class="pre">False)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--cycles:</span> <span class="pre">Elimate</span> <span class="pre">cycles</span> <span class="pre">when</span> <span class="pre">finding</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">(True</span> <span class="pre">(default)</span> <span class="pre">or</span> <span class="pre">False)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--processors:</span> <span class="pre">Number</span> <span class="pre">of</span> <span class="pre">processors</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">when</span> <span class="pre">solving</span> <span class="pre">for</span> <span class="pre">shortest</span> <span class="pre">path</span> <span class="pre">(default</span> <span class="pre">4)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--python_glpk_connector_package:</span> <span class="pre">python</span> <span class="pre">package</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">to</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">glpk</span> <span class="pre">solver</span> <span class="pre">software</span> <span class="pre">(can</span> <span class="pre">use</span> <span class="pre">GLPK</span> <span class="pre">(default)</span> <span class="pre">or</span> <span class="pre">PULP)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--images:</span> <span class="pre">Set</span> <span class="pre">whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">chemical</span> <span class="pre">images</span> <span class="pre">or</span> <span class="pre">round</span> <span class="pre">nodes</span> <span class="pre">in</span> <span class="pre">output</span> <span class="pre">figures</span> <span class="pre">(default</span> <span class="pre">True)</span></code></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index_main.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Sandia National Laboratories.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/script.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

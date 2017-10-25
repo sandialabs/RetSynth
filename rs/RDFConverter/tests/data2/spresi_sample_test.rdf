@@ -1,0 +1,939 @@
+$RDFILE 1
+$DATM    10/01/2010 10:07:01
+$RFMT $RIREG 4073836
+$RXN
+ 
+      REACCS81  1001101007 4073836
+ 
+  1  1
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  8  8  0  0  0  0  0  0  0  0999 V2000
+    0.0000   25.0087    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481   12.5043    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481   12.4653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5861   41.6160    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -12.4653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -12.5043    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -25.0087    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5861  -41.6160    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  3  6  2  0  0  0  2
+  5  7  2  0  0  0  2
+  6  7  1  0  0  0  2
+  7  8  1  0  0  0  2
+M  END
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 19 22  0  0  0  0  0  0  0  0999 V2000
+   10.6873   18.7956    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   32.3354    6.2912    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.9608    6.2522    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.8827   31.2218    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   32.3354  -18.6784    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   53.8273   18.7565    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.9608  -18.7174    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+  -32.4527   18.7956    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   53.9054  -31.0264    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.6873  -31.2218    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   75.4754    6.2912    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -32.4527   -6.1349    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -53.9445   31.1436    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   75.4754  -18.5611    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -53.9445  -18.4830    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -75.5145   18.7956    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   90.1680  -26.3763    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -75.5145   -6.0568    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -90.1680   26.6108    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  2  0  0  0  2
+  2  6  1  0  0  0  2
+  3  7  1  0  0  0  2
+  4  8  1  0  0  0  2
+  5  9  1  0  0  0  2
+  5 10  1  0  0  0  2
+  6 11  2  0  0  0  2
+  7 10  1  0  0  0  2
+  7 12  1  0  0  0  2
+  8 12  1  0  0  0  2
+  8 13  2  0  0  0  2
+  9 14  2  0  0  0  2
+ 11 14  1  0  0  0  2
+ 12 15  2  0  0  0  2
+ 13 16  1  0  0  0  2
+ 14 17  1  0  0  0  2
+ 15 18  1  0  0  0  2
+ 16 18  2  0  0  0  2
+ 16 19  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  7  6  0  0  0  0  0  0  0  0999 V2000
+  -12.5653    5.2958    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.9238   -3.2635    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -23.6650   17.6462    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+  -14.8712  -11.1583    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.7715   19.4049    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   14.9494  -19.4049    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   23.6650    7.4063    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  1  5  1  0  0  0  2
+  2  6  2  0  0  0  2
+  2  7  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:SYMBOL
+$DATUM trifluoroacetic acid
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOL_REGNO
+$DATUM 0001320-700
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  6  6  0  0  0  0  0  0  0  0999 V2000
+    0.0000   25.0087    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481   12.5043    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481   12.4653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -12.4653    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -12.5043    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -25.0087    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  2  4  1  0  0  0  2
+  3  5  1  0  0  0  2
+  4  6  1  0  0  0  2
+  5  6  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:SYMBOL
+$DATUM paraformaldehyde
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOL_REGNO
+$DATUM 0080818-300
+$DTYPE RXN:VARIATION:ICRREF:EXTREG
+$DATUM 4073836
+$DTYPE RXN:VARIATION:ICRREF:DOCNO
+$DATUM 07Y0181 09
+$DTYPE RXN:VARIATION:STEPNO:RXNTEXT
+$DATUM 24 h, -15-20 degree, trifluoroacetic acid, paraformaldehyde
+$DTYPE RXN:VARIATION:PRODUCT:YIELD
+$DATUM 89.0-89.0
+$DTYPE RXN:VARIATION:LITREF:TYPE
+$DATUM JOURNAL
+$DTYPE RXN:VARIATION:LITREF:TITLE
+$DATUM Functionalized analogues of Troeger's base: scope and limitations of a ge+
+neral synthetic procedure and facile, predictable method for the separation of e+
+nantiomers
+$DTYPE RXN:VARIATION:LITREF:AUTHOR
+$DATUM Didier Delphine; Tylleman Benoit; Lambert Natacha; Vande Velde Christophe+
+ M.L.; Blockhuys Frank; Collas Alain; Sergeyev Sergey
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_CODEN
+$DATUM TETRAB
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_ISSN
+$DATUM 0040-4020
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_JRL
+$DATUM Tetrahedron
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_YEAR
+$DATUM 2008
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_VOL.
+$DATUM 64
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_NO.
+$DATUM 27
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_PG.
+$DATUM 6252-6262
+$DTYPE RXN:VARIATION:LITREF:LANGUAGE
+$DATUM ENG
+$DTYPE RXN:VARIATION:LITREF:FULL_CITATION
+$DATUM Didier Delphine; Tylleman Benoit; Lambert Natacha; Vande Velde Christophe+
+ M.L.; Blockhuys Frank; Collas Alain; Sergeyev Sergey; Tetrahedron, 2008, Vol. 6+
+4, P. 6252-6262
+$DTYPE RXN:CLASSIFICATION:BROAD
+$DATUM 318186822391837
+$DTYPE RXN:CLASSIFICATION:MEDIUM
+$DATUM 351787362403735
+$DTYPE RXN:CLASSIFICATION:NARROW
+$DATUM 379061048814325
+$DTYPE RXN:VARIATION:PRODUCT:MOL_REGNO
+$DATUM 0278026-500
+$RFMT $RIREG 4073837
+$RXN
+ 
+      REACCS81  1001101007 4073837
+ 
+  1  1
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  7  7  0  0  0  0  0  0  0  0999 V2000
+    0.0000   16.7050    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481    4.2007    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481    4.1616    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5861   33.3123    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -20.7689    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -20.8080    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -33.3123    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  3  6  2  0  0  0  2
+  5  7  2  0  0  0  2
+  6  7  1  0  0  0  2
+M  END
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 17 20  0  0  0  0  0  0  0  0999 V2000
+    0.0000   12.5630    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481    0.0586    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -24.9110    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481    0.0195    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481   24.9891    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -43.1790  -62.3068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -43.2181  -37.4153    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -24.9501    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481   24.9501    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000   37.4544    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0391   62.3068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481   74.7720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.2181   62.3068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.2181   37.4153    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -74.7720    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.0782  -62.3068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -37.4544    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  3  1  0  0  0  2
+  2  9  1  0  0  0  2
+  3 17  1  0  0  0  2
+  4  5  1  0  0  0  2
+  4  8  1  0  0  0  2
+  5 10  1  0  0  0  2
+  6  7  1  0  0  0  2
+  6 15  2  0  0  0  2
+  7  8  2  0  0  0  2
+  8 17  1  0  0  0  2
+  9 10  2  0  0  0  2
+  9 14  1  0  0  0  2
+ 10 11  1  0  0  0  2
+ 11 12  2  0  0  0  2
+ 12 13  1  0  0  0  2
+ 13 14  2  0  0  0  2
+ 15 16  1  0  0  0  2
+ 16 17  2  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  7  6  0  0  0  0  0  0  0  0999 V2000
+  -12.5653    5.2958    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.9238   -3.2635    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -23.6650   17.6462    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+  -14.8712  -11.1583    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.7715   19.4049    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0
+   14.9494  -19.4049    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   23.6650    7.4063    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  1  5  1  0  0  0  2
+  2  6  2  0  0  0  2
+  2  7  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:SYMBOL
+$DATUM trifluoroacetic acid
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOL_REGNO
+$DATUM 0001320-700
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  6  6  0  0  0  0  0  0  0  0999 V2000
+    0.0000   25.0087    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481   12.5043    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481   12.4653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -12.4653    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -12.5043    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -25.0087    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  2  4  1  0  0  0  2
+  3  5  1  0  0  0  2
+  4  6  1  0  0  0  2
+  5  6  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:SYMBOL
+$DATUM paraformaldehyde
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOL_REGNO
+$DATUM 0080818-300
+$DTYPE RXN:VARIATION:ICRREF:EXTREG
+$DATUM 4073837
+$DTYPE RXN:VARIATION:ICRREF:DOCNO
+$DATUM 07Y0181 09
+$DTYPE RXN:VARIATION:STEPNO:RXNTEXT
+$DATUM 24 h, -15-20 degree, trifluoroacetic acid, paraformaldehyde
+$DTYPE RXN:VARIATION:PRODUCT:YIELD
+$DATUM 70.0-70.0
+$DTYPE RXN:VARIATION:LITREF:TYPE
+$DATUM JOURNAL
+$DTYPE RXN:VARIATION:LITREF:TITLE
+$DATUM Functionalized analogues of Troeger's base: scope and limitations of a ge+
+neral synthetic procedure and facile, predictable method for the separation of e+
+nantiomers
+$DTYPE RXN:VARIATION:LITREF:AUTHOR
+$DATUM Didier Delphine; Tylleman Benoit; Lambert Natacha; Vande Velde Christophe+
+ M.L.; Blockhuys Frank; Collas Alain; Sergeyev Sergey
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_CODEN
+$DATUM TETRAB
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_ISSN
+$DATUM 0040-4020
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_JRL
+$DATUM Tetrahedron
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_YEAR
+$DATUM 2008
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_VOL.
+$DATUM 64
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_NO.
+$DATUM 27
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_PG.
+$DATUM 6252-6262
+$DTYPE RXN:VARIATION:LITREF:LANGUAGE
+$DATUM ENG
+$DTYPE RXN:VARIATION:LITREF:FULL_CITATION
+$DATUM Didier Delphine; Tylleman Benoit; Lambert Natacha; Vande Velde Christophe+
+ M.L.; Blockhuys Frank; Collas Alain; Sergeyev Sergey; Tetrahedron, 2008, Vol. 6+
+4, P. 6252-6262
+$DTYPE RXN:CLASSIFICATION:BROAD
+$DATUM 318186822391837
+$DTYPE RXN:CLASSIFICATION:MEDIUM
+$DATUM 351787362403735
+$DTYPE RXN:CLASSIFICATION:NARROW
+$DATUM 379061048814325
+$DTYPE RXN:VARIATION:PRODUCT:MOL_REGNO
+$DATUM 2560295-000
+$RFMT $RIREG 4073869
+$RXN
+ 
+      REACCS81  1001101007 4073869
+ 
+  2  1
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 14 15  0  0  0  0  0  0  0  0999 V2000
+    1.0551   55.2535    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   22.7032   42.7492    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -20.5931   42.7101    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.3783   69.6335    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.2770   67.4062    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   22.7032   17.7796    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  -20.5931   17.7405    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    1.0551    5.2362    0.0000 B   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1563  -19.7334    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.8435  -31.4562    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.2964  -32.9411    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -22.7032  -56.3867    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   20.4368  -57.8716    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.5630  -69.6335    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  1  5  1  0  0  0  2
+  2  6  1  0  0  0  2
+  3  7  1  0  0  0  2
+  6  8  1  0  0  0  2
+  7  8  1  0  0  0  2
+  8  9  1  0  0  0  2
+  9 10  2  0  0  0  2
+  9 11  1  0  0  0  2
+ 10 12  1  0  0  0  2
+ 11 13  2  0  0  0  2
+ 12 14  2  0  0  0  2
+ 13 14  1  0  0  0  2
+M  END
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 12 13  0  0  0  0  0  0  0  0999 V2000
+    7.4440    6.6429    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   29.0921   -5.8614    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -14.2041   -5.9005    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.4440   31.6125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   29.0921  -30.8310    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   50.6230    6.6429    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -14.2041  -30.8701    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   29.0530   44.0778    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.4440  -43.3744    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   50.6230   31.5735    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -35.4224  -44.0778    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  -50.6230  -37.3176    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  2  6  1  0  0  0  2
+  3  7  2  0  0  0  2
+  4  8  2  0  0  0  2
+  5  9  2  0  0  0  2
+  6 10  2  0  0  0  2
+  7  9  1  0  0  0  2
+  7 11  1  0  0  0  2
+  8 10  1  0  0  0  2
+ 11 12  1  0  0  0  2
+M  END
+$MOL
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 16 18  0  0  0  0  0  0  0  0999 V2000
+   21.4332   25.6925    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.0813   13.1882    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.2149   13.1491    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.4332   50.6621    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.0813  -11.7814    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   64.6122   25.6925    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.2149  -11.8205    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.0423   63.1273    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.4332  -24.3248    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   64.6122   50.6230    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.4332  -25.0282    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -20.5345  -49.8806    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -43.4721  -13.3835    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -41.6746  -63.1273    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -64.6122  -26.5522    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -63.7135  -51.4827    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  2  6  1  0  0  0  2
+  3  7  2  0  0  0  2
+  4  8  2  0  0  0  2
+  5  9  2  0  0  0  2
+  6 10  2  0  0  0  2
+  7  9  1  0  0  0  2
+  7 11  1  0  0  0  2
+  8 10  1  0  0  0  2
+ 11 12  2  0  0  0  2
+ 11 13  1  0  0  0  2
+ 12 14  1  0  0  0  2
+ 13 15  2  0  0  0  2
+ 14 16  2  0  0  0  2
+ 15 16  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+ 19 21  0  0  0  0  0  0  0  0999 V2000
+   -2.3446  -14.5558    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   19.3036  -27.0602    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -23.9927  -27.0992    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.4849   10.4138    0.0000 P   0  0  0  0  0  0  0  0  0  0  0  0
+   19.3036  -52.0298    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -23.9927  -52.0688    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6872   25.1064    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   20.5931   22.1366    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.3446  -64.5732    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -19.0300   49.8415    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -44.4685   15.0247    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.4528   47.0280    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   41.6941    8.9680    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -39.1933   64.5732    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -64.6709   29.6783    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   43.4526   58.7118    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   63.7721   20.6126    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -62.0137   54.4525    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   64.6709   45.5431    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  3  6  1  0  0  0  2
+  4  7  1  0  0  0  2
+  4  8  1  0  0  0  2
+  5  9  1  0  0  0  2
+  6  9  1  0  0  0  2
+  7 10  1  0  0  0  2
+  7 11  1  0  0  0  2
+  8 12  1  0  0  0  2
+  8 13  1  0  0  0  2
+ 10 14  1  0  0  0  2
+ 11 15  1  0  0  0  2
+ 12 16  1  0  0  0  2
+ 13 17  1  0  0  0  2
+ 14 18  1  0  0  0  2
+ 15 18  1  0  0  0  2
+ 16 19  1  0  0  0  2
+ 17 19  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:SYMBOL
+$DATUM tricyclohexylphosphine
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOL_REGNO
+$DATUM 0303990-400
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  REACCS80          2D 1   1.00000     0.00000     0
+
+  7  7  0  0  0  0  0  0  0  0999 V2000
+    0.0000   16.7050    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481    4.2007    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481    4.1616    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5861   33.3123    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   21.6481  -20.7689    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -21.6481  -20.8080    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -33.3123    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  2
+  1  3  1  0  0  0  2
+  1  4  1  0  0  0  2
+  2  5  1  0  0  0  2
+  3  6  2  0  0  0  2
+  5  7  2  0  0  0  2
+  6  7  1  0  0  0  2
+M  END
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:SYMBOL
+$DATUM toluene
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:MOL_REGNO
+$DATUM 0012641-600
+$DTYPE RXN:VARIATION:ICRREF:EXTREG
+$DATUM 4073869
+$DTYPE RXN:VARIATION:ICRREF:DOCNO
+$DATUM 08Y0348 09
+$DTYPE RXN:VARIATION:STEPNO:RXNTEXT
+$DATUM 12 h, 120 degree, tricyclohexylphosphine toluene
+$DTYPE RXN:VARIATION:PRODUCT:YIELD
+$DATUM 93.0-93.0
+$DTYPE RXN:VARIATION:LITREF:TYPE
+$DATUM JOURNAL
+$DTYPE RXN:VARIATION:LITREF:TITLE
+$DATUM Nickel-catalyzed cross-coupling of aryl methyl ethers with aryl boronic e+
+sters
+$DTYPE RXN:VARIATION:LITREF:AUTHOR
+$DATUM Tobisu Mamoru; Shimasaki Toshiaki; Chatani Naoto
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_CODEN
+$DATUM ACIEF5
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_ISSN
+$DATUM 1433-7851
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_JRL
+$DATUM Angew. Chem., Int. Ed. Engl.
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_YEAR
+$DATUM 2008
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_VOL.
+$DATUM 47
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_NO.
+$DATUM 26
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_PG.
+$DATUM 4866-4869
+$DTYPE RXN:VARIATION:LITREF:LANGUAGE
+$DATUM ENG
+$DTYPE RXN:VARIATION:LITREF:FULL_CITATION
+$DATUM Tobisu Mamoru; Shimasaki Toshiaki; Chatani Naoto; Angew. Chem., Int. Ed. +
+Engl., 2008, Vol. 47, P. 4866-4869
+$DTYPE RXN:CLASSIFICATION:BROAD
+$DATUM 262152179623404
+$DTYPE RXN:CLASSIFICATION:MEDIUM
+$DATUM 3330565576834
+$DTYPE RXN:CLASSIFICATION:NARROW
+$DATUM 35259714030216
+$DTYPE RXN:VARIATION:PRODUCT:MOL_REGNO
+$DATUM 0143778-300
+$RFMT $RIREG 46000844
+$RXN
+ 
+      REACCS81  0505081638 4600084
+ 
+  1 2
+$MOL
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+ 14 15  0  0  0  0  0  0  0  0999 V2000
+   -4.3832    1.1849    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2336   -1.1057    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.5327   -1.1057    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0612    3.3841    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.1620    3.0308    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.4398   -4.8096    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    2.5129   -0.0335    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.3265   -4.8096    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000   -0.3990    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    5.3092   -2.7262    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.4572    3.7374    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.0497   -1.6540    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.1916    4.8096    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000    2.1109    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  2  6  2  0  0  0  0
+  2  7  1  0  0  0  0
+  3  8  1  0  0  0  0
+  3  9  2  0  0  0  0
+  6  8  1  0  0  0  0
+  7 10  2  0  0  0  0
+  7 11  1  0  0  0  0
+ 10 12  1  0  0  0  0
+ 11 13  2  0  0  0  0
+ 12 14  2  0  0  0  0
+ 13 14  1  0  0  0  0
+M  END
+$MOL
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+ 11 12  0  0  0  0  0  0  0  0999 V2000
+   -7.2568    6.2323    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.5221    1.4916    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000    1.4916    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.4256    9.1213    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.8191    7.3468    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3215   -1.0802    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5186   -6.5495    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.9679    1.8003    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.3536   -9.1213    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.7857   -0.7458    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000   -6.2237    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  1  5  1  0  0  0  0
+  2  3  2  0  0  0  0
+  2  6  1  0  0  0  0
+  6  7  2  0  0  0  0
+  6  8  1  0  0  0  0
+  7  9  1  0  0  0  0
+  8 10  2  0  0  0  0
+  9 11  2  0  0  0  0
+ 10 11  1  0  0  0  0
+M  END
+$MOL
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+  8  8  0  0  0  0  0  0  0  0999 V2000
+    0.0000    1.8136    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1131   -1.1491    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.1131   -1.1491    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2030    7.7111    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.1131   -7.0466    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.1131   -7.0374    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.9442   10.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0000  -10.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  2  5  1  0  0  0  0
+  3  6  2  0  0  0  0
+  4  7  2  0  0  0  0
+  5  8  2  0  0  0  0
+  6  8  1  0  0  0  0
+M  END
+$MOL
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+  5  5  0  0  0  0  0  0  0  0999 V2000
+    0.0000    9.5164    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000    2.2437    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000    2.2437    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.1702   -9.5164    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.1702   -9.5164    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  2  4  1  0  0  0  0
+  3  5  1  0  0  0  0
+  4  5  1  0  0  0  0
+M  END
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:SYMBOL
+$DATUM THF
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(1):MOL:MOL_REGNO
+$DATUM 0002834-200
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(2):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+  3  2  0  0  0  0  0  0  0  0999 V2000
+   -0.7463    3.3514    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000   -0.5563    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000   -3.3514    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+M  END
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(2):MOL:SYMBOL
+$DATUM dichloromethane
+$DTYPE RXN:VARIATION:STEPNO:SOLVENT(2):MOL:MOL_REGNO
+$DATUM 0030197-000
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(1):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+ 30 33  0  0  1  0  0  0  0  0999 V2000
+    1.1750   -1.3615    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5506   -2.7380    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2007   -2.7380    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.9134   -1.3786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.5506   -5.4781    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2007   -5.4738    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.2804   -2.7380    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.9134   -6.8332    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1750   -6.8503    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.2847   -5.4653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.0849    1.3786    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.3250    2.6608    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.4005    2.8280    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.6492    1.2286    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.4237    5.3967    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.3062    5.5596    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.0549    2.4979    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.8208    6.6617    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8962    6.8503    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.1535    5.2166    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.8079   -1.8889    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.9691   -3.5742    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.5763   -2.7251    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000   -3.8358    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.8662    1.6274    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    8.2419    2.9953    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.4348    5.7311    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000    6.6316    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.8070    2.0905    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.7204   -5.3623    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  2  0  0  0  0
+  1 11  1  0  0  0  0
+  2  4  1  0  0  0  0
+  2  5  2  0  0  0  0
+  3  6  1  0  0  0  0
+  3 21  1  0  0  0  0
+  4  7  2  0  0  0  0
+  5  8  1  0  0  0  0
+  5  9  1  0  0  0  0
+  6  9  2  0  0  0  0
+  7 10  1  0  0  0  0
+  8 10  2  0  0  0  0
+ 11 12  1  0  0  0  0
+ 11 13  2  0  0  0  0
+ 12 14  1  0  0  0  0
+ 12 15  2  0  0  0  0
+ 13 16  1  0  0  0  0
+ 13 25  1  0  0  0  0
+ 14 17  2  0  0  0  0
+ 15 18  1  0  0  0  0
+ 15 19  1  0  0  0  0
+ 16 19  2  0  0  0  0
+ 17 20  1  0  0  0  0
+ 18 20  2  0  0  0  0
+ 21 22  1  0  0  0  0
+ 22 23  1  0  0  0  0
+ 22 30  2  0  0  0  0
+ 23 24  1  0  0  0  0
+ 25 26  1  0  0  0  0
+ 26 27  1  0  0  0  0
+ 26 29  2  0  0  0  0
+ 27 28  1  0  0  0  0
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOLSTRUCTURE
+$DATUM $MFMT
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+ 11 12  0  0  0  0  0  0  0  0999 V2000
+   -3.2788    0.7473    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    1.3728   -1.9479    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.9303   -1.9479    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.1016    6.0453    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.3728   -7.3132    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0
+    6.3686    0.0672    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.9303   -7.3048    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.4828   10.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.2788  -10.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.9303    5.2057    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.8825    9.6222    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  2  5  2  0  0  0  0
+  2  6  1  0  0  0  0
+  3  7  1  0  0  0  0
+  4  8  1  0  0  0  0
+  5  9  1  0  0  0  0
+  6 10  1  0  0  0  0
+  7  9  1  0  0  0  0
+  8 11  1  0  0  0  0
+ 10 11  1  0  0  0  0
+M  END
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:SYMBOL
+$DATUM 1,8-diazabicyclo[5.4.0]undec-7-ene
+$DTYPE RXN:VARIATION:STEPNO:CATALYST(2):MOL:MOL_REGNO
+$DATUM 0242032-300
+$DTYPE RXN:VARIATION:ICRREF:EXTREG
+$DATUM 4600084
+$DTYPE RXN:VARIATION:ICRREF:DOCNO
+$DATUM 02X0501 15
+$DTYPE RXN:VARIATION:STEPNO:RXNTEXT
+$DATUM Stage 1: 1 h, 25 degree, C10H11ClZr Bis(cyclopentadienyl)zirconium chlori+
+de hydride, Tetrahydrofuran, Dimethylsulfoxide, Toluene, C6H18KNSi2    Potassium+
+ bis(trimethylsilyl)amide | Stage 2: 30 min, 80 degree, Palladium(II) acetate, T+
+riphenylphosphine, C12H8N2, Dimethylsulfoxide, Toluene, metabisulfite), C16H36Br+
+N    Tetrabutylammonium bromide | Stage 3: (11bS)-4-Hydroxy-2,6-bis[2,4,6-tris(1+
+-methylethyl)phenyl]dinaphtho[2,1-d:1',2'-f]-1,3,2-dioxaphosphepin 4-oxide, C24H+
+22N4S2, Chlorobenzene, Dichloromethane, Dichloromethane, C9H16N2    1,8-Diazabic+
+yclo[5.4.0]undec-7-ene | Stage 4: 600 degree, Diclorotetra(ethylene)dirhodium(I)+
+, C44H32P2, Palladium(II) acetate, C44H32P2, Toluene, Dioxane, F2HK    Potassium+
+-hydrogen difluoride, CCs2O3    Cesium carbonate
+$DTYPE RXN:VARIATION:PRODUCT:YIELD
+$DATUM 44.0-44.0
+$DTYPE RXN:VARIATION:LITREF:TYPE
+$DATUM JOURNAL
+$DTYPE RXN:VARIATION:LITREF:TITLE
+$DATUM Nitrile Imines and Nitrile Ylides: Rearrangements of Benzonitrile N-Methy+
+limine and Benzonitrile Dimethylmethylide to Azabutadienes, Carbodiimides, and K+
+etenimines. Chemical Activation in Thermolysis of Azirenes, Tetrazoles, Oxazolon+
+es, Isoxazolones, and Oxadiazolones
+$DTYPE RXN:VARIATION:LITREF:AUTHOR
+$DATUM Begue Didier; Dargelos Alain; Berstermann Hans M.; Netsch Klaus P.; Bedna+
+rek Pawel; Wentrup Curt
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_CODEN
+$DATUM JOCEAH
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_ISSN
+$DATUM 0022-3263
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_JRL
+$DATUM J. Org. Chem.
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_YEAR
+$DATUM 2014
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_VOL.
+$DATUM 79
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_NO.
+$DATUM NR.3
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_PG.
+$DATUM 1247-1253
+$DTYPE RXN:VARIATION:LITREF:LANGUAGE
+$DATUM ENG
+$DTYPE RXN:VARIATION:LITREF:FULL_CITATION
+$DATUM Begue Didier; Dargelos Alain; Berstermann Hans M.; Netsch Klaus P.; Bedna+
+rek Pawel; Wentrup Curt; J. Org. Chem., 2014, Vol. 79, P. 1247-1253
+$DTYPE RXN:VARIATION:LITREF:DOI
+$DATUM 10.1021/JO402667Y
+$DTYPE RXN:CLASSIFICATION(1):BROAD
+$DATUM 280991115402735
+$DTYPE RXN:CLASSIFICATION(2):BROAD
+$DATUM 318108722952044
+$DTYPE RXN:CLASSIFICATION(3):BROAD
+$DATUM 316035225257808
+$DTYPE RXN:CLASSIFICATION(4):BROAD
+$DATUM 318158743446137
+$DTYPE RXN:CLASSIFICATION(1):MEDIUM
+$DATUM 353062670822373
+$DTYPE RXN:CLASSIFICATION(2):MEDIUM
+$DATUM 337613461999850
+$DTYPE RXN:CLASSIFICATION(3):MEDIUM
+$DATUM 348438443402399
+$DTYPE RXN:CLASSIFICATION(4):MEDIUM
+$DATUM 354351119077370
+$DTYPE RXN:CLASSIFICATION(1):NARROW
+$DATUM 370694572613929
+$DTYPE RXN:CLASSIFICATION(2):NARROW
+$DATUM 356743756374514
+$DTYPE RXN:CLASSIFICATION(3):NARROW
+$DATUM 370378220415302
+$DTYPE RXN:CLASSIFICATION(4):NARROW
+$DATUM 371733870932534
+$DTYPE RXN:VARIATION:PRODUCT(1):MOL_REGNO
+$DATUM 0035523-500
+$DTYPE RXN:VARIATION:PRODUCT(2):MOL_REGNO
+$DATUM 0202138-300
+$DTYPE RXN:VARIATION:PRODUCT(3):MOL_REGNO
+$DATUM *312
+$DTYPE RXN:VARIATION:PRODUCT(4):MOL_REGNO
+$DATUM 0883111-800
+$DTYPE RXN:VARIATION:PRODUCT(5):MOL_REGNO
+$DATUM 0064655-000
+$RFMT $RIREG 2246995
+$RXN
+ 
+      REACCS81  0501081918 2246995
+ 
+  1 1
+$MOL
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+  3  2  0  0  0  0  0  0  0  0999 V2000
+   -0.7463    3.3514    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000   -0.5563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000   -3.3514    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  2  0  0  0  0
+  1  3  1  0  0  0  0
+M  END
+$MOL
+
+  INFOCHEM          2D 1   1.00000     0.00000     0
+
+  6  5  0  0  0  0  0  0  0  0999 V2000
+   -5.4290    3.8070    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.6273    0.8713    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0000    0.4960    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.4075    9.3700    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.6917   -7.4397    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0000   -9.3700    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  1  3  1  0  0  0  0
+  1  4  1  0  0  0  0
+  2  5  1  0  0  0  0
+  5  6  2  0  0  0  0
+M  END
+$DTYPE RXN:VARIATION:ICRREF:EXTREG
+$DATUM 2246995
+$DTYPE RXN:VARIATION:ICRREF:DOCNO
+$DATUM 01H0003 91
+$DTYPE RXN:VARIATION:LITREF:TYPE
+$DATUM PATENT
+$DTYPE RXN:VARIATION:LITREF:TITLE
+$DATUM CATALYST AND PROCESS FOR THE SELECTIVE DIMERIZATION OF PROPYLENE TO METHY+
+L-1-PENTENE
+$DTYPE RXN:VARIATION:LITREF:AUTHOR
+$DATUM STEVENS JAMES C.; FORDYCE WILLIAM A.
+$DTYPE RXN:VARIATION:LITREF:JOURNAL_YEAR
+$DATUM 1991
+$DTYPE RXN:VARIATION:LITREF:PATENTS:NUMBER
+$DATUM 4855523
+$DTYPE RXN:VARIATION:LITREF:PATENTS:COUNTRY
+$DATUM US
+$DTYPE RXN:VARIATION:LITREF:PATENTS:CLASS
+$DATUM 4 C 07 C 2/10
+$DTYPE RXN:VARIATION:LITREF:PATENTS:OWNER
+$DATUM THE DOW CHEMICAL CO.
+$DTYPE RXN:CLASSIFICATION(1):BROAD
+$DATUM 283745078873914
+$DTYPE RXN:CLASSIFICATION(1):MEDIUM
+$DATUM 321187232623351
+$DTYPE RXN:CLASSIFICATION(1):NARROW
+$DATUM 3274459542882
+$DTYPE RXN:VARIATION:PRODUCT(1):MOL_REGNO
+$DATUM 0189201-500

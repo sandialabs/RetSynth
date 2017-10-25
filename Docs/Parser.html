@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Parser module &#8212; BioRetroSynthesis 1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parser-module">
+<h1>Parser module<a class="headerlink" href="#parser-module" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Parser.generate_output">
+<span id="parser-generate-output"></span><h3>Parser.generate_output<a class="headerlink" href="#module-Parser.generate_output" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Parser.generate_output.Output">
+<em class="property">class </em><code class="descclassname">Parser.generate_output.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>db</em>, <em>output_path</em>, <em>FBA=False</em>, <em>KO=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Opens and fills output files produced by software</p>
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_FBA">
+<code class="descname">output_FBA</code><span class="sig-paren">(</span><em>target_info</em>, <em>org_fbasolution</em>, <em>optimized_fba</em>, <em>comparisonresults</em>, <em>temp</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_FBA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs reactions and corresponding fluxes for fluxes that change significantly
+between wild-type FBA simulation (simulation without added reactions) and
+FBA simulation with added reactions to produce target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_FBA_KOs">
+<code class="descname">output_FBA_KOs</code><span class="sig-paren">(</span><em>target_info</em>, <em>comparisonKOresults</em>, <em>temp</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_FBA_KOs" title="Permalink to this definition">¶</a></dt>
+<dd><p>When reaction knockouts are performed list all reaction that have a significant
+flux difference from the orignal FBA simulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_activemetabolism">
+<code class="descname">output_activemetabolism</code><span class="sig-paren">(</span><em>am</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_activemetabolism" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs metabolites that are actively produced in a specific compund</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_compound_natively_present_in_target_organism">
+<code class="descname">output_compound_natively_present_in_target_organism</code><span class="sig-paren">(</span><em>target_info</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_compound_natively_present_in_target_organism" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs information if a target compound is already present in an organism</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_essential_reactions">
+<code class="descname">output_essential_reactions</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>target_organism_ID</em>, <em>er</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_essential_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>When reaction knockouts are performed, outputs all reactions that when removed
+cause decrease in target production</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_open_paths_all_organism_file">
+<code class="descname">output_open_paths_all_organism_file</code><span class="sig-paren">(</span><em>target_compound_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_open_paths_all_organism_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open file to generate file that summarizes how many reactions would
+need to be added to every organism in the daabase to produce a target organism</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_paths_all_organisms">
+<code class="descname">output_paths_all_organisms</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>pathlength</em>, <em>orgs</em>, <em>org_names</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_paths_all_organisms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs information on the number of reactions that need to be added to an
+organism to get a target compound, this file is only generated all organisms
+are being examined to see if they can produce target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_shortest_paths">
+<code class="descname">output_shortest_paths</code><span class="sig-paren">(</span><em>target_info</em>, <em>temp_rxns</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_shortest_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs reactions and compounds that need to be
+added to an organism to get target compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_theoretical_yield">
+<code class="descname">output_theoretical_yield</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>target_organism_ID</em>, <em>fbasolution</em>, <em>compounds_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_theoretical_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates output file with theoretical yields</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Parser.read_targets">
+<span id="parser-read-targets"></span><h3>Parser.read_targets<a class="headerlink" href="#module-Parser.read_targets" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Parser.read_targets.Readfile">
+<em class="property">class </em><code class="descclassname">Parser.read_targets.</code><code class="descname">Readfile</code><span class="sig-paren">(</span><em>file_name</em>, <em>db</em>, <em>inchidb=False</em>, <em>compartment='cytosol'</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.read_targets.Readfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Reads the input file containing target compounds</p>
+<dl class="method">
+<dt id="Parser.read_targets.Readfile.file_opener">
+<code class="descname">file_opener</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Parser.read_targets.Readfile.file_opener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens target file and extracts information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.read_targets.Readfile.get_db_info">
+<code class="descname">get_db_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Parser.read_targets.Readfile.get_db_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve database information for the values in the inputfile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.read_targets.Readfile.modelinfo_opener">
+<code class="descname">modelinfo_opener</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Parser.read_targets.Readfile.modelinfo_opener" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all model information out of the database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index_main.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Sandia National Laboratories.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Parser.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
