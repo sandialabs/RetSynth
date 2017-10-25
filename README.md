@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/sandialabs/RetroSynth.svg?branch=master)](https://travis-ci.org/sandialabs/BioRetroSynth)
 
-# BioRetroSynth
+# RetSynth
 
-The overaching goal of RetroSynth is to streamline the arduous and complex step of selecting enzyme/reactions pairs to produce a target compound for bioengineering microbial organisms. 
+The overaching goal of RetSynth is to streamline the arduous and complex step of selecting enzyme/reactions pairs to produce a target compound for bioengineering microbial organisms. 
 
 ## Documentation
 
@@ -21,7 +21,7 @@ The difficult part of ensuring that BioRetroSynth can run is installing the non-
 Additionally you will need the python packages glpk, cobra, pygraphviz, beautifulsoup and python-libsmbl.
 
 ```bash
-git clone https://github.com/sandialabs/BioRetroSynth.git
+git clone https://github.com/sandialabs/RetSynth.git
 pip install -r requirements.txt
 python setup.py install
 ```
