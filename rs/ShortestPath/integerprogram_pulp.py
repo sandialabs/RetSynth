@@ -198,7 +198,9 @@ class IntergerProgram(object):
                 else:
                     print ('STATUS:  Cycles were identified in all pathways of this length, getting pathways of the next length')
                     add_length += 1
-                    op = self.check_for_next_length_k_paths(add_length, op)
+                    op = self.check_for_next_length_k_paths(obj, variables, new_weight,
+                                                            original_weight, lp, count_k_paths,
+                                                            add_length, op)
         return op
 
     def multiple_optimal_solution(self, lp, variables, obj, originalsolution, op, count_k_paths):
@@ -277,7 +279,7 @@ class IntergerProgram(object):
                         return (solution, self.ACC.lp, self.ACC.variables, obj)
                     else:
                         print ('WARNING: new solution longer than original {}'.format(solution))
-                        return ([], lp, variables, obj)
+                        return ([], self.ACC.lp, self.ACC.variables, obj)
                 else:
                     solution, self.ACC.lp, self.ACC.variables, obj = self.cycle_constraints(self.ACC.lp, self.ACC.variables, solution, obj, cycle_count, initialcheck=True)
                     return (solution, self.ACC.lp, self.ACC.variables, obj)

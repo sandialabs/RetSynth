@@ -276,20 +276,19 @@ def construct_and_run_integerprogram(args, targets, LP, output, database):
     Constructs ILP and solves it identifying shortest path to the target
     '''
     DB = Q.Connector(database)
-    if LP.PYSOLVER is 'GLPK':
+    if LP.PYSOLVER == 'GLPK':
         IP = ip_glpk.IntergerProgram(DB, args.limit_reactions,
                                      args.limit_cycles, args.k_number_of_paths, args.cycles)
-    elif LP.PYSOLVER is 'PULP':
+    elif LP.PYSOLVER == 'PULP':
         IP = ip_pulp.IntergerProgram(DB, args.limit_reactions,
                                      args.limit_cycles, args.k_number_of_paths, args.cycles)
     else:
-        raise IOError('ERROR: NO PYTHON SOLVER PACKAGE COULD BE IDENTIFIED. \
-                      INSTALL PYGLPK, PYMPROG, OR PULP')
+        raise IOError('ERROR: NO PYTHON SOLVER PACKAGE COULD BE IDENTIFIED. INSTALL PYGLPK, PYMPROG, OR PULP')
     if args.flux_balance_analysis:
-        active_metabolism = retrieve_active_FBA_metabolism(targets, DB,
-                                                           args, output)
+        active_metabolism = retrieve_active_FBA_metabolism(targets, DB, args, output)
     else:
         active_metabolism = {}
+
     return (IP, active_metabolism)
 
 def _specific_target(target_id):
@@ -352,15 +351,19 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                         G = spgd.GraphDot(DB, args.output_path, incpds_active, inrxns,
                                           opt_fba.fbasol.x_dict)
                         G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
-                        rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
+                        R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
                                          target_info[0], target_info[2], incpds_active)
+                        output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns, incpds_active)
+
                 elif args.figures and not args.flux_balance_analysis:
                     G = spgd.GraphDot(DB, args.output_path, incpds, inrxns)
                     G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
-                    rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
-                                     target_info[0], target_info[2], incpds)
+                    R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
+                                         target_info[0], target_info[2], incpds_active)
+                    output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns, incpds_active)
             else:
                 output.output_shortest_paths(target_info, optimal_pathways[0])
+                #output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns)
                 if args.flux_balance_analysis:
                     print('WARNING: No optimal path for %s in species %s therefore no \
                           flux balance will be performed' % (target_info[0], target_info[2]))

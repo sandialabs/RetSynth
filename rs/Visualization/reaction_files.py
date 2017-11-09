@@ -96,14 +96,14 @@ class ReactionFiles(object):
                         ordered_paths[count_pathway] = {}
                         ordered_paths[count_pathway][counter] = rxn
                         rxn_set.add(rxn)
-                        store_reactants = os_dict[rxn]['reactants']
+                        store_reactants = os_dict[rxn]['reactants'].keys()
                 else:
                     if self.target in os_dict[rxn]['reactants']:
                         counter = 1
                         ordered_paths[count_pathway] = {}
                         ordered_paths[count_pathway][counter] = rxn
                         rxn_set.add(rxn)
-                        store_reactants = os_dict[rxn]['products']
+                        store_reactants = os_dict[rxn]['products'].keys()
 
             while len(ordered_paths[count_pathway]) != len(os_dict):
                 for rxn in os_dict:
@@ -119,7 +119,8 @@ class ReactionFiles(object):
                                     counter += 1
                                     ordered_paths[count_pathway][counter] = rxn
                                     rxn_set.add(rxn)
-                                    store_reactants = os_dict[rxn]['reactants']
+                                    store_reactants.extend(os_dict[rxn]['reactants'].keys())
+
                         else:
                             reactants_set = set(os_dict[rxn]['reactants'])
                             intersect = reactants_set.intersection(self.incpds_set)
@@ -131,7 +132,7 @@ class ReactionFiles(object):
                                     counter += 1
                                     ordered_paths[count_pathway][counter] = rxn
                                     rxn_set.add(rxn)
-                                    store_reactants = os_dict[rxn]['products']
+                                    store_reactants.extend(os_dict[rxn]['products'].keys())
         return ordered_paths
     def generate_reaction_SMILES(self):
         '''Produce files that have reaction smiles for each reaction in a pathway'''
@@ -186,3 +187,4 @@ class ReactionFiles(object):
                                          self.output_path+'/reaction_figures/'+target_reformat+
                                          '_solutions/'+'Solution_'+str(count_pathway)+'_'+
                                          self.target_organism_name+'.png')
+        self.ordered_paths = ordered_paths

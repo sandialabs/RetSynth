@@ -123,10 +123,10 @@ class ConstructInitialLP(object):
         Determines what solver (pulp or pyglpk) should be used to
         set reaction constraints
         '''
-        if self.PYSOLVER is 'PULP':
+        if self.PYSOLVER == 'PULP':
             import pulp
             self.reaction_constraints_pulp(name, rxnname, pulp)
-        elif self.PYSOLVER is 'GLPK':
+        elif self.PYSOLVER == 'GLPK':
             self.reaction_constraints_glpk(name, rxnname)
 
     def initial_reaction_constraints(self):
@@ -177,9 +177,9 @@ class ConstructInitialLP(object):
             else:
                 pass
         self.allcpds = self.allcpds_new
-        if self.PYSOLVER is 'PULP':
+        if self.PYSOLVER == 'PULP':
             self.load_pulp_row_constraints(solver)
-        elif self.PYSOLVER is 'GLPK':
+        elif self.PYSOLVER == 'GLPK':
             self.load_glpk_row_constraints()
 
     def load_pulp_row_constraints(self, pulp):
@@ -190,8 +190,7 @@ class ConstructInitialLP(object):
 
     def existing_A_matrix_pulp(self, pulp):
         '''Loads existing matrix into pulp integer linear problem'''
-        print ('STATUS: Generating compound constraints from \
-                       preloaded file (pulp) ...')
+        print ('STATUS: Generating compound constraints from preloaded file (pulp) ...')
         for count, stoich in enumerate(tqdm(self.gdbc)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
 

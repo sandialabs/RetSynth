@@ -192,7 +192,8 @@ class IntergerProgram(object):
                 else:
                     print ('STATUS:  Cycles were identified in all pathways of this length, getting pathways of the next length')
                     add_length += 1
-                    op = self.check_for_next_length_k_paths(add_length, op)
+                    op = self.check_for_next_length_k_paths(obj, new_weight, original_weight,
+                                                            lp, count_k_paths, add_length, op)
 
         return op
 
@@ -243,7 +244,6 @@ class IntergerProgram(object):
         '''Check if there is a cycle in identified pathway'''
         cycletest = self.CYCLE.run_cycle_check(solution, self.incpds)
         original_solution = deepcopy(solution)
-
         if cycletest:
             '''If pathway has cycle begin cycle elimination steps'''
             cycle_count += 1
@@ -273,7 +273,7 @@ class IntergerProgram(object):
                         return (solution, self.ACC.lp, obj)
                     else:
                         print ('WARNING: new solution longer than original {}'.format(solution))
-                        return ([], lp, obj)
+                        return ([], self.ACC.lp, obj)
                 else:
                     solution, self.ACC.lp, obj = self.cycle_constraints(self.ACC.lp, solution,
                                                                         obj, cycle_count,

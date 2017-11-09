@@ -3,7 +3,6 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Functions to generate figures'
 
-import numpy as np
 import os
 import re
 import glob
@@ -13,11 +12,10 @@ import warnings
 from numpy import linspace
 from copy import deepcopy
 from sys import platform
+import numpy as np
 import pubchempy
-import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib import colors
-from matplotlib import colorbar
 from PIL import Image
 import pylab as pl
 from Visualization import chempyutilgraph_edit as cuge
@@ -33,7 +31,8 @@ elif platform == "win32" or platform == 'win64':
 
 warnings.filterwarnings("ignore")
 edgeweights = []
-edgeweights.append([0, 99.99999999])
+edgeweights.append([0, .99999999])
+edgeweights.append([1, 99.99999999])
 edgeweights.append([100, 199.99999999])
 edgeweights.append([200, 299.99999999])
 edgeweights.append([300, 399.99999999])
@@ -46,11 +45,12 @@ edgeweights.append([900, 1000.00000])
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 start = 0.0
-stop = 0.5
+stop = 0.4
 number_of_lines = 10
 cm_subsection = linspace(start, stop, number_of_lines)
 colors_range = [cm.Reds(x) for x in cm_subsection]
 colors_range = [re.sub('\(|\)', '', str(x)) for x in colors_range]
+colors_range.append('0.0, 0.0, 0.0, 1.0')
 colors_range.reverse()
 
 class GraphDot(object):
@@ -78,20 +78,22 @@ class GraphDot(object):
 
     def generate_flux_legend(self):
         '''Generate legend for flux figures'''
+        pl.switch_backend('agg')
         start_l = 0.5
-        stop_l = 1.0
+        stop_l = 0.9
         number_of_lines = 10
         cm_subsection_l = linspace(stop_l, start_l, number_of_lines)
         colors_range_l = [cm.Reds(x) for x in cm_subsection_l]
+        colors_range_l.insert(0, (0.0, 0.0, 0.0, 1.0))        
         cmap = colors.ListedColormap(colors_range_l)
-        a = np.array([[0, 1]])
+        a = np.array([[0, 1.1]])
         pl.figure(figsize=(9, 9))
-        img = pl.imshow(a, cmap="Blues")
+        img = pl.imshow(a, cmap=cmap)
         pl.gca().set_visible(False)
         cax = pl.axes([0.1, 0.2, 0.8, 0.1])
         cb = pl.colorbar(orientation="horizontal", label='Flux through a reaction',
-                         ticks=[.1, .2, .3, .4, .5, .6, .7, .8, .9, 1], cax=cax)
-        cb.ax.set_xticklabels(["0-99.99'", "100-199.99", "200-299.99", "300-399.99",
+                         ticks=[.1, .2, .3, .4, .5, .6, .7, .8, .9, 1, 1.1], cax=cax)
+        cb.ax.set_xticklabels(["0-.99", "5-99.99", "100-199.99", "200-299.99", "300-399.99",
                                "400-499.99", "500-599.99", "600-699.99", "700-799.99",
                                "800-899.99", "900-1000"], rotation=90)
         pl.savefig(self.output_path+"/reaction_figures/colorbarforreactionflux.png")
@@ -143,6 +145,7 @@ class GraphDot(object):
             self.IN.setOption("render-relative-thickness", "2")
             self.IN.setOption("render-image-size", "300,200")
             self.IN.setOption("render-margins", "40, 0, 0, 0")
+            cpdname = self.reformat_inchi(cpdname)
             self.IR.renderToFile(mol, PATH+'/compound_'+cpdname+'_'+rxn+'.png')
             cropped = self.crop_figure(PATH+'/compound_'+cpdname+'_'+rxn+'.png')
             cropped.save(PATH+'/compound_'+cpdname+'_'+rxn+'_cropped.png', transparent=True)
@@ -152,9 +155,11 @@ class GraphDot(object):
 
     def reformat_inchi(self, inchi):
         '''Reformates inchi string'''
-        if inchi.startswith('InChi'):
+        if inchi.startswith('InChI'):
             return re.sub('/', '_', inchi)
         else:
+            inchi = re.sub('-', '_', inchi)
+            inchi = re.sub(' ', '_', inchi)            
             return inchi
 
     def synthetic_compound_attr(self, cpdID, name, rxn):
@@ -319,10 +324,9 @@ class GraphDot(object):
         self.outputfile_dot.append('}\n')
         cpdname = self.DB.get_compound_name(target_compound_ID)
         if cpdname.startswith('None'):
-            if target_compound_ID.startswith('InChI'):
-                cpdname = re.sub('/', '_', target_compound_ID)
-            else:
-                cpdname = target_compound_ID
+            cpdname = self.reformat_inchi(target_compound_ID)
+        else:
+            cpdname = self.reformat_inchi(cpdname)
         cuge.dot2graph(self.outputfile_dot, 'SC_graph_'+cpdname+'_'+self.DB.get_organism_name(target_organism_ID)+'.png', self.GRAPHPATH)
         graph_files = glob.glob(os.path.join(self.GRAPHPATH, '*'))
         for file in graph_files:

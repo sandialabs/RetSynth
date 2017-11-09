@@ -2,11 +2,14 @@ from __future__ import print_function
 __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Generate output'
+
 import re
+import os 
+import shutil
 
 class Output(object):
     """Opens and fills output files produced by software"""
-    def __init__(self, db, output_path, FBA=False, KO=False):
+    def __init__(self, db, output_path, FBA=False, KO=False, extraoutput=True):
         '''Initialize class: generates new output files for this analysis of rs'''
         self.DB = db
         self.FBA = FBA
@@ -14,7 +17,7 @@ class Output(object):
         self.output_path = output_path
         self.optimal_paths = open(output_path+'/optimal_pathways.txt', 'w')
         self.optimal_paths.close()
-        if self.FBA is True:
+        if self.FBA:
             self.activemetabolism = open(output_path+'/active_metabolism.txt', 'w')
             self.flux_ouptput = open(output_path+'/flux_output.txt', 'w')
             self.flux_individual_output = open(output_path+'/flux_individualfluxes_output.txt', 'w')
@@ -25,11 +28,17 @@ class Output(object):
             self.flux_individual_output.close()
             self.theoyield.close()
 
-        if self.KO is True:
+        if self.KO:
             self.essentialrxns = open(output_path+'/essentialrxns_output.txt', 'w')
             self.fluxKO_ouptput = open(output_path+'/fluxKO_output.txt', 'w')
             self.essentialrxns.close()
             self.fluxKO_ouptput.close()
+        if extraoutput:
+            try:
+                os.mkdir(output_path+'/extraoutput')
+            except OSError:
+                shutil.rmtree(output_path+'/extraoutput')
+                os.mkdir(output_path+'/extraoutput')
 
     def output_open_paths_all_organism_file(self, target_compound_ID):
         '''
@@ -40,6 +49,47 @@ class Output(object):
         self.all_organisms = open(self.output_path+'/'+file_name, 'w')
         self.all_organisms.close()
 
+    def output_extra(self, compound, ordered_paths, reactions, incpds):
+        with open(self.output_path+'/extraoutput/compound_'+compound+'_outputfile.txt', 'w') as fin:
+            for count_pathway, os_dict in reactions.iteritems():
+                for counter in reversed(ordered_paths[count_pathway].keys()):
+                    rxn = ordered_paths[count_pathway][counter]
+                    org = os_dict[rxn]['organisms'][0]
+                    protein = self.DB.get_proteins(rxn, org)
+                    if os_dict[rxn]['direction'] == 'forward':
+                        for react in os_dict[rxn]['reactants']:
+                            if react in incpds:
+                                react = re.sub('\_\w{1}0$', '_t0', react)
+                            if protein != 'None':
+                                line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway)])
+                            else:
+                                line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway)])
+                            fin.write(line+'\n')
+                        for prod in os_dict[rxn]['products']:
+                            if prod in incpds:
+                                prod = re.sub('\_\w{1}0$', '_t0', prod)                            
+                            if protein != 'None':
+                                line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway)])
+                            else:
+                                line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway)])
+                            fin.write(line+'\n')
+                    else:
+                        for react in os_dict[rxn]['products']:
+                            if react in incpds:
+                                react = re.sub('_\w{1}0$', '_t0', react)
+                            if protein != 'None':
+                                line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway)])
+                            else:
+                                line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway)])
+                            fin.write(line+'\n')
+                        for prod in os_dict[rxn]['reactants']:
+                            if prod in incpds:
+                                prod = re.sub('_\w{1}0$', '_t0', prod)                            
+                            if protein != 'None':
+                                line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway)])
+                            else:
+                                line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway)])
+                            fin.write(line+'\n')
     def output_paths_all_organisms(self, target_compound_ID, pathlength, orgs, org_names):
         '''
         Outputs information on the number of reactions that need to be added to an
