@@ -21,7 +21,7 @@ class Extract_Information(object):
         self.incpds = incpds
         for count, path in enumerate(optimal_pathways):
             count += 1
-            if len(path) != 0:
+            if path:
                 os_dict, excpds = self.extractinfo(path)
                 if os_dict is not None:
                     self.temp_rxns[count] = os_dict
@@ -33,7 +33,6 @@ class Extract_Information(object):
         '''
         path_dict[rxn]['organisms'] = []
         path_dict[rxn]['genes'] = []
-
         for org in self.DB.get_reaction_species(rxn):
             path_dict[rxn]['organisms'].append(org)
             path_dict[rxn]['genes'].append(self.DB.get_genes(rxn, org))
@@ -45,22 +44,23 @@ class Extract_Information(object):
         if Direction is True:
             for prod in self.DB.get_products(rxn):
                 path_dict[rxn]['products'][prod] = self.DB.get_compound_name(prod)
-                if prod not in excpds and prod not in self.incpds:
+                if prod not in self.incpds:
                     excpds.append(prod)
             for react in self.DB.get_reactants(rxn):
                 path_dict[rxn]['reactants'][react] = self.DB.get_compound_name(react)
-                if react not in excpds and react not in self.incpds:
+                if react not in self.incpds:
                     excpds.append(react)
         else:
             for react in self.DB.get_reactants(rxn):
                 path_dict[rxn]['reactants'][react] = self.DB.get_compound_name(react)
-                if react not in excpds and react not in self.incpds:
+                if react not in self.incpds:
                     excpds.append(react)
             for prod in self.DB.get_products(rxn):
                 path_dict[rxn]['products'][prod] = self.DB.get_compound_name(prod)
-                if prod not in excpds and prod not in self.incpds:
+                if prod not in self.incpds:
                     excpds.append(prod)
         return(path_dict, excpds)
+
 
     def extractinfo(self, path):
         '''
@@ -88,6 +88,7 @@ class Extract_Information(object):
                     path_dict, excpds = self.get_info(rxn, path_dict, excpds, Direction=False)
                 else:
                     count += 1
+        excpds = list(set(excpds))
         if count == 0:
             return(path_dict, excpds)
         else:

@@ -11,13 +11,16 @@ from ShortestPath import search_sp_metclusters as smc
 from ShortestPath import integerprogram_glpk as ip_glpk
 from ShortestPath import integerprogram_pulp as ip_pulp
 from Parser import generate_output as go
-from Database import generate_database as gen_db
-
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
 PATH = os.path.dirname(os.path.abspath(__file__))
 PPATH = re.sub('/ShortestPath/tests', '', PATH)
 
 '''CONNECT TEST DATABASE'''
-gen_db.Createdb(PATH+'/test.db', PATH+'/data3', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data3', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()
 allmets = DB.get_all_compounds()
@@ -64,7 +67,7 @@ class ExtrainfoTests(unittest.TestCase):
         try:
             import pulp
             LP = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'PULP')
-            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0,True)
+            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0,True, 'None')
             S = smc.SearchMetabolicClusters('cpdT_c0', LP, IP, OUTPUT, DB)
             self.assertEqual(len(S.total_sp_clusters), 2)
             self.assertIn(['cpdT_c0', 4, ['t1', 't3']], S.total_sp_clusters)

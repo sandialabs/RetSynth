@@ -43,7 +43,6 @@ class CycleCheck(object):
         if totalarcs > len(set(totalvariables))-1:
             self.totalvariables = list(set(totalvariables))
             self.totalarcs = totalarcs
-
         if self.totalvariables:
             print ('STATUS: optimal pathway has cycle')
             return (True)

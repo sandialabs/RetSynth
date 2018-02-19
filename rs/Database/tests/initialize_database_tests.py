@@ -6,7 +6,7 @@ __description__ = 'Runs tests on codes that generate database on test set of met
 import os
 import sqlite3
 import unittest
-from Database import generate_database as gen_db
+from Database import initialize_database as init_db
 '''Build test database'''
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,7 +24,7 @@ class Generate_database(unittest.TestCase):
         print ("Tests to see if database is generating tables and indexes")
         if os.path.isfile(PATH+'/test.db') is True:
             os.remove(PATH+'/test.db')
-        gen_db.Createdb(PATH+'/test.db', PATH+'/data', False, 'bio')
+        init_db.Createdb(PATH+'/test.db', False)
 
         query = """select count(*) from sqlite_master where type='table' and name='reaction'"""
         cnx = sqlite3.connect(PATH+'/test.db')
@@ -185,7 +185,7 @@ class Generate_database(unittest.TestCase):
                       inchi option is specified""")
         if os.path.isfile(PATH+'/test.db') is True:
             os.remove(PATH+'/test.db')
-        gen_db.Createdb(PATH+'/test.db', PATH+'/data', True, 'bio')
+        init_db.Createdb(PATH+'/test.db', True)
 
         query = """select count(*) from sqlite_master where type='table' and name='reaction'"""
         cnx = sqlite3.connect(PATH+'/test.db')

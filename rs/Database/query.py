@@ -36,7 +36,6 @@ class Connector(object):
         self.conn = sqlite3.connect(db, check_same_thread=False)
         self.conn.text_factory = str
         self.cnx = self.conn.cursor()
-        # self.cnx.execute("PRAGMA journal_mode = WAL")
 
     def get_uniq_metabolic_clusters(self):
         '''Retrieves unique metabolic clusters (organisms
@@ -637,6 +636,57 @@ class Connector(object):
             if Q.arraysize > 0:
                 hits = Q.fetchall()
                 return [i[0] for i in hits]
+            else:
+                return 'None'
+
+        else:
+            print ('WARNING: Issue with database')
+            return str(None)
+
+    def get_all_keggIDs(self):
+        '''Retrieves reactions based on type'''
+        query = "select kegg_id from reaction" 
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        if Q:
+            if Q.arraysize > 0:
+                hits = Q.fetchall()
+                return [i[0] for i in hits]
+            else:
+                return 'None'
+
+        else:
+            print ('WARNING: Issue with database')
+            return str(None)
+
+    def get_kegg_reaction_ID(self, ID):
+        '''Retrieves reactions based on type'''
+        query = "select kegg_id from reaction where ID = '%s'"  % ID
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        if Q:
+            if Q.arraysize > 0:
+                result = Q.fetchone()
+                if result is not None:
+                    return result[0]
+                else:
+                    return 'None'
+            else:
+                return 'None'
+
+        else:
+            print ('WARNING: Issue with database')
+            return str(None)
+
+    def get_kegg_cpd_ID(self, ID):
+        '''Retrieves reactions based on type'''
+        query = "select kegg_id from compound where ID = '%s'"  % ID
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        if Q:
+            if Q.arraysize > 0:
+                result = Q.fetchone()
+                if result is not None:
+                    return result[0]
+                else:
+                    return 'None'
             else:
                 return 'None'
 

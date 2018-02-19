@@ -8,59 +8,67 @@ import os
 import sys
 import sqlite3
 import unittest
-from Database import build_tablesMP as bt
+from Database import build_kbase_db as bkdb
 import cobra
-
 '''Build test database'''
 PATH = os.path.dirname(os.path.abspath(__file__))
+
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 sqlite_database = sqlite3.connect(PATH+'/test.db')
 sqlite_database.execute('''CREATE table model (ID text,file_name text)''')
-sqlite_database.execute('''CREATE table compound (ID text, name text,compartment text)''')
-sqlite_database.execute('''CREATE table compartments (ID text, name text)''')
+sqlite_database.execute('''CREATE table compound (ID text, name text,compartment text, kegg_id)''')
 sqlite_database.execute('''CREATE table model_compound (cpd_ID text,model_ID)''')
-sqlite_database.execute('''CREATE table reaction (ID text,name text, type text)''')
+sqlite_database.execute('''CREATE table reaction (ID text, name text, kegg_id, type text)''')
+sqlite_database.execute('''CREATE table compartments (ID text, name text)''')
+
 sqlite_database.execute('''CREATE table model_reaction
-                        (reaction_ID text ,model_ID text, is_rev bit(1))''')
+                       (reaction_ID text, model_ID text, is_rev bit(1))''')
 sqlite_database.execute('''CREATE table reaction_compound
-                        (reaction_ID text, cpd_ID text, is_prod bit(1),
+                       (reaction_ID text, cpd_ID text, is_prod bit(1),
                         stoichiometry int, filenum int)''')
 sqlite_database.execute('''CREATE table reaction_reversibility
-                        (reaction_ID text, is_reversible bit(1))''')
+                       (reaction_ID text, is_reversible bit(1))''')
 sqlite_database.execute('''CREATE table reaction_gene
-                        (reaction_ID text, model_ID text, gene_ID text)''')
+                       (reaction_ID text,model_ID text,gene_ID text)''')
 sqlite_database.execute('''CREATE table reaction_protein
-                        (reaction_ID text, model_ID text, protein_ID text)''')
-sqlite_database.execute('''CREATE table cluster (cluster_num text,ID text)''')
+                       (reaction_ID text, model_ID text, protein_ID text)''')
+sqlite_database.execute('''CREATE table cluster (cluster_num text, ID text)''')
 sqlite_database.execute('''CREATE table original_db_cpdIDs (ID text, inchi_id text)''')
+
 sqlite_database.execute('''CREATE INDEX reactioncompound_ind1 ON
                         reaction_compound(reaction_ID, cpd_ID, is_prod)''')
 sqlite_database.execute('''CREATE INDEX reactioncompound_ind2 ON
                         reaction_compound(cpd_ID, is_prod)''')
-sqlite_database.execute('''CREATE INDEX modelreaction_ind1 ON model_reaction(model_ID)''')
-sqlite_database.execute('''CREATE INDEX modelreaction_ind2 ON model_reaction(reaction_ID)''')
-sqlite_database.execute('''CREATE INDEX modelcompound_ind1 ON model_compound(model_ID)''')
-sqlite_database.execute('''CREATE INDEX modelcompound_ind2 ON model_compound(cpd_ID)''')
+sqlite_database.execute('''CREATE INDEX modelreaction_ind1 ON
+                        model_reaction(model_ID)''')
+sqlite_database.execute('''CREATE INDEX modelreaction_ind2 ON
+                        model_reaction(reaction_ID)''')
+sqlite_database.execute('''CREATE INDEX modelcompound_ind1 ON
+                        model_compound(model_ID)''')
+sqlite_database.execute('''CREATE INDEX modelcompound_ind2 ON
+                        model_compound(cpd_ID)''')
 sqlite_database.execute('''CREATE INDEX model_ind ON model(ID)''')
 sqlite_database.execute('''CREATE INDEX reaction_ind ON reaction(ID)''')
+sqlite_database.execute('''CREATE INDEX reaction_reversibility_ind ON
+                        reaction_reversibility(reaction_ID)''')
 sqlite_database.execute('''CREATE INDEX compound_ind ON compound(ID)''')
 sqlite_database.execute('''CREATE INDEX reactiongene_ind ON
                         reaction_gene(reaction_ID, model_ID)''')
 sqlite_database.execute('''CREATE INDEX reactionprotein_ind ON
-                        reaction_protein(reaction_ID, model_ID)''')
+                        reaction_protein(reaction_ID,model_ID)''')
 sqlite_database.execute('''CREATE INDEX cluster_ind ON cluster(cluster_num)''')
-sqlite_database.execute('''CREATE INDEX reaction_reversibility_ind ON
-                        reaction_reversibility(reaction_ID)''')
 sqlite_database.execute('''CREATE INDEX original_db_cpdIDs_ind ON
                         original_db_cpdIDs(ID, inchi_id)''')
 sbml_files = glob.glob(os.path.join(PATH+'/data', '*'))
 all_mets = []
 all_reactions = []
 all_rev = {}
+
 '''Import model information directly from sbml files'''
-print ("""STATUS OF TESTS: Loading test models from SBML
-      files using CobraPy to compare to information in the database""")
+print ("""STATUS OF TESTS: Loading test models from SBML files using
+      CobraPy to compare to information in the database""")
+
 for file_name in sbml_files:
     model = cobra.io.read_sbml_model(file_name)
     for r in model.reactions:
@@ -79,7 +87,7 @@ all_mets = list(set(all_mets))
 all_reactions = list(set(all_reactions))
 for k, v in all_rev.iteritems():
     if len(v) > 2:
-        print ('ERROR IN TEST CODE')
+        print (' ERROR IN TEST CODE')
         sys.exit()
 print ('STATUS OF TESTS: Finished loading test models from SBML files using CobraPy')
 
@@ -92,33 +100,25 @@ class Generate_databaseTests_PubchemTrue(unittest.TestCase):
         """Clean up after each test."""
         print ("Clearing out test suite")
 
-    def test_generate_db(self):
-        """Tests to see if database is filling model table with correct number of models"""
-        bt.BuildTables(PATH+'/data', True, PATH+'/test.db', 'bio')
+    def test_build_kbase(self):
+        ''' test construction of kbase tables'''
+        bkdb.BuildKbase(PATH+'/data', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', False, PATH+'/test.db', 'bio')
         cnx = sqlite3.connect(PATH+'/test.db')
         Q = cnx.execute('SELECT * FROM model')
         results_model = Q.fetchall()
         self.assertEqual(len(results_model), len(sbml_files))
 
-        print("""Testing to see if database is filling tables with correct number of reactions, compounds, reversibility, and reaction compound information""")
+        print ("""Testing to see if database is filling tables with correct number of
+                      reactions, compounds, reversibility, and reaction compound information""")
         Q = cnx.execute('SELECT * FROM reaction')
         results_rxns = Q.fetchall()
         self.assertEqual(len(results_rxns), len(all_reactions))
-        value = ('rxn1_c0', 'rxn1_c0', 'bio')
-        value1 = ('rxn2_c0', 'rxn2_c0', 'bio')
-        value2 = ('rxn11_c0', 'rxn11_c0', 'bio')
+        value = ('rxn1_c0', 'rxn1_c0', 'None', 'bio')
+        value1 = ('rxn2_c0', 'rxn2_c0', 'None', 'bio')
+        value2 = ('rxn11_c0', 'rxn11_c0', 'None', 'bio')
         self.assertIn(value, results_rxns)
         self.assertIn(value1, results_rxns)
         self.assertIn(value2, results_rxns)
-
-        print ("...Testing total number of reaction reversibility records inputed into database")
-        Q = cnx.execute('SELECT * FROM reaction_reversibility')
-        results_rxns_revers = Q.fetchall()
-        self.assertEqual(len(results_rxns_revers), len(all_reactions))
-        self.assertIn(('rxn1_c0', 'true'), results_rxns_revers)
-        self.assertIn(('rxn2_c0', 'true'), results_rxns_revers)
-        self.assertIn(('rxn3_c0', 'true'), results_rxns_revers)
-        self.assertIn(('rxn4_c0', 'false'), results_rxns_revers)
 
         print ("...Testing clustering")
         Q = cnx.execute('SELECT * FROM cluster')
@@ -133,36 +133,33 @@ class Generate_databaseTests_PubchemTrue(unittest.TestCase):
         self.assertEqual(len(results_cluster_unique), 2)
         self.assertEqual(len(results_cluster), 3)
 
-        print ("...Testing information about translation of compound ids to inchis")
-        Q = cnx.execute('SELECT * FROM original_db_cpdIDs')
-        results_compound = Q.fetchall()
-        value = ('cpdA_c0', 'InChI=1S/C20H15ClF2N2O2/c21-14-6-4-13(5-7-14)12-27-15-8-9-24-19(10-15)25-20(26)11-16-17(22)2-1-3-18(16)23/h1-10H,11-12H2,(H,24,25,26)_c0')
-        value1 = ('cpdF_c0', 'InChI=1S/C6H10O6/c7-2-5(10)3(8)1-4(9)6(11)12/h3,5,7-8,10H,1-2H2,(H,11,12)/t3-,5+/m0/s1_c0')
-        value2 = ('cpdC_c0', 'InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0')
-
-        self.assertIn(value, results_compound)
-        self.assertIn(value1, results_compound)
-        self.assertIn(value2, results_compound)
-
         print ("...Testing total number of metabolites inputed into database")
         Q = cnx.execute('SELECT * FROM compound')
         results_compound = Q.fetchall()
-        #self.assertEqual(len(results_compound), len(all_mets))
-        self.assertIn(('InChI=1S/C20H15ClF2N2O2/c21-14-6-4-13(5-7-14)12-27-15-8-9-24-19(10-15)25-20(26)11-16-17(22)2-1-3-18(16)23/h1-10H,11-12H2,(H,24,25,26)_c0', 'cpdA_c0', 'c0'), results_compound)
-        self.assertIn(('cpdB_c0', 'cpdB_c0', 'c0'), results_compound)
-        self.assertIn(('InChI=1S/C6H10O6/c7-2-5(10)3(8)1-4(9)6(11)12/h3,5,7-8,10H,1-2H2,(H,11,12)/t3-,5+/m0/s1_c0', '2_keto_3_deoxygluconate_c0', 'c0'), results_compound)
-        self.assertIn(('InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0', 'cpdC_c0', 'c0'), results_compound)
-        self.assertIn(('cpdI_e0', 'cpdI_e0', 'e0'), results_compound)
+        self.assertEqual(len(results_compound), len(all_mets))
+        self.assertIn(('cpdA_c0', 'cpdA_c0', 'c0', 'None'), results_compound)
+        self.assertIn(('cpdB_c0', 'cpdB_c0', 'c0', 'None',), results_compound)
+        self.assertIn(('cpdF_c0', '2_keto_3_deoxygluconate_c0', 'c0', 'None'), results_compound)
+        self.assertIn(('cpdI_e0', 'cpdI_e0', 'e0',  'None'), results_compound)
+
+        print ("...Testing total number of reaction reversibility records inputed into database")
+        Q = cnx.execute('SELECT * FROM reaction_reversibility')
+        results_rxns_revers = Q.fetchall()
+        self.assertEqual(len(results_rxns_revers), len(all_reactions))
+        self.assertIn(('rxn1_c0', 'true'), results_rxns_revers)
+        self.assertIn(('rxn2_c0', 'true'), results_rxns_revers)
+        self.assertIn(('rxn3_c0', 'true'), results_rxns_revers)
+        self.assertIn(('rxn4_c0', 'false'), results_rxns_revers)
 
         print ("...Testing reaction compound relationship information inputed into database")
         Q = cnx.execute("SELECT * FROM reaction_compound WHERE reaction_ID='rxn2_c0'")
         results_cpd = Q.fetchall()
         results_cpd2 = [tuple(y for c, y in enumerate(x) if c != 4) for x in results_cpd]
-        value = ('rxn2_c0', 'InChI=1S/C20H15ClF2N2O2/c21-14-6-4-13(5-7-14)12-27-15-8-9-24-19(10-15)25-20(26)11-16-17(22)2-1-3-18(16)23/h1-10H,11-12H2,(H,24,25,26)_c0', 0, 1)
+        value = ('rxn2_c0', 'cpdA_c0', 0, 1)
         value1 = ('rxn2_c0', 'cpdB_c0', 1, 1)
         value2 = ('rxn2_c0', 'cpdBy1_c0', 1, 1)
 
-        valuev2 = ('rxn2_c0', 'InChI=1S/C20H15ClF2N2O2/c21-14-6-4-13(5-7-14)12-27-15-8-9-24-19(10-15)25-20(26)11-16-17(22)2-1-3-18(16)23/h1-10H,11-12H2,(H,24,25,26)_c0', 1, 1)
+        valuev2 = ('rxn2_c0', 'cpdA_c0', 1, 1)
         value1v2 = ('rxn2_c0', 'cpdB_c0', 0, 1)
         value2v2 = ('rxn2_c0', 'cpdBy1_c0', 0, 1)
         self.assertEqual(len(results_cpd), 3)
@@ -181,10 +178,10 @@ class Generate_databaseTests_PubchemTrue(unittest.TestCase):
         results_cpd = Q.fetchall()
         results_cpd2 = [tuple(y for c, y in enumerate(x) if c != 4) for x in results_cpd]
         value = ('rxn3_c0', 'cpdB_c0', 0, 1)
-        value1 = ('rxn3_c0', 'InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0', 1, 1)
+        value1 = ('rxn3_c0', 'cpdC_c0', 1, 1)
 
         valuev2 = ('rxn3_c0', 'cpdB_c0', 1, 1)
-        value1v2 = ('rxn3_c0', 'InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0', 0, 1)
+        value1v2 = ('rxn3_c0', 'cpdC_c0', 0, 1)
 
         self.assertEqual(len(results_cpd), 2)
         try:

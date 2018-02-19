@@ -6,7 +6,6 @@ __description__ = 'Gets IDs from compound chemical formulas or names'
 import re
 from Pubchem import pubchem_compounds as pc
 
-cellular_loc = '_c0'
 class Readfile(object):
     """Reads the input file containing target compounds"""
     def __init__(self, file_name, db, inchidb=False, compartment='cytosol'):
@@ -50,10 +49,18 @@ class Readfile(object):
         '''
         self.targets = []
         self.ignorerxns = []
+        compartmentID = self.DB.get_compartment(self.compartment)
+        compartmentID = compartmentID[0]
+        if not compartmentID:
+            print ('WARNING: No compartment info going to default c0')
+            compartmentID = 'c0'        
         for count, values in self.input.iteritems():
             temp = []
             if 'compoundid' in values:
-                temp.extend((values['compoundid'], ''))
+                if values['compoundid'].endswith(compartmentID):
+                    temp.extend((values['compoundid'], ''))
+                else:
+                    temp.extend((values['compoundid']+'_'+compartmentID, ''))                    
             elif 'pubchem' in values:
                 cid = values['pubchem']
                 db_cpdID = self.PC.get_ID_from_pubchemID(cid, self.inchidb)
@@ -76,11 +83,6 @@ class Readfile(object):
                 else:
                     print ('WARNING: no compound ID found for compound name {} value not added to list'.format(name))
             elif 'inchi' in values:
-                compartmentID = self.DB.get_compartment(self.compartment)
-                compartmentID = compartmentID[0]
-                if not compartmentID:
-                    print ('WARNING: No compartment info going to default c0')
-                    compartmentID = 'c0'
                 temp.extend((values['inchi']+'_'+compartmentID, ''))
             else:
                 raise ValueError('Need compound ID, pubchem ID or name of compound in target file')

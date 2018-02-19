@@ -60,6 +60,9 @@ class GraphDot(object):
     """
     def __init__(self, db, output_path, incpds, inrxns, FBA=False):
         self.DB = db
+        Q = self.DB.cnx.execute("""SELECT DISTINCT compartment FROM compound""")
+        hits = Q.fetchall()
+        self.compartments = [i[0] for i in hits]
 
         try:
             os.mkdir(output_path+'/reaction_figures/')
@@ -120,10 +123,12 @@ class GraphDot(object):
     def get_figure(self, cpdID, cpdname, rxn, type_node):
         '''Get smiles for a compounds'''
         if cpdID.startswith('InChI'):
-            cpdID = re.sub('_\w+\d*$', '', cpdID)
+            cpdID = re.sub('_\w{1}\d{1}$', '', cpdID)
             mol = self.IN.loadMolecule(cpdID)
         else:
-            cpdname = re.sub('_\w+\d*$', '', cpdname)
+            for comp in self.compartments:
+                if cpdname.endswith('_'+comp):
+                    cpdname = re.sub('_'+comp+'$', '', cpdname)
             cpdname = re.sub('_', ' ', cpdname)
             mol = self.get_mol_from_name(cpdname)
             if not mol:
@@ -312,7 +317,10 @@ class GraphDot(object):
                             xlabel = name+'\t'+self.DB.get_proteins(rxn, org)
                         else:
                             xlabel = rxn
-                    self.outputfile_dot.append('    "{}" [fillcolor={}, fontname="{}", fontsize={}, shape={}, height={}, width={}, xlabel="{}", label=""];\n'.format(rxn, 'black', 'times', '12', 'rect', '.3', '.15', xlabel))
+                    if rxn not in self.inrxns:
+                        self.outputfile_dot.append('    "{}" [fillcolor={}, fontname="{}", fontsize={}, shape={}, height={}, width={}, xlabel="{}", label=""];\n'.format(rxn, 'black', 'times', '12', 'rect', '.3', '.15', xlabel))
+                    else:
+                        self.outputfile_dot.append('    "{}" [fillcolor={}, fontname="{}", fontsize={}, shape={}, height={}, width={}, xlabel="{}", label=""];\n'.format(rxn, 'gray', 'times', '12', 'rect', '.3', '.15', xlabel))                        
                     self.store_rxns.add(rxn)
                     if rxns[rxn]['direction'] == 'forward':
                         self.add_reactants(rxns[rxn]['reactants'], rxn)
@@ -329,6 +337,3 @@ class GraphDot(object):
             cpdname = self.reformat_inchi(cpdname)
         cuge.dot2graph(self.outputfile_dot, 'SC_graph_'+cpdname+'_'+self.DB.get_organism_name(target_organism_ID)+'.png', self.GRAPHPATH)
         graph_files = glob.glob(os.path.join(self.GRAPHPATH, '*'))
-        for file in graph_files:
-            if file.endswith('.dot'):
-                os.remove(file)

@@ -12,6 +12,7 @@ import glob
 from Parser import read_startcompounds as rtsc
 from Parser import read_targets as rt
 from Parser import generate_output as go
+from Parser import structure_similarity as ss
 from Visualization import SP_Graph_dot as spgd
 from Visualization import reaction_files as rf
 from ShortestPath import extractinfo as ei
@@ -19,15 +20,20 @@ from ShortestPath import constraints as co
 from ShortestPath import integerprogram_glpk as ip_glpk
 from ShortestPath import integerprogram_pulp as ip_pulp
 from ShortestPath import search_sp_metclusters as smc
-from Database import generate_database as gen_db
-from Database import translate_metacyc as tm
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
+from Database import build_KEGG_db as bkeggdb
+from Database import build_metacyc_db as bmcdb
+from Database import build_ATLAS_db as batlasdb
+from Database import build_MINE_db as bminedb
+from Database import build_SPRESI_db as bspresidb
 from Database import query as Q
 from FBA import build_model as bm
 from FBA import optimize_target as ot
 from FBA import compare_results as cr
 from FBA import retrieve_producable_mets as rpm
 from FBA import compareKO_results as crko
-from RDFConverter import RDFileReaderMP
+
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 def parse_arguments():
@@ -45,58 +51,146 @@ def parse_arguments():
                                                  compounds and organisms \
                                                  (tab deliminated)',
                         required=True, type=str)
+    ###SOLVER OPTIONS###
+    parser.add_argument('-solver', '--python_glpk_connector_package', help='python package to use \
+                                                                            to connect to glpk \
+                                                                            solver software (can \
+                                                                            use PYGLPK (GLPK) note that pyglpk \
+                                                                            only works with glpk package 4.3 or lower \
+                                                                            or PULP (default))',
+                        required=False, type=str, default='PULP')
+    parser.add_argument('-tmlim', '--solver_time_limit', help='time limit for solver to solve shortest \
+                                                                path (note: only function with PULP python \
+                                                                solver package)',
+                                                                required=False, type=str, default=30)
+
+    ###DATABASE OPTIONS###
     parser.add_argument('-gdb', '--generate_database', help='Generate database \
                         to use', type=str)
     parser.add_argument('-db', '--database', help='Specify database to use',
                         required=False, type=str)
-    parser.add_argument('-mc', '--metacyc_addition', help='Add metacyc xml \
-                        file to database', required=False, type=str)
-    parser.add_argument('-rdf', '--rdf_addition', help='Add rdf folder to \
-                        database', required=False, type=str)
-    parser.add_argument('-tf', '--translation_file', help='Translation file to connect \
-                        metacyc and kbase IDs', required=False, type=str)
-    parser.add_argument('-d_dir', '--dump_directory', help='Path to folder \
-                        of SBML network files(needed to generate database)',
-                        required=False, type=str)
+    parser.add_argument('-dbc', '--database_constraints', help='Utilize \
+                        constraint file for entire database',
+                        required=False, type=str)    
     parser.add_argument('-gdbc', '--generate_database_constraints',
                         help='Generate output constraint file for entire \
                         database', required=False, type=str)
-    parser.add_argument('-dbc', '--database_constraints', help='Utilize \
-                        constraint file for entire database',
+
+    parser.add_argument('--kbase', help='Set whether to build database with  Kbase data',  required=False,
+                        action="store_true")
+    
+    parser.add_argument('-k_dir', '--kbase_dump_directory', help='Path to folder \
+                        of SBML network files from kbase',
                         required=False, type=str)
+
+    parser.add_argument('--metacyc', help='Set whether to build database with metacyc',  required=False,
+                        action="store_true")    
+    
+    parser.add_argument('-mc', '--metacyc_addition', help='Add metacyc xml \
+                        file to database', required=False, type=str)
+    
+    parser.add_argument('-tf', '--translation_file', help='Translation file to connect \
+                        metacyc and kbase IDs', required=False, type=str)    
+
+
+    parser.add_argument('--SPRESI', help='Set whether to build database with SPRESI information',
+                        required=False, action="store_true")
+    
+    parser.add_argument('-s_dir', '--spresi_dump_directory', help='Path to folder of \
+                        SPRESI files (.rdf)', required=False, type=str)
+
+    parser.add_argument('--mine', help='Set whether to build database with mine data',  required=False,
+                        action="store_true")
+    
+    parser.add_argument('-m_dir', '--mine_dump_directory', help='Path to folder \
+                        of .msp files from MINE database',
+                        required=False, type=str)
+
+    parser.add_argument('--atlas', help='Set whether to build database with atlas data',  required=False,
+                        action="store_true")
+    parser.add_argument('-a_dir', '--atlas_dump_directory', help='Path to folder \
+                        of ATLAS files (.csv)', required=False, type=str)
+
+    parser.add_argument('--kegg', help='Set whether to build database with Kegg data',  required=False,
+                        action="store_true")
+
+    parser.add_argument('-kbaserxntype', '--kbase_reaction_type', help='Define type of reactions \
+                                                             that are being added to database \
+                                                            (options are bio (default) and chem)',
+                        required=False, type=str, default='bio')
+    parser.add_argument('-mcrxntype', '--metacyc_reaction_type', help='Define type of reactions \
+                                                             that are being added to database \
+                                                            (options are bio (default) and chem)',
+                        required=False, type=str, default='bio')
+
+    parser.add_argument('-keggrxntype', '--kegg_reaction_type', help='Define type of reactions \
+                                                             that are being added to database \
+                                                            (options are bio (default) and chem)',
+                        required=False, type=str, default='bio')
+
+    parser.add_argument('-keggorganismtype', '--kegg_organism_type', help='Define type of organisms \
+                                                                           reactions to be added to \
+                                                                           the database bacteria (default) \
+                                                                            or archea',
+                        required=False, type=str, default='bacteria')
+
+    parser.add_argument('-keggnunorganisms', '--kegg_number_of_organisms', help='Define number of organisms \
+                                                                                    from kegg database to add',
+                        required=False, type=str, default='all')
+
+    parser.add_argument('-keggnunorganismpaths', '--kegg_number_of_organism_pathways', help='Define number of pathways \
+                                                                                             from an organism to add',
+                        required=False, type=str, default='all')
+
+    parser.add_argument('-spresirxntype', '--spresi_reaction_type', help='Define type of reactions \
+                                                                    from rdf files that are being \
+                                                                    added to database (options \
+                                                                    are bio and chem (default))',
+                        required=False, type=str, default='chem')
+
+    parser.add_argument('-atlasrxntype', '--atlas_reaction_type', help='Define type of reactions \
+                                                                    from atlas files that are being \
+                                                                    added to database (options \
+                                                                    are bio (default) and chem)',
+                        required=False, type=str, default='bio')
+
+    parser.add_argument('-minerxntype', '--mine_reaction_type', help='Define type of reactions \
+                                                                    from atlas files that are being \
+                                                                    added to database (options \
+                                                                    are bio (default) and chem)',
+                        required=False, type=str, default='bio')
+
+    ###FLUX BALANCE ANALYSIS OPTIONS###    
     parser.add_argument('-fba', '--flux_balance_analysis', help='Runs flux \
                         balance analysis using cobrapy on model organism of \
                         interest', required=False, action="store_true")
+
     parser.add_argument('-media', '--media_for_FBA', help='Define media for \
                         Flux Balance Analysis', required=False, type=str)
+
     parser.add_argument('-ko', '--knockouts', help='Performs single reaction \
                         knockouts on FBA model with added reaction and \
                         outputs rxns that result in an increase in the \
                         Objective Function', required=False,
                         action="store_true")
-    parser.add_argument('--figures', help='Generate figures for clustering and \
-                        filtering results', action='store_true')
-    parser.add_argument('-lr', '--limit_reactions', help='Limit the number of \
-                        reactions in a identified pathway (default:10, if no \
-                        limit is wanted provide option of None)',
+
+    ###EXTRA SOLVER OPTIONS###
+    parser.add_argument('-lr', '--limit_reactions', help='Limit the number of reactions in a\
+                                                          identified pathway (default:10, if no \
+                                                          limit is wanted provide option of None)',
                         required=False, type=str, default=10)
+
     parser.add_argument('-lc', '--limit_cycles', help='Limits the number of cycle \
-                        checks (default:10, if no limit is wanted provide \
-                        option of None)  (not totally functional yet)', required=False, type=str,
-                        default='None')
+                                                       checks (default:10, if no limit is wanted provide \
+                                                      option of None)  (not totally functional yet)',
+                        required=False, type=str, default='None')
+
     parser.add_argument('--inchidb', help='Retrieve InChis and use them as compound \
                         IDs in the metabolic database', action='store_true')
-    parser.add_argument('-op', '--output_path', help='Destination for output \
-                        files', required=False, type=str, default=PATH)
-    parser.add_argument('-rxntype', '--reaction_type', help='Define type of reactions \
-                                                             being added to database \
-                                                            (options are bio (default) and chem)',
-                        required=False, type=str, default='bio')
-    parser.add_argument('-rdfrxntype', '--rdf_reaction_type', help='Define type of reactions \
-                                                                    from rdf files being \
-                                                                    added to database (options \
-                                                                    are bio and chem (default))',
-                        required=False, type=str, default='chem')
+
+    parser.add_argument('-op', '--output_path', help='Destination for output files',
+                        required=False, type=str, default=PATH)
+
     parser.add_argument('-evalrxns', '--evaluate_reactions', help='Defines which type of reactions \
                                                                    (bio, chem, or all (default)) \
                                                                    to be evaluated in identifying \
@@ -106,38 +200,43 @@ def parse_arguments():
                                                               path should start from \
                                                               (use in place of target organism)',
                         required=False, type=str)
+
     parser.add_argument('-k', '--k_number_of_paths', help='Specifies the number of shortest \
                                                            paths wanted by the user',
                         required=False, type=int, default=0)
+
     parser.add_argument('-ms', '--multiple_solutions', help='Find all shortest paths (True \
                                                              (defualt) or False)',
                         required=False, type=str, default='True')
+
     parser.add_argument('-cy', '--cycles', help='Elimate cycles when finding shortest paths \
                                                  (True (default) or False)',
                         required=False, type=str, default='True')
+
+    parser.add_argument('-tan_thresh', '--tanimoto_threshold', help='Set the tanimoto threshold to \
+                                                                     identify related compounds',
+                         required=False, type=str, default=1)
+
     parser.add_argument('-p', '--processors', help='Number of processors to use when \
                                                     solving for shortest path (default 4)',
                         required=False, type=int, default=4)
-    parser.add_argument('-solver', '--python_glpk_connector_package', help='python package to use \
-                                                                            to connect to glpk \
-                                                                            solver software (can \
-                                                                            use GLPK (default) \
-                                                                            or PULP)',
-                        required=False, type=str, default='GLPK')
+
+    ###FIGURE OPTIONS###
+    parser.add_argument('--figures', help='Generate figures for clustering and \
+                        filtering results', action='store_true')
+
     parser.add_argument('--images', help='Set whether to use chemical images \
                                           or round nodes in output figures\
-                                        (default True)', required=False,
+                                          (default True)', required=False,
                         type=str, default='True')
+
+
     return parser.parse_args()
 
 
 def check_arguments(args):
     '''Checks and makes sure all required arguments are provided'''
     parser = argparse.ArgumentParser()
-    if args.generate_database and not args.dump_directory:
-        parser.error('If generating a new database, must specify a \
-                      directory, --dump_directory, of metabolic networks \
-                      (SBML)')
     if not args.generate_database_constraints \
             and not args.database_constraints:
         parser.error('Requires the use previously generated .constraints \
@@ -147,8 +246,23 @@ def check_arguments(args):
         parser.error('Requires the use previously generated database \
                      --database or generate a database --generate_database')
 
-    if args.metacyc_addition and not args.translation_file:
-        parser.error('Requires the use --translation_file')
+    if  args.generate_database and not (args.kbase or args.metacyc or args.kegg):
+        parser.error('Requires a specified database type --kbase, --metacyc or --kegg')
+
+    if args.kbase and not args.kbase_dump_directory:
+        parser.error('Requires use of --kbase_dump_directory')
+
+    if args.atlas and not args.atlas_dump_directory:
+        parser.error('Requires use of --atlas_dump_directory')
+
+    if args.SPRESI and not args.spresi_dump_directory:
+        parser.error('Requires use of --spresi_dump_directory')
+
+    if args.mine and not args.mine_dump_directory:
+        parser.error('Requires use of --mine_dump_directory')
+
+    if args.metacyc and not args.translation_file and not args.metacyc_addition:
+        parser.error('Requires the use of --translation_file and --metacyc_addition')
 
     if args.translation_file and not args.metacyc_addition:
         parser.error('Requires the use --metacyc_addition')
@@ -178,61 +292,142 @@ def read_in_and_generate_output_files(args, database):
     if not R.targets:
         raise ValueError('ERROR: No targets, try different compounds')
     OUTPUT = go.Output(DB, args.output_path, args.flux_balance_analysis, args.knockouts)
+    if args.inchidb:
+        print (str(args.tanimoto_threshold)+' tanimoto threshold being used')
+        SIM = ss.TanimotoStructureSimilarity(R.targets, DB.get_all_compounds(),
+                                             DB.get_compartment('cytosol')[0],
+                                             DB.get_compartment('extracellular')[0],
+                                             args.tanimoto_threshold)
+        return(SIM.finaltargets, R.ignorerxns, OUTPUT)
+    else:
+        return(R.targets, R.ignorerxns, OUTPUT)
     DB.conn.close()
-    return(R.targets, R.ignorerxns, OUTPUT)
 
 def retrieve_database_info(args):
     '''
     Generates database or uses previously generated database.
     Can also add metacyc database to a Kbase metabolic database
     '''
+    def get_compartment(DB):
+        compartmentID_array = DB.get_compartment('cytosol')
+        if compartmentID_array is None:
+            compartmentID = 'c0'
+        else:
+            if compartmentID_array[0] == '':
+                compartmentID = 'c0'
+            else:
+                compartmentID = compartmentID_array[0]
+        return (compartmentID)
+ 
     if args.generate_database:
         '''
         Generate a database
         '''
-        gen_db.Createdb(args.generate_database, args.dump_directory,
-                        args.inchidb, args.reaction_type)
+        init_db.Createdb(args.generate_database, args.inchidb)
         DB = Q.Connector(args.generate_database)
-        compartmentID = DB.get_compartment('cytosol')
-        compartmentID = compartmentID[0]
-        if args.metacyc_addition:
+        if args.kbase:
             '''
-            Translate from metacyc database to database
+            Add kbase daatabase
             '''
-            T = tm.Translate(args.generate_database, DB,
-                             args.metacyc_addition, args.translation_file,
-                             args.inchidb, args.reaction_type)
-            DB = T.DB
-        if args.rdf_addition:
+            bkdb.BuildKbase(args.kbase_dump_directory, PATH+'/Database/KbasetoKEGGCPD.txt',
+                            PATH+'/Database/KbasetoKEGGRXN.txt', args.inchidb,
+                            args.generate_database, args.kbase_reaction_type)
+        if args.metacyc:
+            '''
+            Add metacyc daatabase
+            '''
+            bmcdb.Translate(args.generate_database, DB, args.metacyc_addition,args.translation_file,
+                            args.inchidb, args.metacyc_reaction_type)
+        if args.kegg and (args.kbase or args.metacyc):
+            '''
+            Add kegg daatabase
+            '''
+            BKD = bkeggdb.CompileKEGGIntoDB(args.generate_database, args.kegg_organism_type,
+                                            args.inchidb, args.processors, args.kegg_number_of_organisms,
+                                            args.kegg_number_of_organism_pathways,
+                                            args.kegg_reaction_type, True)
+            DB = BKD.DB
+
+        elif args.kegg and not args.kbase and not args.metacyc:
+            '''
+            Add only kbase daatabase
+            '''
+            print ('STATUS: Only KEGG')
+            BKD = bkeggdb.CompileKEGGIntoDB(args.generate_database, args.kegg_organism_type,
+                                            args.inchidb, args.processors,
+                                            args.kegg_number_of_organisms, args.kegg_number_of_organism_pathways,
+                                            args.kegg_reaction_type, False)
+            DB = BKD.DB
+
+        if args.SPRESI:
             '''
             Translate synthetic rdf file to database
             '''
-            RDFileReaderMP.RDF_Reader(args.rdf_addition,
+            compartmentID = get_compartment(DB)
+            bspresidb.RDF_Reader(args.spresi_dump_directory,
                                       args.generate_database,
-                                      args.rdf_reaction_type,
+                                      args.spresi_reaction_type,
                                       compartmentID, args.processors)
             DB = Q.Connector(args.generate_database)
+
+        if args.mine:
+            bminedb.BuildMINEdb(args.mine_dump_directory, args.generate_database,
+                                args.inchidb, args.mine_reaction_type)
+
+        if args.atlas:
+            batlasdb.build_atlas(args.atlas_dump_directory, args.generate_database, args.inchidb,
+                                 args.processors, args.atlas_reaction_type)
         database = args.generate_database
+
     elif args.database:
         '''
         Use and existing database
         '''
         DB = Q.Connector(args.database)
-        compartmentID = DB.get_compartment('cytosol')
-        compartmentID = compartmentID[0]
-        if args.metacyc_addition:
-            tm.Translate(args.database, DB, args.metacyc_addition,
-                         args.translation_file, args.inchidb,
-                         args.reaction_type)
-        if args.rdf_addition:
+        compartmentID = get_compartment(DB)
+
+        if args.kbase:
+            '''
+            Add kbase daatabase
+            '''
+            bkdb.BuildKbase(args.kbase_dump_directory, PATH+'/Database/KbasetoKEGGCPD.txt', PATH+'/KbasetoKEGGRXN.txt',
+                             args.inchidb, args.database, args.rxntype)
+
+        if args.metacyc:
+            '''
+            Add metacyc daatabase
+            '''     
+            bmcdb.Translate(args.database, DB, args.metacyc_addition, args.translation_file,
+                            args.inchidb, args.metacyc_reaction_type)
+
+        if args.kegg:
+            '''
+            Add KEGG daatabase
+            '''
+            BKD = bkeggdb.CompileKEGGIntoDB(args.database, args.kegg_organism_type,
+                                            args.inchidb, args.processors, args.kegg_number_of_organisms,
+                                            args.kegg_number_of_organism_pathways,
+                                            args.kegg_reaction_type, True)
+            DB = BKD.DB
+
+        if args.SPRESI:
             '''
             Add a synthetic rdf file to the database
             '''
-            RDFileReaderMP.RDF_Reader(args.rdf_addition,
+            bspresidb.RDF_Reader(args.spresi_dump_directory,
                                       args.database,
-                                      args.rdf_reaction_type,
+                                      args.spresi_reaction_type,
                                       compartmentID, args.processors)
             DB = Q.Connector(args.database)
+
+        if args.mine:
+            bminedb.BuildMINEdb(args.mine_dump_directory, args.database,
+                                args.inchidb, args.mine_reaction_type)
+
+        if args.atlas:
+            batlasdb.build_atlas(args.atlas_dump_directory, args.database, args.inchidb,
+                                 args.processors, args.atlas_reaction_type)
+
         database = args.database
 
     allcpds = DB.get_all_compounds()
@@ -281,7 +476,8 @@ def construct_and_run_integerprogram(args, targets, LP, output, database):
                                      args.limit_cycles, args.k_number_of_paths, args.cycles)
     elif LP.PYSOLVER == 'PULP':
         IP = ip_pulp.IntergerProgram(DB, args.limit_reactions,
-                                     args.limit_cycles, args.k_number_of_paths, args.cycles)
+                                     args.limit_cycles, args.k_number_of_paths, args.cycles,
+                                     args.solver_time_limit)
     else:
         raise IOError('ERROR: NO PYTHON SOLVER PACKAGE COULD BE IDENTIFIED. INSTALL PYGLPK, PYMPROG, OR PULP')
     if args.flux_balance_analysis:
@@ -328,7 +524,7 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
         if target_info[0] in incpds_active: #Check if compound exists in organism
             output.output_compound_natively_present_in_target_organism(target_info)
         else:
-            optimal_pathways = IP.run_glpk(LP, incpds_active, inrxns_active, target_info[0],
+            optimal_pathways = IP.run_glpk(LP, incpds_active, inrxns, target_info[0],
                                            multiplesolutions=args.multiple_solutions)
             if optimal_pathways[0]:
                 uniq_externalrxns = []
@@ -353,17 +549,16 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                         G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
                         R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
                                          target_info[0], target_info[2], incpds_active)
-                        output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns, incpds_active)
+                        output.output_extra(target_info[0], R.ordered_paths, ex_info.temp_rxns, incpds_active)
 
                 elif args.figures and not args.flux_balance_analysis:
                     G = spgd.GraphDot(DB, args.output_path, incpds, inrxns)
                     G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
                     R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
                                          target_info[0], target_info[2], incpds_active)
-                    output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns, incpds_active)
+                    output.output_extra(target_info[0], R.ordered_paths, ex_info.temp_rxns, incpds_active)
             else:
                 output.output_shortest_paths(target_info, optimal_pathways[0])
-                #output.output_extra(target_info[1], R.ordered_paths, ex_info.temp_rxns)
                 if args.flux_balance_analysis:
                     print('WARNING: No optimal path for %s in species %s therefore no \
                           flux balance will be performed' % (target_info[0], target_info[2]))
@@ -423,6 +618,7 @@ def main():
     args = parse_arguments()
     check_arguments(args)
     all_db_compounds, all_db_reactions, database = retrieve_database_info(args)
+    print (database)
     targets, ignore_reactions, output = read_in_and_generate_output_files(args, database)
     LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
     IP, active_metabolism = construct_and_run_integerprogram(args, targets, LP, output, database)
@@ -438,9 +634,15 @@ def main():
             p.join()
 
     '''Remove all temporary images'''
-    if args.images == 'True':
-        for filename in glob.glob(PATH+"/Visualization/compound*"):
-            os.remove(filename)
+    # if args.images == 'True':
+    #     for filename in glob.glob(PATH+"/Visualization/compound*"):
+    #         os.remove(filename)
+
+    # for target in targets:
+    #     retrieve_shortestpath(target,  IP, LP, database, args, output, active_metabolism)
+    '''Removes all dot files if they exist'''
+    for filename in glob.glob(args.output_path+"/reaction_figures/*.dot"):
+        os.remove(filename)
 
 if __name__ == '__main__':
     main()

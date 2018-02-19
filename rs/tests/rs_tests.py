@@ -4,6 +4,7 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Tests main rs module'
 import re
 import os
+import shutil
 import unittest
 import subprocess
 
@@ -15,6 +16,12 @@ _dir = os.path.dirname(__file__)
 _executable = os.path.abspath(os.path.join(_dir, os.pardir, 'rs.py'))
 _TEST_TARGETS = PATH+'/data2/test_targets1.txt'
 _MEDIA = PATH+'/data2/media.txt'
+_OUTPUT_DIRECTORY = PATH+'/output_test'
+try:
+    os.mkdir(_OUTPUT_DIRECTORY)
+except OSError:
+    shutil.rmtree(_OUTPUT_DIRECTORY)
+    os.mkdir(_OUTPUT_DIRECTORY)
 
 class BRSTests(unittest.TestCase):
     def setUp(self):
@@ -42,39 +49,63 @@ class BRSTests(unittest.TestCase):
 
         print ("Testing incompatible modules")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints]
+                _database, '-gdbc', _constraints, '--kbase']
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 2)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-d_dir', PATH+'/data']
+                _database, '-gdbc', _constraints, '--atlas']
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 2)
+
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '--mine']
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 2)
+
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '--SPRESI']
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 2)
+
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-k_dir', PATH+'/data']
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 2)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb', _database,
-                '-gdbc', _constraints, '-d_dir', PATH+'/data', '-media', _MEDIA]
+                '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '-media', _MEDIA]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 2)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data', '-ko']
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '-ko']
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 2)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data', '-media', _MEDIA, '-ko']
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data',
+                 '-media', _MEDIA, '-ko']
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 2)
 
         print ("Testing compatible modules")
         print ("...Testing generate database")
+
+        ###############TEST GENERATION OF A NOVEL DATABASE###############
+        ##TEST GENERATION OF DATABASE NOT USING INCHI IDS##
+        print("...Testing kbase database generation without inchi")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data']
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase',
+                '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -83,8 +114,12 @@ class BRSTests(unittest.TestCase):
         if os.path.isfile(_constraints) is True:
             os.remove(_constraints)
 
+        print("...Testing kbase & metacyc database generation without inchi")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data', '-rdf', PATH+'/data3']
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase',
+                '--metacyc', '-mc', PATH+'/data7/metabolic-reactions.xml',
+                 '-tf', PATH+'/data7/MetaCyc.aliases',
+                '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -93,8 +128,11 @@ class BRSTests(unittest.TestCase):
         if os.path.isfile(_constraints) is True:
             os.remove(_constraints)
 
+        print("...Testing kegg (only) database generation without inchi")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data']
+                _database, '-gdbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1',
+                '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -103,15 +141,253 @@ class BRSTests(unittest.TestCase):
         if os.path.isfile(_constraints) is True:
             os.remove(_constraints)
 
-        print ("...Testing generate database with inchi")
+        print("...Testing kegg with kbase database generation without inchi")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data4',
-                '--inchidb', '-rdf', PATH+'/data3']
+                _database, '-gdbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1', '--kbase', '-k_dir', PATH+'/data',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--SPRESI',
+                '-s_dir', PATH+'/data3', '--kbase', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing atlas database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--atlas',
+                '-a_dir', PATH+'/data5', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing mine database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase',
+                '--mine', '-m_dir', PATH+'/data6', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi & mine database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data',
+                 '--SPRESI', '-s_dir', PATH+'/data3', '--kbase', '--mine',
+                 '-m_dir', PATH+'/data6', '-op', _OUTPUT_DIRECTORY]
+
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi, mine & atlas database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--SPRESI',
+                '-s_dir', PATH+'/data3', '--kbase', '--mine', '-m_dir', PATH+'/data6',
+                '--atlas', '-a_dir', PATH+'/data5', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing metacyc, spresi, mine & atlas database generation without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--SPRESI',
+                '-s_dir', PATH+'/data3', '--kbase', '--mine', '-m_dir', PATH+'/data6',
+                '--atlas', '-a_dir', PATH+'/data5', '--metacyc', '-mc',
+                  PATH+'/data7/metabolic-reactions.xml', '-tf', PATH+'/data7/MetaCyc.aliases',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        ##TEST GENERATION OF DATABASE USING INCHI IDS##
+        print("...Testing kbase database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase',
+                '--inchidb','-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing kbase & metacyc database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase',
+                '--metacyc', '-mc', PATH+'/data7/metabolic-reactions.xml',
+                  '-tf', PATH+'/data7/MetaCyc.aliases', '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+        print("...Testing kegg (only) database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1', '--inchidb',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing kegg with kbase database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1', '--kbase', '-k_dir', PATH+'/data',
+                '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--SPRESI',
+                '-s_dir', PATH+'/data3', '-m_dir', PATH+'/data6', '--inchidb',
+                 '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing atlas database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--atlas',
+                '-a_dir', PATH+'/data5', '--inchidb','-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing mine database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--mine',
+                '-m_dir', PATH+'/data6', '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi & mine database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--SPRESI',
+                '-s_dir', PATH+'/data3', '-m_dir', PATH+'/data6', '--mine',
+                '-m_dir', PATH+'/data6', '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        print("...Testing spresi, mine & atlas database generation with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data', '--kbase', '--SPRESI',
+                '-s_dir', PATH+'/data3', '-m_dir', PATH+'/data6', '--mine',
+                '-m_dir', PATH+'/data6', '--atlas',
+                '-a_dir', PATH+'/data5', '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
+
+        ##############TEST ADDITION OF A NEW DATABASE TO A PRE-EXISTING DATABASE###############
+
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data4',
+                '--kbase', '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
 
+        print ("...Testing metacyc addition to database without inchi")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
-                '-dbc', _constraints, '--inchidb', '-rdf', PATH+'/data3']
+                '-dbc', _constraints, '--metacyc', '-mc', PATH+'/data7/metabolic-reactions.xml',
+                '-tf', PATH+'/data7/MetaCyc.aliases', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing kegg addition to database without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing spresi addition to database without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--SPRESI', '-s_dir', PATH+'/data3', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing mine addition to database without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--mine', '-m_dir', PATH+'/data6', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing atlas addition to database without inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--atlas', '-a_dir', PATH+'/data5', '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -121,17 +397,69 @@ class BRSTests(unittest.TestCase):
             os.remove(_constraints)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-d_dir', PATH+'/data4', '--inchidb']
+                _database, '-gdbc', _constraints, '-k_dir', PATH+'/data4',
+                '--inchidb', '--kbase', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+
+        print ("...Testing metacyc addition to database with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--inchidb',
+                '--metacyc', '-mc', PATH+'/data7/metabolic-reactions.xml',
+                '-tf', PATH+'/data7/MetaCyc.aliases',
+                '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
+
+        print ("...Testing kegg addition to database with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--kegg', '-keggnunorganisms', '1',
+                '-keggnunorganismpaths', '1', '--inchidb', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+
+        print ("...Testing spresi ddition to database with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--inchidb', '--SPRESI', '-s_dir', PATH+'/data3',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing mine ddition to database with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--inchidb', '--mine', '-m_dir', PATH+'/data6',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+
+        print ("...Testing atlas ddition to database with inchi")
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '--inchidb', '--atlas', '-a_dir', PATH+'/data5',
+                '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        self.assertEqual(process.returncode, 0)
+        if os.path.isfile(_database) is True:
+            os.remove(_database)
         if os.path.isfile(_constraints) is True:
             os.remove(_constraints)
 
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
+                _database, '-gdbc', _constraints, '-op', _OUTPUT_DIRECTORY, '--kbase',
+                '-k_dir', PATH+'/data4', '-op', _OUTPUT_DIRECTORY]
+        process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdoutdata, stderrdata = process.communicate()
+        if os.path.isfile(_constraints) is True:
+            os.remove(_constraints)
 
         print ("...Testing generate database constraints from preexisting database")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-db',
-                _database, '-gdbc', _constraints]
+                _database, '-gdbc', _constraints, '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -142,13 +470,14 @@ class BRSTests(unittest.TestCase):
 
         print ("...Testing flux balance analysis")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-gdb',
-                _database, '-gdbc', _constraints, '-fba', '-d_dir', PATH+'/data']
+                _database, '-gdbc', _constraints, '-fba', '-k_dir', PATH+'/data', '--kbase',
+                '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
 
         args = ['python', _executable, '-t', _TEST_TARGETS, '-db',
-                _database, '-dbc', _constraints, '-fba']
+                _database, '-dbc', _constraints, '-fba', '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
@@ -156,61 +485,32 @@ class BRSTests(unittest.TestCase):
         print ("...Testing flux balance analysis with media option")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
                 '-dbc', _constraints, '-fba', '-media',
-                _MEDIA]
+                _MEDIA, '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
 
         print ("...Testing flux balance analysis with reaction knockout option")
         args = ['python', _executable, '-t', _TEST_TARGETS, '-db',
-                _database, '-dbc', _constraints, '-fba', '-ko']
+                _database, '-dbc', _constraints, '-fba', '-ko', '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
         self.assertEqual(process.returncode, 0)
 
         print ("...Testing flux balance analysis with media, knockout and RDF option")
-        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database, '-dbc', _constraints, '-fba',
-                '-media', _MEDIA, '-ko',
-                '-rdf', PATH+'/data3']
+        args = ['python', _executable, '-t', _TEST_TARGETS, '-db', _database,
+                '-dbc', _constraints, '-fba', '-media', _MEDIA, '-ko', '--SPRESI',
+                '-s_dir', PATH+'/data3', '-op', _OUTPUT_DIRECTORY]
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdoutdata, stderrdata = process.communicate()
-        self.assertEqual(process.returncode, 0)
         if os.path.isfile(_database) is True:
             os.remove(_database)
         if os.path.isfile(_constraints) is True:
             os.remove(_constraints)
-        if os.path.isfile(PATH+'/'+'essentialrxns_output.txt') is True:
-            os.remove(PATH+'/essentialrxns_output.txt')
-        if os.path.isfile(PATH+'/'+'flux_output.txt') is True:
-            os.remove(PATH+'/flux_output.txt')
-        if os.path.isfile(PATH+'/'+'fluxKO_output.txt') is True:
-            os.remove(PATH+'/fluxKO_output.txt')
-        if os.path.isfile(PATH+'/'+'optimal_pathways.txt') is True:
-            os.remove(PATH+'/optimal_pathways.txt')
-        if os.path.isfile(PATH+'/'+'optimal_pathways.txt') is True:
-            os.remove(PATH+'/optimal_pathways.txt')
-        if os.path.isfile(PATH+'/'+'theoretical_yield.txt') is True:
-            os.remove(PATH+'/theoretical_yield.txt')
-        if os.path.isfile(PATH+'/'+'active_metabolism.txt') is True:
-            os.remove(PATH+'/active_metabolism.txt')
-        if os.path.isfile(PATH+'/'+'flux_individualfluxes_output.txt') is True:
-            os.remove(PATH+'/flux_individualfluxes_output.txt')
+        try:
+            shutil.rmtree(_OUTPUT_DIRECTORY)
+        except:
+            pass
 
-        if os.path.isfile(PPATH+'/'+'essentialrxns_output.txt') is True:
-            os.remove(PPATH+'/essentialrxns_output.txt')
-        if os.path.isfile(PPATH+'/'+'fluxKO_output.txt') is True:
-            os.remove(PPATH+'/fluxKO_output.txt')
-        if os.path.isfile(PPATH+'/'+'flux_output.txt') is True:
-            os.remove(PPATH+'/flux_output.txt')
-        if os.path.isfile(PPATH+'/'+'optimal_pathways.txt') is True:
-            os.remove(PPATH+'/optimal_pathways.txt')
-        if os.path.isfile(PPATH+'/'+'optimal_pathways.txt') is True:
-            os.remove(PPATH+'/optimal_pathways.txt')
-        if os.path.isfile(PPATH+'/'+'theoretical_yield.txt') is True:
-            os.remove(PPATH+'/theoretical_yield.txt')
-        if os.path.isfile(PPATH+'/'+'active_metabolism.txt') is True:
-            os.remove(PPATH+'/active_metabolism.txt')
-        if os.path.isfile(PPATH+'/'+'flux_individualfluxes_output.txt') is True:
-            os.remove(PPATH+'/flux_individualfluxes_output.txt')
 if __name__ == '__main__':
     unittest.main()

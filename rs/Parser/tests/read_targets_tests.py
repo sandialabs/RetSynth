@@ -7,7 +7,8 @@ import os
 import unittest
 from Parser import read_targets as rt
 from Database import query as Q
-from Database import generate_database as gen_db
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,10 +18,16 @@ if os.path.isfile(PATH+'/test.db') is True:
 if os.path.isfile(PATH+'/testinchi.db') is True:
     os.remove(PATH+'/testinchi.db')
 
-gen_db.Createdb(PATH+'/test.db', PATH+'/data', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 
-gen_db.Createdb(PATH+'/testinchi.db', PATH+'/data', True, 'bio')
+init_db.Createdb(PATH+'/testinchi.db', True)
+bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', True,
+                PATH+'/testinchi.db', 'bio')
 DBinchi = Q.Connector(PATH+'/testinchi.db')
 
 

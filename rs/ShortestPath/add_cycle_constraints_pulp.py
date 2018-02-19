@@ -38,7 +38,7 @@ class AddCycleConstraints(object):
         for i in range(org_len, new_len):
             self.storecycleindexes.append(i)
 
-        for c in range(row_num, row_num+len(cyclestoic)):
+        for c in range(len(self.variables), len(self.variables)+len(cyclestoic)):
             variable = pulp.LpVariable('cycle '+str(c), cat=pulp.LpInteger, lowBound=0, upBound=1)
             self.cycle_variables.append(variable)
             self.totalrxnindexes.append(c)

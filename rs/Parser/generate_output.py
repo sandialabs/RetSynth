@@ -50,7 +50,10 @@ class Output(object):
         self.all_organisms.close()
 
     def output_extra(self, compound, ordered_paths, reactions, incpds):
-        with open(self.output_path+'/extraoutput/compound_'+compound+'_outputfile.txt', 'w') as fin:
+        cpdname = self.DB.get_compound_name(compound)
+        if cpdname == 'None' or cpdname == 'none' or cpdname == '':
+            cpdname = re.sub('/', '_', compound)
+        with open(self.output_path+'/extraoutput/compound_'+cpdname+'_outputfile.txt', 'w') as fin:
             for count_pathway, os_dict in reactions.iteritems():
                 for counter in reversed(ordered_paths[count_pathway].keys()):
                     rxn = ordered_paths[count_pathway][counter]
@@ -267,7 +270,7 @@ class Output(object):
         When reaction knockouts are performed, outputs all reactions that when removed
         cause decrease in target production
         '''
-        with open(self.output_path+'/essentialrxns_output.txt') as self.essentialrxns:
+        with open(self.output_path+'/essentialrxns_output.txt', 'a') as self.essentialrxns:
             self.essentialrxns.write('Essential rxns for production of {} in {}\n'.format(target_compound_ID,
                                                                                           target_organism_ID))
             for rxn in er:

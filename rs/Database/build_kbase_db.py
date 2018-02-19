@@ -1,15 +1,21 @@
 from __future__ import print_function
 __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
-__description__ = 'builds tables for sqlite database'
+__description__ = 'builds tables for sqlite database for kbase file'
 import os
 import sqlite3
 import glob
 import re
+import urllib2
+import httplib
+import pubchempy
+from copy import deepcopy
 from bs4 import BeautifulSoup, SoupStrainer
 from Pubchem import pubchem_inchi_translator as pit
 from tqdm import tqdm
-def parse_data_sbmlfile(inchi, file_name, inchi_pubchem):
+KEGG = 'http://rest.kegg.jp/'
+
+def parse_data_sbmlfile(inchi, CPD2KEGG, RXN2KEGG, file_name, inchi_pubchem):
     '''
     Open metabolic network file (xml file) and parse information
     '''
@@ -20,18 +26,19 @@ def parse_data_sbmlfile(inchi, file_name, inchi_pubchem):
         m = soup.find('model')
         mi = m['id']
 
-    modelreactions, rxn_info, all_rxn_cpds, genelist, proteinlist = process_reactions(
-        soup.listofreactions, mi, inchi, inchi_pubchem)
-    modelcompounds, modelcompounds_allinfo = process_compounds(soup.listofspecies,
+    modelreactions, rxn_info, all_rxn_cpds, genelist, proteinlist, keggdict = process_reactions(
+       soup.listofreactions,  RXN2KEGG, CPD2KEGG, mi, inchi, inchi_pubchem)
+    modelcompounds, modelcompounds_allinfo = process_compounds(soup.listofspecies, CPD2KEGG,
                                                                mi, inchi, inchi_pubchem)
     modelcompartments = process_compartments(soup.listofcompartments)
     return(modelcompartments, modelcompounds, modelcompounds_allinfo, modelreactions,
-           rxn_info, all_rxn_cpds, genelist, proteinlist, mi)
+           rxn_info, all_rxn_cpds, genelist, proteinlist, keggdict, mi)
 
-def process_reactions(reaction_soup, mi, inchi, inchi_pubchem):
+def process_reactions(reaction_soup, RXN2KEGG, CPD2KEGG, mi, inchi, inchi_pubchem):
     '''
     Parse reaction information from metabolic network file (xml file)
     '''
+    keggdict = {}
     proteinlist = []
     genelist = []
     modelreactions = []
@@ -41,25 +48,28 @@ def process_reactions(reaction_soup, mi, inchi, inchi_pubchem):
     for rxn in model_rxns:
         if rxn['id'] == 'biomass0':
             rxn['id'] = rxn['id']+'_'+mi
-        rxn_info[rxn['id']] = {}
-        rxn_info[rxn['id']]['name'] = rxn['name']
+        new_rxn_ID, KEGG_ID = get_KEGG_IDs(rxn['id'], RXN2KEGG)
+        rxn_info[new_rxn_ID] = {}
+        rxn_info[new_rxn_ID]['name'] = rxn['name']
         rxn_reversibility = rxn.get('reversible', 'true')
-        rxn_info[rxn['id']]['reversible'] = rxn_reversibility
-        all_rxn_cpds[rxn['id']] = []
+        rxn_info[new_rxn_ID]['reversible'] = rxn_reversibility
+        rxn_info[new_rxn_ID]['kegg'] = str(KEGG_ID)
+        all_rxn_cpds[new_rxn_ID] = []
 
         for cpd in rxn.findAll("speciesreference"):
             if cpd['species'].endswith('_b'):
                 pass
             else:
+                new_cpdID, original_KEGG_cpdID = get_KEGG_IDs(cpd['species'], CPD2KEGG)
                 if inchi:
-                    cpdID = inchi_pubchem.get(cpd['species'], cpd['species'])
+                    cpdID = inchi_pubchem.get(new_cpdID, new_cpdID)
                 else:
-                    cpdID = cpd['species']
+                    cpdID = new_cpdID
                 is_prod = (cpd.parent.name == "listofproducts")
                 stoic = cpd.get('stoichiometry', 1)
 
-                if (rxn['id'], cpdID, is_prod, stoic) not in all_rxn_cpds[rxn['id']]:
-                    all_rxn_cpds[rxn['id']].append((rxn['id'], cpdID, is_prod, stoic))
+                if (new_rxn_ID, cpdID, is_prod, stoic) not in all_rxn_cpds[new_rxn_ID]:
+                    all_rxn_cpds[new_rxn_ID].append((new_rxn_ID, cpdID, is_prod, stoic))
         '''Retrieve gene associations'''
         try:
             associations = [a.get_text().strip() for a in rxn.notes.findChildren()]
@@ -68,10 +78,11 @@ def process_reactions(reaction_soup, mi, inchi, inchi_pubchem):
                 typeassociation, value = a.split(':')
                 if typeassociation == 'GENE_ASSOCIATION':
                     if value != '' and value != 'Unknown':
-                        genelist.append((rxn['id'], mi, value))
+                        genelist.append((new_rxn_ID, mi, value))
                 if typeassociation == 'PROTEIN_CLASS':
                     if value != '' and value != 'Unknown':
-                        proteinlist.append((rxn['id'], mi, value))
+                        proteinlist.append((new_rxn_ID, mi, value))
+
         except AttributeError:
             try:
                 associations = rxn.p.string
@@ -80,15 +91,15 @@ def process_reactions(reaction_soup, mi, inchi, inchi_pubchem):
                 typeassociation, value = associations.split(':')
                 if typeassociation == 'GENE_ASSOCIATION':
                     if value != '' and value != 'Unknown':
-                        genelist.append((rxn['id'], mi, value))
+                        genelist.append((new_rxn_ID, mi, value))
             except AttributeError:
                 pass
         ''' Get reaction id and reversibility'''
-        modelreactions.append((rxn['id'], mi, rxn.get('reversible', 'true')))
+        modelreactions.append((new_rxn_ID, mi, rxn.get('reversible', 'true')))
 
-    return(modelreactions, rxn_info, all_rxn_cpds, genelist, proteinlist)
+    return(modelreactions, rxn_info, all_rxn_cpds, genelist, proteinlist, keggdict)
 
-def process_compounds(speciessoup, mi, inchi, inchi_pubchem):
+def process_compounds(speciessoup, CPD2KEGG, mi, inchi, inchi_pubchem):
     '''
     Parse compound information from metabolic network file (xml file)
     '''
@@ -96,23 +107,24 @@ def process_compounds(speciessoup, mi, inchi, inchi_pubchem):
     modelcompounds_allinfo = []
     model_cpds = speciessoup.findAll("species")
     for m in model_cpds:
+        new_cpdID, original_KEGG_cpdID = get_KEGG_IDs(m['id'], CPD2KEGG)
+
         try:
             if m['boundarycondition'] == 'false':
                 if inchi:
-                    modelcompounds.append((inchi_pubchem.get(m['id'], m['id']), mi))
-                    modelcompounds_allinfo.append((inchi_pubchem.get(m['id'], m['id']),
-                                                   m['name'], m['compartment']))
+                    modelcompounds.append((inchi_pubchem.get(new_cpdID, new_cpdID), mi))
+                    modelcompounds_allinfo.append((inchi_pubchem.get(new_cpdID, new_cpdID), m['name'], m['compartment'], str(original_KEGG_cpdID)))
                 else:
-                    modelcompounds.append((m['id'], mi))
-                    modelcompounds_allinfo.append((m['id'], m['name'], m['compartment']))
+                    modelcompounds.append((new_cpdID, mi))
+                    modelcompounds_allinfo.append((new_cpdID, m['name'], m['compartment'], str(original_KEGG_cpdID)))
         except KeyError:
             if inchi:
-                modelcompounds.append((inchi_pubchem.get(m['id'], m['id']), mi))
-                modelcompounds_allinfo.append((inchi_pubchem.get(m['id'], m['id']),
-                                               m['name'], m['compartment']))
+                modelcompounds.append((inchi_pubchem.get(new_cpdID, new_cpdID), mi))
+                modelcompounds_allinfo.append((inchi_pubchem.get(new_cpdID, new_cpdID),
+                                               m['name'], m['compartment'], str(original_KEGG_cpdID)))
             else:
-                modelcompounds.append((m['id'], mi))
-                modelcompounds_allinfo.append(m['id'], m['name'], m['compartment'])
+                modelcompounds.append((new_cpdID, mi))
+                modelcompounds_allinfo.append((new_cpdID, m['name'], m['compartment'], str(original_KEGG_cpdID)))
     return(modelcompounds, modelcompounds_allinfo)
 
 def process_compartments(compartmentsoup):
@@ -124,12 +136,49 @@ def process_compartments(compartmentsoup):
             compartments_all.append((compartment['id'], compartment['name']))
     return compartments_all
 
-def BuildTables(sbml_dir, inchi, DBpath, rxntype='bio'):
+def get_KEGG_IDs(ID, KEGGdict):
+    '''Retrieve KEGG IDs'''
+    compartment = get_compartment_info(ID)
+    ID_copy = deepcopy(ID)
+    ID_kbase = re.sub(compartment+'$', '', ID_copy)
+    try:
+        KEGG_ID = KEGGdict[ID_kbase]
+        original_KEGG_ID = str(deepcopy(KEGG_ID))
+        if not KEGG_ID:
+            KEGG_ID = ID
+        else:
+            KEGG_ID = KEGG_ID+compartment
+    except KeyError:
+        KEGG_ID = ID
+        original_KEGG_ID = 'None'
+    return(KEGG_ID, original_KEGG_ID)
+
+def open_translation_file(file_name):
+    '''opens and stores KEGG translation files '''
+    dictionary = {}
+    with open(file_name) as fin:
+        for line in fin:
+            line = line.strip()
+            larray = line.split('\t')
+            try:
+                KEGGIDS = larray[1].split('|')
+                dictionary[larray[0]] = KEGGIDS[0]
+            except IndexError:
+                dictionary[larray[0]] = None
+    return dictionary 
+
+def BuildKbase(sbml_dir, kbase2keggCPD_translate_file, kbase2keggRXN_translate_file, inchi, DBpath, rxntype='bio'):
     '''
     Inserts values from metabolic networks, xml into sqlite database
     '''
+
+
+    '''Load KEGG cpd and rxn conversions'''
+    CPD2KEGG = open_translation_file(kbase2keggCPD_translate_file)
+    RXN2KEGG = open_translation_file(kbase2keggRXN_translate_file)
+
     inchi_pubchem = {}
-    no_inchi = set()
+    total_set = set()
     cnx = sqlite3.connect(DBpath)
     cnx.execute("PRAGMA synchronous = OFF")
     cnx.execute("PRAGMA journal_mode = OFF")
@@ -142,9 +191,9 @@ def BuildTables(sbml_dir, inchi, DBpath, rxntype='bio'):
         print ('Retrieving inchi values for compounds ...')
         CT = pit.CompoundTranslator()
         for filename in sbml_files:
-            inchi_pubchem, no_inchi = get_inchi_values(filename, inchi_pubchem, no_inchi, CT)
+            inchi_pubchem, total_set = get_inchi_values(filename, inchi_pubchem, total_set, CPD2KEGG, CT)
 
-    args = [(i, DBpath, inchi, inchi_pubchem, c, sbml_files_individual[c], rxntype)
+    args = [(i, CPD2KEGG, RXN2KEGG, DBpath, inchi, inchi_pubchem, c, sbml_files_individual[c], rxntype)
             for c, i in enumerate(sbml_files)]
 
     print ('STATUS: Loading file information into database ...')
@@ -203,7 +252,63 @@ def BuildTables(sbml_dir, inchi, DBpath, rxntype='bio'):
     cnx.commit()
     print ('STATUS: Finished removing duplicate entries')
 
-def get_inchi_values(file_name, inchi_pubchem, no_inchi, CT):
+def extract_KEGG_data(url):
+    '''Extract Kegg db info'''
+    try:
+        data = urllib2.urlopen(url).read()
+        darray = data.split('\n')
+        return(darray)
+    except urllib2.HTTPError:
+        return(None)
+
+def kegg2pubcheminchi(cpd):
+    '''Using KEGG ID  to get inchi '''
+    darray = extract_KEGG_data(KEGG+'get/'+cpd)
+    if darray:
+        for value in darray:
+            array = value.split()
+            if 'PubChem:' in array:
+                index = array.index('PubChem:')
+                sid = array[index+1]
+                substance = pubchempy.Substance.from_sid(sid)
+                try:
+                    substance_cids = substance.cids
+                    if substance_cids:
+                        try:
+                            compounds = pubchempy.get_compounds(substance_cids[0])
+                            if compounds:
+                                return compounds[0].inchi
+                            else:
+                                return None
+                        except (pubchempy.PubChemHTTPError, httplib.BadStatusLine, urllib2.URLError):
+                            return None
+                except (pubchempy.PubChemHTTPError, httplib.BadStatusLine, urllib2.URLError):
+                    return None                
+            else:
+                return None
+    else:
+        return None
+
+def retrieve_exact_inchi_values(m, total_set, inchi_pubchem, CPD2KEGG, CT):
+    '''Retrieve InChI values'''
+    if m['id'] not in total_set:
+        new_KEGG_ID, original_KEGG_ID = get_KEGG_IDs(m['id'], CPD2KEGG)
+        compart_info = get_compartment_info(m['id'])
+        if original_KEGG_ID != 'None':
+            inchi = kegg2pubcheminchi(original_KEGG_ID)
+            if not inchi:
+                inchi, iupac_name = CT.translate(m['name'])
+        else:
+            inchi, iupac_name = CT.translate(m['name'])
+
+        if inchi is not None:
+            inchi_pubchem[new_KEGG_ID] = inchi+compart_info
+            total_set.add(m['id'])
+        else:
+            total_set.add(m['id'])
+    return (inchi_pubchem, total_set)
+
+def get_inchi_values(file_name, inchi_pubchem, total_set, CPD2KEGG, CT):
     '''
     Retrieve InChI values for compounds in metabolic networks
     '''
@@ -214,36 +319,22 @@ def get_inchi_values(file_name, inchi_pubchem, no_inchi, CT):
         speciessoup = soup.listofspecies
         model_cpds = speciessoup.findAll("species")
         for m in tqdm(model_cpds):
-            total_set = set(inchi_pubchem.keys())
-            total_set.update(set(no_inchi))
             try:
                 if m['boundarycondition'] == 'false':
-                    if m['id'] not in total_set:
-                        compart_info = get_compartment_info(m['id'])
-                        inchi, iupac_name = CT.translate(m['name'])
-                        if inchi is not None:
-                            inchi_pubchem[m['id']] = inchi+compart_info
-                        else:
-                            no_inchi.add(m['id'])
+                    inchi_pubchem, total_set = retrieve_exact_inchi_values(m, total_set, inchi_pubchem, CPD2KEGG, CT)
 
             except KeyError:
-                if m['id'] not in total_set:
-                    compart_info = get_compartment_info(m['id'])
-                    inchi, iupac_name = CT.translate(m['name'])
-                    if inchi is not None:
-                        inchi_pubchem[m['id']] = inchi+compart_info
-                    else:
-                        no_inchi.add(m['id'])
+                inchi_pubchem, total_set = retrieve_exact_inchi_values(m, total_set, inchi_pubchem, CPD2KEGG, CT)
+    
+    return(inchi_pubchem, total_set)
 
-    return(inchi_pubchem, no_inchi)
-
-def get_compartment_info(compoundID):
+def get_compartment_info(ID):
     '''
     Retrieve compartment information for compound
     '''
 
     compart_info = ''
-    match = re.search('_\w{1}\d*$', compoundID)
+    match = re.search('_\w{1}\d*$', ID)
     if match is not None:
         compart_info = match.group(0)
     else:
@@ -256,19 +347,21 @@ def load_file_info_2_db(args):
     (xml files) into database
     '''
     filename = args[0]
-    DBpath = args[1]
-    inchi = args[2]
-    inchi_pubchem = args[3]
-    filenum = args[4]
-    rawfilename = args[5]
-    rxntype = args[6]
+    CPD2KEGG = args[1]
+    RXN2KEGG = args[2]
+    DBpath = args[3]
+    inchi = args[4]
+    inchi_pubchem = args[5]
+    filenum = args[6]
+    rawfilename = args[7]
+    rxntype = args[8]
     (modelcompartments, modelcompounds, modelcompounds_allinfo, modelreactions, rxn_info,
-     all_rxn_cpds, genelist, proteinlist, mi) = parse_data_sbmlfile(inchi,
-                                                                    filename, inchi_pubchem)
+     all_rxn_cpds, genelist, proteinlist, keggdict, mi) = parse_data_sbmlfile(inchi, CPD2KEGG, RXN2KEGG,
+                                                                              filename, inchi_pubchem)
     insert_individual_model_results_2_db(DBpath, modelcompounds, modelreactions,
                                          genelist, proteinlist, mi, rawfilename)
     insert_comprehensive_model_results_2_db(DBpath, modelcompartments, modelcompounds_allinfo, rxn_info,
-                                            all_rxn_cpds, inchi, inchi_pubchem, filenum, rxntype)
+                                            all_rxn_cpds, keggdict, inchi, inchi_pubchem, filenum, rxntype)
 
 def insert_individual_model_results_2_db(DBpath, modelcompounds, modelreactions,
                                          genelist, proteinlist, mi, filename):
@@ -286,26 +379,50 @@ def insert_individual_model_results_2_db(DBpath, modelcompounds, modelreactions,
     cnx.commit()
 
 def insert_comprehensive_model_results_2_db(DBpath, modelcompartments, modelcompounds_allinfo, rxn_info,
-                                            all_rxn_cpds, inchi, inchi_pubchem, filenum, rxntype):
+                                            all_rxn_cpds, keggdict, inchi, inchi_pubchem, filenum, rxntype):
     '''
     Inserts comprehensive compound and reaction information into tables
     '''
     cnx = sqlite3.connect(DBpath)
     cnx.executemany("INSERT INTO compartments VALUES (?,?)", modelcompartments)
-    cnx.executemany("INSERT INTO compound VALUES (?,?,?)", modelcompounds_allinfo)
-    for rxn in rxn_info:
-        '''Name info'''
-        cnx.execute("INSERT INTO reaction VALUES (?,?,?)", (rxn, rxn_info[rxn]['name'], rxntype))
-        cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)",
-                    (rxn, rxn_info[rxn]['reversible']))
-    for key, rxn_cpds in all_rxn_cpds.iteritems():
-        for rxn_cpd in rxn_cpds:
-            cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
-                        (rxn_cpd[0], rxn_cpd[1], rxn_cpd[2], rxn_cpd[3], filenum))
+
+    def add_rxns_2_db(cnx, rxn_info, all_rxn_cpds):
+        '''add reaciton to database'''
+        for rxn in rxn_info:
+            Q = cnx.execute("SELECT ID FROM reaction WHERE ID = ?", (rxn,))
+            result = Q.fetchone()
+            if result is None:
+                cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)",
+                            (rxn, rxn_info[rxn]['reversible']))
+                cnx.execute("INSERT INTO reaction VALUES (?,?,?, ?)", (rxn, rxn_info[rxn]['name'], rxn_info[rxn]['kegg'], rxntype))
+                cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)", (rxn, rxn_info[rxn]['reversible']))
+                for rxn_compound in all_rxn_cpds[rxn]:
+                    cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
+                                     (rxn_compound[0], rxn_compound[1],
+                                      rxn_compound[2], rxn_compound[3], filenum))
+            else:
+                Q = cnx.execute("""SELECT is_reversible FROM reaction_reversibility \
+                                     WHERE reaction_ID = ?""", (rxn,))
+                result = Q.fetchone()
+                if result[0] != rxn_info[rxn]['reversible'] and result[0] == 'false':
+                    cnx.execute("""UPDATE reaction_reversibility SET is_reversible = 'true' WHERE reaction_ID = ?""",(rxn,))
+        cnx.commit()
+
+    def add_cpds_2_db(cnx, modelcompounds_allinfo):
+        '''add compounds to database'''
+        for cpd in modelcompounds_allinfo:
+            Q = cnx.execute("SELECT ID FROM compound WHERE ID = ?", (cpd[0],))
+            result = Q.fetchone()
+            if result is None:
+                cnx.execute("""INSERT INTO compound VALUES (?,?,?,?)""",
+                                 (cpd[0], cpd[1], cpd[2], cpd[3]))
+        cnx.commit()
+    add_rxns_2_db(cnx, rxn_info, all_rxn_cpds)
+    add_cpds_2_db(cnx, modelcompounds_allinfo)
 
     if inchi is True:
-        inchi_id = inchi_pubchem.items()
-        cnx.executemany("INSERT INTO original_db_cpdIDs VALUES (?,?)", inchi_id)
+        for ID, inchi_id in inchi_pubchem.iteritems():
+            cnx.execute("""INSERT INTO original_db_cpdIDs VALUES (?,?)""", (ID, inchi_id))
     cnx.commit()
 
 def retrieve_metabolic_clusters(DBpath):

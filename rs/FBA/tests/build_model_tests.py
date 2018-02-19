@@ -8,14 +8,18 @@ import unittest
 import cobra
 from FBA import build_model as bm
 from Database import query as Q
-from Database import generate_database as gen_db
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
 '''Load database'''
-gen_db.Createdb(PATH+'/test.db', PATH+'/data', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 inmets = DB.get_compounds_in_model('t2')
 inrxns = DB.get_reactions_in_model('t2')

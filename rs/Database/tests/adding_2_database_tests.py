@@ -6,17 +6,17 @@ __description__ = 'Runs tests on codes add reactions and compounds to existing d
 import os
 import unittest
 import sqlite3
-from Database import build_tablesMP as bt
+from Database import build_kbase_db as bkdb
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 sqlite_database = sqlite3.connect(PATH+'/test.db')
 sqlite_database.execute('''CREATE table model (ID text,file_name text)''')
-sqlite_database.execute('''CREATE table compound (ID text, name text,compartment text)''')
+sqlite_database.execute('''CREATE table compound (ID text, name text,compartment text, kegg_id)''')
 sqlite_database.execute('''CREATE table compartments (ID text, name text)''')
 sqlite_database.execute('''CREATE table model_compound (cpd_ID text,model_ID)''')
-sqlite_database.execute('''CREATE table reaction (ID text,name text, type text)''')
+sqlite_database.execute('''CREATE table reaction (ID text, name text, kegg_id, type text)''')
 sqlite_database.execute('''CREATE table model_reaction (reaction_ID text,
                         model_ID text, is_rev bit(1))''')
 sqlite_database.execute('''CREATE table reaction_compound (reaction_ID text,
@@ -62,9 +62,9 @@ class Adding_to_current_DBTests(unittest.TestCase):
 
     def test_adding_to_db(self):
         """Tests if compounds and reactions are being added to a preexisting database correctly"""
-        bt.BuildTables(PATH+'/data', False, PATH+'/test.db', 'bio')
+        bkdb.BuildKbase(PATH+'/data', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', False, PATH+'/test.db', 'bio')
 
-        bt.BuildTables(PATH+'/data2', False, PATH+'/test.db')
+        bkdb.BuildKbase(PATH+'/data2', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', False, PATH+'/test.db')
         print ("...Testing reaction reversibility information getting added to a pre-existing database")
         Q = sqlite_database.execute("""SELECT is_reversible FROM reaction_reversibility
                                     WHERE reaction_ID='rxn21_c0'""")

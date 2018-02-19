@@ -8,8 +8,9 @@ import glob
 import os
 import unittest
 import cobra
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
 from Database import query as Q
-from Database import generate_database as gen_db
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 sbml_files = glob.glob(os.path.join(PATH+'/data', '*'))
@@ -40,8 +41,8 @@ for k, v in all_rev.iteritems():
         print (' ERROR IN TEST CODE')
         sys.exit()
 print ('STATUS OF TESTS: FINISHED LOADING TEST MODELS FROM SBML FILES')
-gen_db.Createdb(PATH+'/test.db', PATH+'/data', True, 'bio')
-
+init_db.Createdb(PATH+'/test.db', True)
+bkdb.BuildKbase(PATH+'/data', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', True, PATH+'/test.db', 'bio')
 class Generate_databaseTests(unittest.TestCase):
     def setUp(self):
         """Initialize before every test."""
@@ -88,7 +89,7 @@ class Generate_databaseTests(unittest.TestCase):
 
         hits = self.DB.get_reactants('rxn3_c0')
         self.assertEqual(len(hits), 1)
-        self.assertIn('InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0', hits)
+        self.assertIn('cpdB_c0', hits)
 
     def test_get_products(self):
         print ("Testing the get_products() function")
@@ -98,7 +99,7 @@ class Generate_databaseTests(unittest.TestCase):
 
         hits = self.DB.get_products('rxn3_c0')
         self.assertEqual(len(hits), 1)
-        self.assertIn('cpdB_c0', hits)
+        self.assertIn('InChI=1S/2ClH.2H2N.Pt/h2*1H;2*1H2;/q;;2*-1;+4/p-2_c0', hits)
 
     def test_get_compounds_in_model(self):
         print ("Testing the get_compounds_in_model() function")

@@ -77,6 +77,7 @@ class ConstructInitialLP(object):
             self.lp.obj.maximize = False
             self.initial_reaction_constraints()
             if self.gdbc is True:
+                self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
                 self.initial_A_matrix()
             else:
                 self.existing_A_matrix_glpk()
@@ -85,6 +86,7 @@ class ConstructInitialLP(object):
             self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
             self.initial_reaction_constraints()
             if self.gdbc is True:
+                self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
                 self.initial_A_matrix(pulp)
             else:
                 self.existing_A_matrix_pulp(pulp)
@@ -210,23 +212,21 @@ class ConstructInitialLP(object):
     def load_glpk_row_constraints(self):
         '''Loads constraints in to glpk integer linear problem'''
         print ('STATUS: Loading database A matrix (pyglpk)...')
+        self.lp.rows.add(len(self.A))
         for count, stoich in enumerate(tqdm(self.A)):
-            temp = [0] * len(self.allrxnsrev)
-            self.lp.rows.add(1)
-            r = self.lp.rows[-1]
+            temp = []
             for i, v in stoich.iteritems():
-                temp[i] = v
-            r.matrix = temp
-            r.name = 'c' + str(count) + ' constraint'
+                temp.append((i,v))
+            self.lp.rows[count].matrix = temp
+            self.lp.rows[count].name = 'c' + str(count) + ' constraint'
 
     def existing_A_matrix_glpk(self):
         '''Loads existing matrix into glpk integer linear problem'''
         print ('STATUS: Generating compound constraints from preloaded file ...')
+        self.lp.rows.add(len(self.gdbc))
         for count, stoich in enumerate(tqdm(self.gdbc)):
-            self.lp.rows.add(1)
-            r = self.lp.rows[-1]
-            temp = [0] * len(self.allrxnsrev)
+            temp = []
             for i, v in stoich.iteritems():
-                temp[i] = v
-            r.matrix = temp
-            r.name = 'c' + str(count) + ' constraint'
+                temp.append((i,v))
+            self.lp.rows[count].matrix = temp
+            self.lp.rows[count].name = 'c' + str(count) + ' constraint'

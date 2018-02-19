@@ -49,7 +49,7 @@
         </listOfParameters>
         </kineticLaw>
     </reaction>
-<reaction id="rxn2_c0" name="rxn2_c0" reversible="false">
+<reaction id="rxn2_c0" name="rxn2_c0" reversible="true">
     <notes>
         <html:p>GENE_ASSOCIATION:(g2)</html:p>
         <html:p>PROTEIN_ASSOCIATION:(p2)</html:p>

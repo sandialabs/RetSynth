@@ -3,6 +3,7 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Test for figure generation'
 
+import glob
 import re
 import os
 import unittest
@@ -10,14 +11,19 @@ import shutil
 from ShortestPath import extractinfo as ei
 from Database import query as Q
 from Visualization import SP_Graph_dot as spgd
-from Database import generate_database as gen_db
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
+
 PATH = os.path.dirname(os.path.abspath(__file__))
 PPATH = re.sub('/Visualization/tests', '', PATH)
-
+CPATH = re.sub('/tests', '', PATH)
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
-gen_db.Createdb(PATH+'/test.db', PATH+'/data', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()
 allcpds = DB.get_all_compounds()
@@ -56,6 +62,7 @@ class RunVisualizationTests(unittest.TestCase):
             os.remove(PATH+'/reaction_figures/SC_graph_cpdT_c0_test1.xml.jpeg')
         shutil.rmtree(PATH+'/reaction_figures')
 
-
+        for filename in glob.glob(CPATH+"/compound*"):
+            os.remove(filename)
 if __name__ == '__main__':
     unittest.main()

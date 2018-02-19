@@ -518,7 +518,7 @@ def add_info_2_database(DBpath, rxntype, compartment):
     conn.text_factory = str
     cnx = conn.cursor()
     cnx.execute("PRAGMA synchronous = OFF")
-    cnx.execute("PRAGMA journal_mode = WAL")
+    cnx.execute("PRAGMA journal_mode = OFF")
     try:
         cnx.execute('''CREATE table reaction_catalysts
                     (reaction_ID text,catalysts_ID text,name text)''')
@@ -591,7 +591,7 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
             line = line.strip('\n\r')
             larray = line.split('\t')
             cnx.execute("INSERT INTO model_reaction VALUES (?,?,?)", (larray[0], 'SR1', 'false'))
-            cnx.execute("INSERT INTO reaction VALUES (?,?, ?)", (larray[0], 'None', rxntype))
+            cnx.execute("INSERT INTO reaction VALUES (?,?, ?, ?)", (larray[0], 'None', 'None', rxntype))
             cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)", (larray[0], 'false'))
             cnx.execute("INSERT INTO reaction_gene VALUES (?,?,?)", (larray[0], 'SR1', 'None'))
             cnx.execute("INSERT INTO reaction_protein VALUES (?,?,?)", (larray[0], 'SR1', 'None'))
@@ -606,10 +606,10 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
                     cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
                                 (larray[0], compound[0], 0, 1, 0))
                     if len(compound) == 2:
-                        allcompounds.append((compound[0], compound[1], compartment))
+                        allcompounds.append((compound[0], compound[1], compartment,  'None'))
                     elif len(compound) < 2:
                         print ('WARNING: Issue with name and ID {} {} reactant'.format(compound, larray[0]))
-                        allcompounds.append((compound[0], 'None', compartment))
+                        allcompounds.append((compound[0], 'None', compartment,  'None'))
                 conn.commit()
             if larray[2] != '':
                 for product in products:
@@ -618,10 +618,10 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
                     cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
                                 (larray[0], compound[0], 1, 1, 0))
                     if len(compound) == 2:
-                        allcompounds.append((compound[0], compound[1], compartment))
+                        allcompounds.append((compound[0], compound[1], compartment,  'None'))
                     elif len(compound) < 2:
                         print ('WARNING: Issue with name and ID {} {} product'.format(compound, larray[0]))
-                        allcompounds.append((compound[0], 'None', compartment))
+                        allcompounds.append((compound[0], 'None', compartment, 'None'))
                 conn.commit()
 
             if larray[3] != '':
@@ -654,5 +654,5 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
     allcompounds = list(set(allcompounds))
     modelcompounds = list(set(modelcompounds))
     cnx.executemany("INSERT INTO model_compound VALUES (?,?)", modelcompounds)
-    cnx.executemany("INSERT INTO compound VALUES (?,?,?)", allcompounds)
+    cnx.executemany("INSERT INTO compound VALUES (?,?,?,?)", allcompounds)
     conn.commit()

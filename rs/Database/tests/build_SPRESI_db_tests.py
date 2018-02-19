@@ -7,8 +7,9 @@ import os
 import unittest
 from shutil import copyfile
 from Database import query as Q
-from Database import generate_database as gen_db
-from RDFConverter import RDFileReaderMP
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
+from Database import build_SPRESI_db as bspresidb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,24 +19,29 @@ if os.path.isfile(PATH+'/testRDF.db') is True:
 if os.path.isfile(PATH+'/testinchiRDF.db') is True:
     os.remove(PATH+'/testinchiRDF.db')
 
-gen_db.Createdb(PATH+'/test.db', PATH+'/data', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data5', '../KbasetoKEGGCPD.txt',
+                '../KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 copyfile(PATH+'/test.db', PATH+'/testRDF.db')
 os.remove(PATH+'/test.db')
 DB = Q.Connector(PATH+'/testRDF.db')
 compartmentID = DB.get_compartment('cytosol')
 compartmentID = compartmentID[0]
-RDFileReaderMP.RDF_Reader(PATH+'/data2/', PATH+'/testRDF.db', 'chem',compartmentID, 1, temp_option=False, pressure_option=False,
+bspresidb.RDF_Reader(PATH+'/data6/', PATH+'/testRDF.db', 'chem',compartmentID, 1, temp_option=False, pressure_option=False,
                           yield_option=False, time_option=False, catalyst_option=False, solvent_option=False)
 
 
-
-gen_db.Createdb(PATH+'/testinchi.db', PATH+'/data', False, 'bio')
+init_db.Createdb(PATH+'/testinchi.db', False)
+bkdb.BuildKbase(PATH+'/data5', '../KbasetoKEGGCPD.txt',
+                '../KbasetoKEGGRXN.txt', False,
+                PATH+'/testinchi.db', 'bio')
 copyfile(PATH+'/testinchi.db', PATH+'/testinchiRDF.db')
 os.remove(PATH+'/testinchi.db')
 DBinchi = Q.Connector(PATH+'/testinchiRDF.db')
 compartmentID = DBinchi.get_compartment('cytosol')
 compartmentID = compartmentID[0]
-RDFileReaderMP.RDF_Reader(PATH+'/data2/', PATH+'/testinchiRDF.db', 'chem', compartmentID, 1, temp_option=False, pressure_option=False,
+bspresidb.RDF_Reader(PATH+'/data6/', PATH+'/testinchiRDF.db', 'chem', compartmentID, 1, temp_option=False, pressure_option=False,
                           yield_option=False, time_option=False, catalyst_option=False, solvent_option=False)
 
 

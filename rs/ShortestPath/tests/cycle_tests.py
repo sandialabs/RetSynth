@@ -10,7 +10,8 @@ import os
 from copy import deepcopy
 from ShortestPath import constraints as co
 from Database import query as Q
-from Database import generate_database as gen_db
+from Database import initialize_database as init_db
+from Database import build_kbase_db as bkdb
 from ShortestPath import integerprogram_glpk as ip_glpk
 from ShortestPath import integerprogram_pulp as ip_pulp
 from ShortestPath import cycle as cy
@@ -22,7 +23,10 @@ if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
 '''GENERATE TEST DATABASE'''
-gen_db.Createdb(PATH+'/test.db', PATH+'/data2', False, 'bio')
+init_db.Createdb(PATH+'/test.db', False)
+bkdb.BuildKbase(PATH+'/data2', '../../Database/KbasetoKEGGCPD.txt',
+                '../../Database/KbasetoKEGGRXN.txt', False,
+                PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()
 allmets = DB.get_all_compounds()
@@ -82,7 +86,7 @@ class CycleTests(unittest.TestCase):
             import pulp
             print ("...Testing identification of cycles with pulp package")
             C = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'PULP')
-            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0, 'False')
+            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0, 'False', 'None')
             inmets = DB.get_compounds_in_model('t1')
             inrxns = DB.get_reactions_in_model('t1')
             osp = IP.run_glpk(C, inmets, inrxns, 'cpdT_c0', 'True')
@@ -102,7 +106,7 @@ class CycleTests(unittest.TestCase):
             import pulp
             print ("...Testing identification of cycles with pulp package")
             C = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'PULP')
-            IP = ip_pulp.IntergerProgram(DB, 10, 20, 1, 'False')
+            IP = ip_pulp.IntergerProgram(DB, 10, 20, 1, 'False', 'None')
             inmets = DB.get_compounds_in_model('t1')
             inrxns = DB.get_reactions_in_model('t1')
             osp = IP.run_glpk(C, inmets, inrxns, 'cpdT_c0', 'True')
@@ -149,7 +153,7 @@ class CycleTests(unittest.TestCase):
             LP = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'PULP')
             original_row = deepcopy(len(LP.lp.constraints))
             original_col = deepcopy(len(LP.variables))
-            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0, 'False')
+            IP = ip_pulp.IntergerProgram(DB, 10, 20, 0, 'False', 'None')
             osp = IP.run_glpk(LP, inmets, inrxns, 'cpdT_c0', 'True')
             count_arcs = 0
             for solution in osp:
