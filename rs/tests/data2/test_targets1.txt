@@ -1,2 +1,0 @@
-#compoundid	organismID
-cpdT_c0	t1

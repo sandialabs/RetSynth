@@ -1,2 +1,0 @@
-#pubchem	organismID
-71089297	t1
