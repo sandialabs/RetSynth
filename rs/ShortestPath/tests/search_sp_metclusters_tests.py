@@ -18,8 +18,8 @@ PPATH = re.sub('/ShortestPath/tests', '', PATH)
 
 '''CONNECT TEST DATABASE'''
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data3', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data3', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()

@@ -10,12 +10,13 @@ from Database import query as Q
 from Database import initialize_database as init_db
 from Database import build_kbase_db as bkdb
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/Pubchem/tests', '', PATH)
 
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 

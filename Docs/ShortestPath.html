@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ShortestPath module &#8212; BioRetroSynthesis 1 documentation</title>
+    <title>ShortestPath module &#8212; RetSynth .1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1',
+        VERSION:     '.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -202,16 +202,28 @@ to produce a target compound</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Sets final constraints and solved integer linear program</p>
 <dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.check_for_next_length_k_paths">
-<code class="descname">check_for_next_length_k_paths</code><span class="sig-paren">(</span><em>obj</em>, <em>new_weight</em>, <em>original_weight</em>, <em>lp</em>, <em>count_k_paths</em>, <em>add_length</em>, <em>op</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.check_for_next_length_k_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executed if no pathway could be identified and the first given length</p>
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints">
+<code class="descname">cycle_constraints</code><span class="sig-paren">(</span><em>lp</em>, <em>solution</em>, <em>solution_internal</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check solution for cycles and implement new constraints
+and resolve if cycle is identified</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints">
-<code class="descname">cycle_constraints</code><span class="sig-paren">(</span><em>lp</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints" title="Permalink to this definition">¶</a></dt>
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints_internal">
+<code class="descname">cycle_constraints_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints_internal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check solution for cycles and implement new constraints
-and resolve if cycle is identified</p>
+and resolve if cycle is identified for solutions with internal reactions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.fill_allsolutions">
+<code class="descname">fill_allsolutions</code><span class="sig-paren">(</span><em>solution</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.fill_allsolutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.identify_internal_rxns">
+<code class="descname">identify_internal_rxns</code><span class="sig-paren">(</span><em>op</em>, <em>op_internal</em>, <em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.identify_internal_rxns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify the internal reactions necessary to get target compound</p>
 </dd></dl>
 
 <dl class="method">
@@ -222,15 +234,20 @@ and resolve if cycle is identified</p>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram.k_number_paths">
-<code class="descname">k_number_paths</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>op</em>, <em>original_weight</em>, <em>count_k_paths</em>, <em>add_length=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.k_number_paths" title="Permalink to this definition">¶</a></dt>
+<code class="descname">k_number_paths</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.k_number_paths" title="Permalink to this definition">¶</a></dt>
 <dd><p>‘retrieve the next shortest path</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution">
-<code class="descname">multiple_optimal_solution</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution" title="Permalink to this definition">¶</a></dt>
+<code class="descname">multiple_optimal_solution</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify multiple solutions</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution_internal">
+<code class="descname">multiple_optimal_solution_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution_internal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram.run_glpk">
@@ -241,6 +258,12 @@ and resolve if cycle is identified</p>
 <dl class="method">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function">
 <code class="descname">set_objective_function</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set objective function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function_internal">
+<code class="descname">set_objective_function_internal</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function_internal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set objective function</p>
 </dd></dl>
 
@@ -256,12 +279,6 @@ and resolve if cycle is identified</p>
 <dd><p>retrieve weight to disfavor rxns in path</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_weights_k_paths">
-<code class="descname">set_weights_k_paths</code><span class="sig-paren">(</span><em>obj</em>, <em>new_weight</em>, <em>original_weight</em>, <em>original_num_steps</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_weights_k_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>set weights to find the next shortest path</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -269,21 +286,32 @@ and resolve if cycle is identified</p>
 <span id="shortestpath-integerprogram-pulp"></span><h3>ShortestPath.integerprogram_pulp<a class="headerlink" href="#module-ShortestPath.integerprogram_pulp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram">
-<em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle=True</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em>, <em>time_limit</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Sets final constraints and solved integer linear program</p>
 <dl class="method">
-<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.check_for_next_length_k_paths">
-<code class="descname">check_for_next_length_k_paths</code><span class="sig-paren">(</span><em>obj</em>, <em>variables</em>, <em>new_weight</em>, <em>original_weight</em>, <em>lp</em>, <em>count_k_paths</em>, <em>add_length</em>, <em>op</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.check_for_next_length_k_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executed if no pathway could be identified and the first given length</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints">
-<code class="descname">cycle_constraints</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cycle_constraints</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>solution</em>, <em>solution_internal</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check solution for cycles and implement new constraints and resolve
 if cycle is identified</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal">
+<code class="descname">cycle_constraints_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check solution for cycles and implement new constraints and resolve
+if cycle is identified</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.fill_allsolutions">
+<code class="descname">fill_allsolutions</code><span class="sig-paren">(</span><em>solution</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.fill_allsolutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.identify_internal_rxns">
+<code class="descname">identify_internal_rxns</code><span class="sig-paren">(</span><em>variables</em>, <em>op</em>, <em>op_internal</em>, <em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.identify_internal_rxns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.ip_calculate">
@@ -293,14 +321,20 @@ if cycle is identified</p>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.k_number_paths">
-<code class="descname">k_number_paths</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>obj</em>, <em>op</em>, <em>original_weight</em>, <em>count_k_paths</em>, <em>add_length=0</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.k_number_paths" title="Permalink to this definition">¶</a></dt>
+<code class="descname">k_number_paths</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>obj</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.k_number_paths" title="Permalink to this definition">¶</a></dt>
 <dd><p>‘retrieve the next shortest path</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.multiple_optimal_solution">
-<code class="descname">multiple_optimal_solution</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.multiple_optimal_solution" title="Permalink to this definition">¶</a></dt>
+<code class="descname">multiple_optimal_solution</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.multiple_optimal_solution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify multiple solutions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.multiple_optimal_solution_internal">
+<code class="descname">multiple_optimal_solution_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.multiple_optimal_solution_internal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find multiple solutions that use organisms internal reactions</p>
 </dd></dl>
 
 <dl class="method">
@@ -316,6 +350,12 @@ if cycle is identified</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function_internal">
+<code class="descname">set_objective_function_internal</code><span class="sig-paren">(</span><em>variables</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function_internal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set objective function</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_row_bounds">
 <code class="descname">set_row_bounds</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.set_row_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set row bounds</p>
@@ -325,12 +365,6 @@ if cycle is identified</p>
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_weight">
 <code class="descname">set_weight</code><span class="sig-paren">(</span><em>number_rxn_steps</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.set_weight" title="Permalink to this definition">¶</a></dt>
 <dd><p>retrieve weight to disfavor rxns in path</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_weights_k_paths">
-<code class="descname">set_weights_k_paths</code><span class="sig-paren">(</span><em>obj</em>, <em>new_weight</em>, <em>original_weight</em>, <em>original_num_steps</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.set_weights_k_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>set weights to find the next shortest path</p>
 </dd></dl>
 
 </dd></dl>
@@ -364,7 +398,7 @@ added to produce a target compound</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+<h1 class="logo"><a href="index.html">RetSynth</a></h1>
 
 
 
@@ -378,7 +412,7 @@ added to produce a target compound</p>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index_main.html">Documentation overview</a><ul>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -397,7 +431,7 @@ added to produce a target compound</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Sandia National Laboratories.
+      &copy;2018, Sandia National Laboratories.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

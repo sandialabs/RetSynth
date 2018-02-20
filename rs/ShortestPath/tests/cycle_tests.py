@@ -19,13 +19,15 @@ from ShortestPath import add_cycle_constraints_glpk as acc_glpk
 from ShortestPath import add_cycle_constraints_pulp as acc_pulp
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/ShortestPath/tests', '', PATH)
+
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
 '''GENERATE TEST DATABASE'''
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data2', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data2', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()

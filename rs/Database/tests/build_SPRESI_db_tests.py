@@ -4,6 +4,7 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Tests RDF reader'
 import sqlite3
 import os
+import re
 import unittest
 from shutil import copyfile
 from Database import query as Q
@@ -12,6 +13,7 @@ from Database import build_kbase_db as bkdb
 from Database import build_SPRESI_db as bspresidb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/tests', '', PATH)
 
 if os.path.isfile(PATH+'/testRDF.db') is True:
     os.remove(PATH+'/testRDF.db')
@@ -20,8 +22,8 @@ if os.path.isfile(PATH+'/testinchiRDF.db') is True:
     os.remove(PATH+'/testinchiRDF.db')
 
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data5', '../KbasetoKEGGCPD.txt',
-                '../KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data5', PPATH+'/KbasetoKEGGCPD.txt',
+                PPATH+'/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 copyfile(PATH+'/test.db', PATH+'/testRDF.db')
 os.remove(PATH+'/test.db')
@@ -33,8 +35,8 @@ bspresidb.RDF_Reader(PATH+'/data6/', PATH+'/testRDF.db', 'chem',compartmentID, 1
 
 
 init_db.Createdb(PATH+'/testinchi.db', False)
-bkdb.BuildKbase(PATH+'/data5', '../KbasetoKEGGCPD.txt',
-                '../KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data5', PPATH+'/KbasetoKEGGCPD.txt',
+                PPATH+'/KbasetoKEGGRXN.txt', False,
                 PATH+'/testinchi.db', 'bio')
 copyfile(PATH+'/testinchi.db', PATH+'/testinchiRDF.db')
 os.remove(PATH+'/testinchi.db')

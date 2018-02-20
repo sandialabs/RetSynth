@@ -14,6 +14,7 @@ from Database import build_kbase_db as bkdb
 from Database import build_SPRESI_db as bspresidb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/ShortestPath/tests', '', PATH)
 
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
@@ -21,16 +22,16 @@ if os.path.isfile(PATH+'/test.db') is True:
 
 '''CONNECT TEST DATABASE'''
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()
 allmets = DB.get_all_compounds()
 
 init_db.Createdb(PATH+'/testRDF.db', True)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', True,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', True,
                 PATH+'/testRDF.db', 'bio')
 allmets_chem = DB.get_reactions_based_on_type('chem')
 bspresidb.RDF_Reader(PATH+'/data4/', PATH+'/testRDF.db', 'chem', 'c0', 1, temp_option=False, pressure_option=False,

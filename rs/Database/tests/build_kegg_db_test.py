@@ -13,14 +13,16 @@ from Database import initialize_database as init_db
 from Database import build_kbase_db as bkdb
 from Database import build_KEGG_db as bkeggdb
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/tests', '', PATH)
+
 init_db.Createdb(PATH+'/kbasetestadd.db', False)
-bkdb.BuildKbase(PATH+'/datam', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', False, PATH+'/kbasetestadd.db', 'bio')
+bkdb.BuildKbase(PATH+'/datam', PPATH+'/KbasetoKEGGCPD.txt', PPATH+'/KbasetoKEGGRXN.txt', False, PATH+'/kbasetestadd.db', 'bio')
 DB = Q.Connector(PATH+'/kbasetestadd.db')
 kbaserxnsadd = DB.get_all_reactions()
 kbaserxnsadd1 = deepcopy(kbaserxnsadd)
 
 init_db.Createdb(PATH+'/kbasetestaddinchi.db', True)
-bkdb.BuildKbase(PATH+'/data', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', True, PATH+'/kbasetestaddinchi.db', 'bio')
+bkdb.BuildKbase(PATH+'/data', PPATH+'/KbasetoKEGGCPD.txt', PPATH+'/KbasetoKEGGRXN.txt', True, PATH+'/kbasetestaddinchi.db', 'bio')
 DBinchi = Q.Connector(PATH+'/kbasetestaddinchi.db')
 kbaserxnsinchi = DBinchi.get_all_reactions()
 kbaserxns1inchi = deepcopy(kbaserxnsinchi)

@@ -21,8 +21,8 @@ if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()

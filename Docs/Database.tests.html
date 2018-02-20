@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Database test module &#8212; BioRetroSynthesis 1 documentation</title>
+    <title>Database test module &#8212; RetSynth .1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1',
+        VERSION:     '.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -69,145 +69,251 @@
 </dd></dl>
 
 </div>
-<div class="section" id="module-Database.tests.build_tablesMP_inchidb_tests">
-<span id="database-tests-build-tablesmp-inchidb-tests"></span><h3>Database.tests.build_tablesMP_inchidb_tests<a class="headerlink" href="#module-Database.tests.build_tablesMP_inchidb_tests" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-Database.tests.build_atlas_db_tests">
+<span id="database-tests-build-atlas-db-tests"></span><h3>Database.tests.build_atlas_db_tests<a class="headerlink" href="#module-Database.tests.build_atlas_db_tests" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue">
-<em class="property">class </em><code class="descclassname">Database.tests.build_tablesMP_inchidb_tests.</code><code class="descname">Generate_databaseTests_PubchemTrue</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_atlas_db_tests.BuildATLAStests">
+<em class="property">class </em><code class="descclassname">Database.tests.build_atlas_db_tests.</code><code class="descname">BuildATLAStests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_atlas_db_tests.BuildATLAStests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.setUp">
-<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.setUp" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_atlas_db_tests.BuildATLAStests.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_atlas_db_tests.BuildATLAStests.setUp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize before every test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.tearDown">
-<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.tearDown" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_atlas_db_tests.BuildATLAStests.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_atlas_db_tests.BuildATLAStests.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up after each test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.test_generate_db">
-<code class="descname">test_generate_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_inchidb_tests.Generate_databaseTests_PubchemTrue.test_generate_db" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_atlas_db_tests.BuildATLAStests.test_ATLAS_inchi">
+<code class="descname">test_ATLAS_inchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_atlas_db_tests.BuildATLAStests.test_ATLAS_inchi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_atlas_db_tests.BuildATLAStests.test_ATLAS_no_inchi">
+<code class="descname">test_ATLAS_no_inchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_atlas_db_tests.BuildATLAStests.test_ATLAS_no_inchi" title="Permalink to this definition">¶</a></dt>
+<dd><p>test addition of reaction info from MINE raw files</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.tests.build_kbase_db_inchidb_tests">
+<span id="database-tests-build-kbase-db-inchidb-tests"></span><h3>Database.tests.build_kbase_db_inchidb_tests<a class="headerlink" href="#module-Database.tests.build_kbase_db_inchidb_tests" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue">
+<em class="property">class </em><code class="descclassname">Database.tests.build_kbase_db_inchidb_tests.</code><code class="descname">Generate_databaseTests_PubchemTrue</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize before every test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up after each test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.test_generate_db">
+<code class="descname">test_generate_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_inchidb_tests.Generate_databaseTests_PubchemTrue.test_generate_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests to see if database is filling model table with correct number of models</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="data">
-<dt id="Database.tests.build_tablesMP_inchidb_tests.all_rev">
-<code class="descclassname">Database.tests.build_tablesMP_inchidb_tests.</code><code class="descname">all_rev</code><em class="property"> = {'rxn12_c0': [True], 'Trans_I_c0': [True], 'EX_I_e0': [True], 'rxn6_c0': [True], 'rxn5_c0': [True], 'rxn7_c0': [True], 'rxn1_c0': [True], 'rxn2_c0': [True], 'rxn11_c0': [True], 'rxn13_c0': [True], 'rxn3_c0': [True], 'rxn4_c0': [True]}</em><a class="headerlink" href="#Database.tests.build_tablesMP_inchidb_tests.all_rev" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kbase_db_inchidb_tests.all_rev">
+<code class="descclassname">Database.tests.build_kbase_db_inchidb_tests.</code><code class="descname">all_rev</code><em class="property"> = {'rxn12_c0': [True], 'Trans_I_c0': [True], 'EX_I_e0': [True], 'rxn6_c0': [True], 'rxn5_c0': [True], 'rxn7_c0': [True], 'rxn1_c0': [True], 'rxn2_c0': [True], 'rxn11_c0': [True], 'rxn13_c0': [True], 'rxn3_c0': [True], 'rxn4_c0': [True]}</em><a class="headerlink" href="#Database.tests.build_kbase_db_inchidb_tests.all_rev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import model information directly from sbml files</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-Database.tests.build_tablesMP_tests">
-<span id="database-tests-build-tablesmp-tests"></span><h3>Database.tests.build_tablesMP_tests<a class="headerlink" href="#module-Database.tests.build_tablesMP_tests" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-Database.tests.build_kbase_db_tests">
+<span id="database-tests-build-kbase-db-tests"></span><h3>Database.tests.build_kbase_db_tests<a class="headerlink" href="#module-Database.tests.build_kbase_db_tests" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue">
-<em class="property">class </em><code class="descclassname">Database.tests.build_tablesMP_tests.</code><code class="descname">Generate_databaseTests_PubchemTrue</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue">
+<em class="property">class </em><code class="descclassname">Database.tests.build_kbase_db_tests.</code><code class="descname">Generate_databaseTests_PubchemTrue</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.setUp">
-<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.setUp" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.setUp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize before every test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.tearDown">
-<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.tearDown" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up after each test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.test_build_tables">
-<code class="descname">test_build_tables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_tablesMP_tests.Generate_databaseTests_PubchemTrue.test_build_tables" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.test_build_kbase">
+<code class="descname">test_build_kbase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kbase_db_tests.Generate_databaseTests_PubchemTrue.test_build_kbase" title="Permalink to this definition">¶</a></dt>
+<dd><p>test construction of kbase tables</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="data">
-<dt id="Database.tests.build_tablesMP_tests.all_rev">
-<code class="descclassname">Database.tests.build_tablesMP_tests.</code><code class="descname">all_rev</code><em class="property"> = {'rxn12_c0': [True], 'Trans_I_c0': [True], 'EX_I_e0': [True], 'rxn6_c0': [True], 'rxn5_c0': [True], 'rxn7_c0': [True], 'rxn1_c0': [True], 'rxn2_c0': [True], 'rxn11_c0': [True], 'rxn13_c0': [True], 'rxn3_c0': [True], 'rxn4_c0': [True]}</em><a class="headerlink" href="#Database.tests.build_tablesMP_tests.all_rev" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kbase_db_tests.all_rev">
+<code class="descclassname">Database.tests.build_kbase_db_tests.</code><code class="descname">all_rev</code><em class="property"> = {'rxn12_c0': [True], 'Trans_I_c0': [True], 'EX_I_e0': [True], 'rxn6_c0': [True], 'rxn5_c0': [True], 'rxn7_c0': [True], 'rxn1_c0': [True], 'rxn2_c0': [True], 'rxn11_c0': [True], 'rxn13_c0': [True], 'rxn3_c0': [True], 'rxn4_c0': [True]}</em><a class="headerlink" href="#Database.tests.build_kbase_db_tests.all_rev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import model information directly from sbml files</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-Database.tests.generate_database_tests">
-<span id="database-tests-generate-database-tests"></span><h3>Database.tests.generate_database_tests<a class="headerlink" href="#module-Database.tests.generate_database_tests" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-Database.tests.build_kegg_db_test">
+<span id="database-tests-build-kegg-db-test"></span><h3>Database.tests.build_kegg_db_test<a class="headerlink" href="#module-Database.tests.build_kegg_db_test" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="Database.tests.generate_database_tests.Generate_database">
-<em class="property">class </em><code class="descclassname">Database.tests.generate_database_tests.</code><code class="descname">Generate_database</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.generate_database_tests.Generate_database" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kegg_db_test.BuildKEGG">
+<em class="property">class </em><code class="descclassname">Database.tests.build_kegg_db_test.</code><code class="descname">BuildKEGG</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kegg_db_test.BuildKEGG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
-<dt id="Database.tests.generate_database_tests.Generate_database.setUp">
-<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.generate_database_tests.Generate_database.setUp" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kegg_db_test.BuildKEGG.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kegg_db_test.BuildKEGG.setUp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize before every test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.generate_database_tests.Generate_database.tearDown">
-<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.generate_database_tests.Generate_database.tearDown" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_kegg_db_test.BuildKEGG.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kegg_db_test.BuildKEGG.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up after each test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.generate_database_tests.Generate_database.test_generate_db">
-<code class="descname">test_generate_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.generate_database_tests.Generate_database.test_generate_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests to see if database is filling model table with correct number of models</p>
+<dt id="Database.tests.build_kegg_db_test.BuildKEGG.test_KEGG_with_only_KEGG_orgs">
+<code class="descname">test_KEGG_with_only_KEGG_orgs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kegg_db_test.BuildKEGG.test_KEGG_with_only_KEGG_orgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>test KEGG database construction</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.generate_database_tests.Generate_database.test_generate_db_index">
-<code class="descname">test_generate_db_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.generate_database_tests.Generate_database.test_generate_db_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="Database.tests.build_kegg_db_test.BuildKEGG.test_KEGG_with_only_KEGG_orgsinchi">
+<code class="descname">test_KEGG_with_only_KEGG_orgsinchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_kegg_db_test.BuildKEGG.test_KEGG_with_only_KEGG_orgsinchi" title="Permalink to this definition">¶</a></dt>
+<dd><p>test KEGG database construction</p>
+</dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-Database.tests.translate_metacyc_tests">
-<span id="database-tests-translate-metacyc-tests"></span><h3>Database.tests.translate_metacyc_tests<a class="headerlink" href="#module-Database.tests.translate_metacyc_tests" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-Database.tests.build_metacyc_db_test">
+<span id="database-tests-build-metacyc-db-test"></span><h3>Database.tests.build_metacyc_db_test<a class="headerlink" href="#module-Database.tests.build_metacyc_db_test" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="Database.tests.translate_metacyc_tests.Translate_metacycTests">
-<em class="property">class </em><code class="descclassname">Database.tests.translate_metacyc_tests.</code><code class="descname">Translate_metacycTests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_metacyc_tests.Translate_metacycTests" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_metacyc_db_test.Translate_metacycTests">
+<em class="property">class </em><code class="descclassname">Database.tests.build_metacyc_db_test.</code><code class="descname">Translate_metacycTests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_metacyc_db_test.Translate_metacycTests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
-<dt id="Database.tests.translate_metacyc_tests.Translate_metacycTests.test_BIOCYC_translator">
-<code class="descname">test_BIOCYC_translator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_metacyc_tests.Translate_metacycTests.test_BIOCYC_translator" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_metacyc_db_test.Translate_metacycTests.test_BIOCYC_translator">
+<code class="descname">test_BIOCYC_translator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_metacyc_db_test.Translate_metacycTests.test_BIOCYC_translator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test that translator dictionary is built correctly</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.translate_metacyc_tests.Translate_metacycTests.test_metacyc">
-<code class="descname">test_metacyc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_metacyc_tests.Translate_metacycTests.test_metacyc" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_metacyc_db_test.Translate_metacycTests.test_metacyc">
+<code class="descname">test_metacyc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_metacyc_db_test.Translate_metacycTests.test_metacyc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests that metacyc can be added to a kbase database correctly</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-Database.tests.translate_kbase_genes_tests">
-<span id="database-tests-translate-kbase-genes-tests"></span><h3>Database.tests.translate_kbase_genes_tests<a class="headerlink" href="#module-Database.tests.translate_kbase_genes_tests" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-Database.tests.build_mine_db_tests">
+<span id="database-tests-build-mine-db-tests"></span><h3>Database.tests.build_mine_db_tests<a class="headerlink" href="#module-Database.tests.build_mine_db_tests" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
-<dt id="Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests">
-<em class="property">class </em><code class="descclassname">Database.tests.translate_kbase_genes_tests.</code><code class="descname">Translate_kbase_genes_Tests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_mine_db_tests.BuildMINEtests">
+<em class="property">class </em><code class="descclassname">Database.tests.build_mine_db_tests.</code><code class="descname">BuildMINEtests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_mine_db_tests.BuildMINEtests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
-<dt id="Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.setUp">
-<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.setUp" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_mine_db_tests.BuildMINEtests.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_mine_db_tests.BuildMINEtests.setUp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize before every test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.tearDown">
-<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.tearDown" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_mine_db_tests.BuildMINEtests.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_mine_db_tests.BuildMINEtests.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean up after each test.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.test_translate_kbase_genes">
-<code class="descname">test_translate_kbase_genes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.translate_kbase_genes_tests.Translate_kbase_genes_Tests.test_translate_kbase_genes" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.build_mine_db_tests.BuildMINEtests.test_MINE_inchi">
+<code class="descname">test_MINE_inchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_mine_db_tests.BuildMINEtests.test_MINE_inchi" title="Permalink to this definition">¶</a></dt>
+<dd><p>test addition of reaction info from MINE raw files</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_mine_db_tests.BuildMINEtests.test_MINE_no_inchi">
+<code class="descname">test_MINE_no_inchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_mine_db_tests.BuildMINEtests.test_MINE_no_inchi" title="Permalink to this definition">¶</a></dt>
+<dd><p>test addition of reaction info from MINE raw files</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.tests.build_SPRESI_db_tests">
+<span id="database-tests-build-spresi-db-tests"></span><h3>Database.tests.build_SPRESI_db_tests<a class="headerlink" href="#module-Database.tests.build_SPRESI_db_tests" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.tests.build_SPRESI_db_tests.RDFileReaderTests">
+<em class="property">class </em><code class="descclassname">Database.tests.build_SPRESI_db_tests.</code><code class="descname">RDFileReaderTests</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_SPRESI_db_tests.RDFileReaderTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="Database.tests.build_SPRESI_db_tests.RDFileReaderTests.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize before every test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up after each test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader">
+<code class="descname">tests_RDFileReader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests RDFReader</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader_inchi">
+<code class="descname">tests_RDFileReader_inchi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader_inchi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests RDFReader with inchi database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Database.tests.initialize_database_tests">
+<span id="database-tests-initialize-database-tests"></span><h3>Database.tests.initialize_database_tests<a class="headerlink" href="#module-Database.tests.initialize_database_tests" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Database.tests.initialize_database_tests.Generate_database">
+<em class="property">class </em><code class="descclassname">Database.tests.initialize_database_tests.</code><code class="descname">Generate_database</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.initialize_database_tests.Generate_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="Database.tests.initialize_database_tests.Generate_database.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.initialize_database_tests.Generate_database.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize before every test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.initialize_database_tests.Generate_database.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.initialize_database_tests.Generate_database.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up after each test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.initialize_database_tests.Generate_database.test_generate_db">
+<code class="descname">test_generate_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.initialize_database_tests.Generate_database.test_generate_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests to see if database is filling model table with correct number of models</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.tests.initialize_database_tests.Generate_database.test_generate_db_index">
+<code class="descname">test_generate_db_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.tests.initialize_database_tests.Generate_database.test_generate_db_index" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -344,8 +450,8 @@
 </dd></dl>
 
 <dl class="data">
-<dt id="Database.tests.query_tests.PATH">
-<code class="descclassname">Database.tests.query_tests.</code><code class="descname">PATH</code><em class="property"> = '/Users/lwhitmo/software/retrosynth/rs/Database/tests'</em><a class="headerlink" href="#Database.tests.query_tests.PATH" title="Permalink to this definition">¶</a></dt>
+<dt id="Database.tests.query_tests.PPATH">
+<code class="descclassname">Database.tests.query_tests.</code><code class="descname">PPATH</code><em class="property"> = '/Users/lwhitmo/software/retrosynth/rs/Database'</em><a class="headerlink" href="#Database.tests.query_tests.PPATH" title="Permalink to this definition">¶</a></dt>
 <dd><p>GENERATE TEST DATABASE</p>
 </dd></dl>
 
@@ -497,7 +603,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+<h1 class="logo"><a href="index.html">RetSynth</a></h1>
 
 
 
@@ -511,7 +617,7 @@
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index_main.html">Documentation overview</a><ul>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -530,7 +636,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Sandia National Laboratories.
+      &copy;2018, Sandia National Laboratories.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

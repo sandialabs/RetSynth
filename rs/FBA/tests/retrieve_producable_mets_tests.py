@@ -4,6 +4,7 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Tests optimizing of a FBA model from the Database \
                    and addition of external reactions to model'
 import os
+import re
 import unittest
 from Database import query as Q
 from Database import initialize_database as init_db
@@ -11,14 +12,15 @@ from Database import build_kbase_db as bkdb
 from FBA import retrieve_producable_mets as rpm
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/FBA/tests', '', PATH)
 
 if os.path.isfile(PATH+'/test.db') is True:
     os.remove(PATH+'/test.db')
 
 '''Load database'''
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 allrxns = DB.get_all_reactions()

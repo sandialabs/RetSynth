@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Parser module &#8212; BioRetroSynthesis 1 documentation</title>
+    <title>Parser module &#8212; RetSynth .1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1',
+        VERSION:     '.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,7 +46,7 @@
 <span id="parser-generate-output"></span><h3>Parser.generate_output<a class="headerlink" href="#module-Parser.generate_output" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="Parser.generate_output.Output">
-<em class="property">class </em><code class="descclassname">Parser.generate_output.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>db</em>, <em>output_path</em>, <em>FBA=False</em>, <em>KO=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">Parser.generate_output.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>db</em>, <em>output_path</em>, <em>FBA=False</em>, <em>KO=False</em>, <em>extraoutput=True</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Opens and fills output files produced by software</p>
 <dl class="method">
@@ -82,6 +82,11 @@ flux difference from the orignal FBA simulation</p>
 <dd><p>When reaction knockouts are performed, outputs all reactions that when removed
 cause decrease in target production</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="Parser.generate_output.Output.output_extra">
+<code class="descname">output_extra</code><span class="sig-paren">(</span><em>compound</em>, <em>ordered_paths</em>, <em>reactions</em>, <em>incpds</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.generate_output.Output.output_extra" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="Parser.generate_output.Output.output_open_paths_all_organism_file">
@@ -142,6 +147,53 @@ added to an organism to get target compound</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-Parser.structure_similarity">
+<span id="parser-structure-similarity"></span><h3>Parser.structure_similarity<a class="headerlink" href="#module-Parser.structure_similarity" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity">
+<em class="property">class </em><code class="descclassname">Parser.structure_similarity.</code><code class="descname">TanimotoStructureSimilarity</code><span class="sig-paren">(</span><em>targets</em>, <em>all_compounds</em>, <em>cytosol</em>, <em>extracellular</em>, <em>threshold_score=1</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Identifies if compounds are in the database but under a different ID
+based on structure similarity</p>
+<dl class="method">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.calculate_tanimoto_score">
+<code class="descname">calculate_tanimoto_score</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.calculate_tanimoto_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate similarity for compounds that are not in the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.extract_db_cpd_ID">
+<code class="descname">extract_db_cpd_ID</code><span class="sig-paren">(</span><em>cpdID</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.extract_db_cpd_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract correct database ID for a compound</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.get_original_target">
+<code class="descname">get_original_target</code><span class="sig-paren">(</span><em>tmol</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.get_original_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain original target</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.process_targets">
+<code class="descname">process_targets</code><span class="sig-paren">(</span><em>targets</em><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.process_targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reformat targets to remove compartment information</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.retrieve_fingerprints">
+<code class="descname">retrieve_fingerprints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.retrieve_fingerprints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve fingerprints for database compounds and targets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Parser.structure_similarity.TanimotoStructureSimilarity.targets">
+<code class="descname">targets</code><em class="property"> = None</em><a class="headerlink" href="#Parser.structure_similarity.TanimotoStructureSimilarity.targets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove duplicated targets</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 </div>
 
@@ -151,7 +203,7 @@ added to an organism to get target compound</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+<h1 class="logo"><a href="index.html">RetSynth</a></h1>
 
 
 
@@ -165,7 +217,7 @@ added to an organism to get target compound</p>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index_main.html">Documentation overview</a><ul>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -184,7 +236,7 @@ added to an organism to get target compound</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Sandia National Laboratories.
+      &copy;2018, Sandia National Laboratories.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

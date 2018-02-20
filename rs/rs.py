@@ -76,14 +76,14 @@ def parse_arguments():
                         help='Generate output constraint file for entire \
                         database', required=False, type=str)
 
-    parser.add_argument('--kbase', help='Set whether to build database with  Kbase data',  required=False,
+    parser.add_argument('--kbase', help='Set to build database with  Kbase data',  required=False,
                         action="store_true")
     
     parser.add_argument('-k_dir', '--kbase_dump_directory', help='Path to folder \
                         of SBML network files from kbase',
                         required=False, type=str)
 
-    parser.add_argument('--metacyc', help='Set whether to build database with metacyc',  required=False,
+    parser.add_argument('--metacyc', help='Set to build database with metacyc',  required=False,
                         action="store_true")    
     
     parser.add_argument('-mc', '--metacyc_addition', help='Add metacyc xml \
@@ -93,25 +93,25 @@ def parse_arguments():
                         metacyc and kbase IDs', required=False, type=str)    
 
 
-    parser.add_argument('--SPRESI', help='Set whether to build database with SPRESI information',
+    parser.add_argument('--SPRESI', help='Set to build database with SPRESI information',
                         required=False, action="store_true")
     
     parser.add_argument('-s_dir', '--spresi_dump_directory', help='Path to folder of \
                         SPRESI files (.rdf)', required=False, type=str)
 
-    parser.add_argument('--mine', help='Set whether to build database with mine data',  required=False,
+    parser.add_argument('--mine', help='Set to build database with mine data',  required=False,
                         action="store_true")
     
     parser.add_argument('-m_dir', '--mine_dump_directory', help='Path to folder \
                         of .msp files from MINE database',
                         required=False, type=str)
 
-    parser.add_argument('--atlas', help='Set whether to build database with atlas data',  required=False,
+    parser.add_argument('--atlas', help='Set to build database with atlas data',  required=False,
                         action="store_true")
     parser.add_argument('-a_dir', '--atlas_dump_directory', help='Path to folder \
                         of ATLAS files (.csv)', required=False, type=str)
 
-    parser.add_argument('--kegg', help='Set whether to build database with Kegg data',  required=False,
+    parser.add_argument('--kegg', help='Set to build database with Kegg data',  required=False,
                         action="store_true")
 
     parser.add_argument('-kbaserxntype', '--kbase_reaction_type', help='Define type of reactions \

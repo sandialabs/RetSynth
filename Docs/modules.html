@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>RetroSynth Modules &#8212; BioRetroSynthesis 1 documentation</title>
+    <title>RetroSynth Modules &#8212; RetSynth .1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1',
+        VERSION:     '.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -46,10 +46,14 @@
 <li class="toctree-l2"><a class="reference internal" href="RetroSynth.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="Database.html">Database module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="Database.html#submodules">Submodules</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.generate_database">Database.generate_database</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_tablesMP">Database.build_tablesMP</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.initialize_database">Database.initialize_database</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_ATLAS_db">Database.build_ATLAS_db</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_kbase_db">Database.build_kbase_db</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_KEGG_db">Database.build_KEGG_db</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_metacyc_db">Database.build_metacyc_db</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_MINE_db">Database.build_MINE_db</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.build_SPRESI_db">Database.build_SPRESI_db</a></li>
 <li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.query">Database.query</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.translate_metacyc">Database.translate_metacyc</a></li>
 <li class="toctree-l5"><a class="reference internal" href="Database.html#module-Database.translate_kbase_genes">Database.translate_kbase_genes</a></li>
 </ul>
 </li>
@@ -58,11 +62,14 @@
 <li class="toctree-l3"><a class="reference internal" href="Database.tests.html">Database test module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="Database.tests.html#submodules">Submodules</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.adding_2_database_tests">Database.tests.adding_2_database_tests</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_tablesMP_inchidb_tests">Database.tests.build_tablesMP_inchidb_tests</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_tablesMP_tests">Database.tests.build_tablesMP_tests</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.generate_database_tests">Database.tests.generate_database_tests</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.translate_metacyc_tests">Database.tests.translate_metacyc_tests</a></li>
-<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.translate_kbase_genes_tests">Database.tests.translate_kbase_genes_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_atlas_db_tests">Database.tests.build_atlas_db_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_kbase_db_inchidb_tests">Database.tests.build_kbase_db_inchidb_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_kbase_db_tests">Database.tests.build_kbase_db_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_kegg_db_test">Database.tests.build_kegg_db_test</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_metacyc_db_test">Database.tests.build_metacyc_db_test</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_mine_db_tests">Database.tests.build_mine_db_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.build_SPRESI_db_tests">Database.tests.build_SPRESI_db_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.initialize_database_tests">Database.tests.initialize_database_tests</a></li>
 <li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.query_tests">Database.tests.query_tests</a></li>
 <li class="toctree-l5"><a class="reference internal" href="Database.tests.html#module-Database.tests.query_inchidb_tests">Database.tests.query_inchidb_tests</a></li>
 </ul>
@@ -95,6 +102,7 @@
 <li class="toctree-l4"><a class="reference internal" href="Parser.html#submodules">Submodules</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="Parser.html#module-Parser.generate_output">Parser.generate_output</a></li>
 <li class="toctree-l5"><a class="reference internal" href="Parser.html#module-Parser.read_targets">Parser.read_targets</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Parser.html#module-Parser.structure_similarity">Parser.structure_similarity</a></li>
 </ul>
 </li>
 </ul>
@@ -102,20 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="Parser.tests.html">Parser tests module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="Parser.tests.html#submodules">Submodules</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="Parser.tests.html#module-Parser.tests.read_targets_tests">Parser.tests.read_targets_test</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="RDFConverter.html">RDFConverter module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="RDFConverter.html#submodules">Submodules</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="RDFConverter.html#module-RDFConverter.RDFileReaderMP">RDFConverter.RDFileReaderMP</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="RDFConverter.tests.html">RDFConverter tests module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="RDFConverter.tests.html#submodule">Submodule</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="RDFConverter.tests.html#module-RDFConverter.tests.RDFileReader_tests">RDFConverter.tests.RDFileReader_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Parser.tests.html#module-Parser.tests.structure_similarity_test">Parser.tests.structure_similarity_test</a></li>
 </ul>
 </li>
 </ul>
@@ -140,13 +135,16 @@
 <li class="toctree-l5"><a class="reference internal" href="ShortestPath.tests.html#module-ShortestPath.tests.cycle_tests">ShortestPath.tests.cycle_tests</a></li>
 <li class="toctree-l5"><a class="reference internal" href="ShortestPath.tests.html#module-ShortestPath.tests.extrainfo_tests">ShortestPath.tests.extrainfo_tests</a></li>
 <li class="toctree-l5"><a class="reference internal" href="ShortestPath.tests.html#module-ShortestPath.tests.integerprogramming_tests">ShortestPath.tests.integerprogramming_tests</a></li>
+<li class="toctree-l5"><a class="reference internal" href="ShortestPath.tests.html#module-ShortestPath.tests.search_sp_metclusters_tests">ShortestPath.tests.search_sp_metclusters_tests</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="Visualization.html">Visualization package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="Visualization.html#submodules">Submodules</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="Visualization.html#module-Visualization.SP_Graph">Visualization.SP_Graph</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Visualization.html#module-Visualization.SP_Graph_dot">Visualization.SP_Graph_dot</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Visualization.html#module-Visualization.reaction_files">Visualization.reaction_files</a></li>
+<li class="toctree-l5"><a class="reference internal" href="Visualization.html#module-Visualization.chempyutilgraph_edit">Visualization.chempyutilgraph_edit</a></li>
 </ul>
 </li>
 </ul>
@@ -173,7 +171,7 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index_main.html">BioRetroSynthesis</a></h1>
+<h1 class="logo"><a href="index.html">RetSynth</a></h1>
 
 
 
@@ -187,7 +185,7 @@
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index_main.html">Documentation overview</a><ul>
+  <li><a href="index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 </div>
@@ -206,7 +204,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2017, Sandia National Laboratories.
+      &copy;2018, Sandia National Laboratories.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>

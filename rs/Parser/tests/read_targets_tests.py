@@ -3,6 +3,7 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Tests read_targets code'
 
+import re
 import os
 import unittest
 from Parser import read_targets as rt
@@ -11,6 +12,7 @@ from Database import initialize_database as init_db
 from Database import build_kbase_db as bkdb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/Parser/tests', '', PATH)
 
 '''Load database'''
 if os.path.isfile(PATH+'/test.db') is True:
@@ -19,14 +21,14 @@ if os.path.isfile(PATH+'/testinchi.db') is True:
     os.remove(PATH+'/testinchi.db')
 
 init_db.Createdb(PATH+'/test.db', False)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', False,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', False,
                 PATH+'/test.db', 'bio')
 DB = Q.Connector(PATH+'/test.db')
 
 init_db.Createdb(PATH+'/testinchi.db', True)
-bkdb.BuildKbase(PATH+'/data', '../../Database/KbasetoKEGGCPD.txt',
-                '../../Database/KbasetoKEGGRXN.txt', True,
+bkdb.BuildKbase(PATH+'/data', PPATH+'/Database/KbasetoKEGGCPD.txt',
+                PPATH+'/Database/KbasetoKEGGRXN.txt', True,
                 PATH+'/testinchi.db', 'bio')
 DBinchi = Q.Connector(PATH+'/testinchi.db')
 

@@ -14,10 +14,12 @@ from Database import build_metacyc_db as bmcdb
 from Database import build_kbase_db as bkdb
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+PPATH = re.sub('/tests', '', PATH)
+
 if os.path.isfile(PATH+'/kbasetest.db') is True:
     os.remove(PATH+'/kbasetest.db')
 init_db.Createdb(PATH+'/kbasetest.db', False)
-bkdb.BuildKbase(PATH+'/datam', '../KbasetoKEGGCPD.txt', '../KbasetoKEGGRXN.txt', False, PATH+'/kbasetest.db', 'bio')
+bkdb.BuildKbase(PATH+'/datam', PPATH+'/KbasetoKEGGCPD.txt', PPATH+'/KbasetoKEGGRXN.txt', False, PATH+'/kbasetest.db', 'bio')
 DB = Q.Connector(PATH+'/kbasetest.db')
 file_name = open(PATH+'/metacyc_data/MetaCyc.aliases')
 line = file_name.readline()
