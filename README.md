@@ -6,7 +6,7 @@ The overaching goal of RetSynth is to streamline the arduous and complex step of
 
 ## Documentation
 
-See documentation at http://sandialabs.github.io/RetSynth/
+See documentation athttps://sandialabs.github.io/RetSynth/#
 
 ## Build
 
@@ -39,7 +39,7 @@ RetSynth is currently only tested to work under Python 2.6 and 2.7.
 
 ## Publication (please cite)
 
-## License
-
+### License
+-----------
 BSD - 3-Clause Copyright 2017 Sandia Corporation. Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation, the U.S. Government retains certain rights in this software.
 =======
