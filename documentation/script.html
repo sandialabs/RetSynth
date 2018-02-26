@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Parameter Documentation &#8212; RetSynth .1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>Parameter Documentation &#8212; RetSynth 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '.1',
+        VERSION:     '1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -22,16 +22,21 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -42,9 +47,9 @@
 <h1>Parameter Documentation<a class="headerlink" href="#parameter-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>RetroSynth’s primary script is: rs.py (main script)</p>
-<div class="section" id="retrosynth-parameters">
-<h2>RetroSynth Parameters<a class="headerlink" href="#retrosynth-parameters" title="Permalink to this headline">¶</a></h2>
+<p>RetSynth’s primary script is: rs.py (main script)</p>
+<div class="section" id="retsynth-parameters">
+<h2>RetSynth Parameters<a class="headerlink" href="#retsynth-parameters" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal"><span class="pre">--targets:</span> <span class="pre">List</span> <span class="pre">of</span> <span class="pre">target</span> <span class="pre">molecules</span> <span class="pre">and</span> <span class="pre">the</span> <span class="pre">selected</span> <span class="pre">organisms</span></code></p>
 <p><code class="docutils literal"><span class="pre">--output_path:</span> <span class="pre">Destination</span> <span class="pre">for</span> <span class="pre">output</span> <span class="pre">files</span></code></p>
 <p><code class="docutils literal"><span class="pre">--python_glpk_connector_package:</span> <span class="pre">python</span> <span class="pre">package</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">to</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">glpk</span> <span class="pre">solver</span> <span class="pre">software</span> <span class="pre">(can</span> <span class="pre">use</span> <span class="pre">PYGLPK</span> <span class="pre">(GLPK)</span> <span class="pre">note</span> <span class="pre">that</span> <span class="pre">pyglpk</span> <span class="pre">only</span> <span class="pre">works</span> <span class="pre">with</span> <span class="pre">glpk</span> <span class="pre">package</span> <span class="pre">4.3</span> <span class="pre">or</span> <span class="pre">lower</span> <span class="pre">or</span> <span class="pre">PULP</span> <span class="pre">(default))</span></code></p>
@@ -63,7 +68,7 @@
 <p><code class="docutils literal"><span class="pre">--SPRESI:</span> <span class="pre">Set</span> <span class="pre">to</span> <span class="pre">build</span> <span class="pre">database</span> <span class="pre">with</span> <span class="pre">SPRESI</span> <span class="pre">information</span></code></p>
 <p><code class="docutils literal"><span class="pre">--spresi_dump_directory:</span> <span class="pre">Directory</span> <span class="pre">of</span> <span class="pre">SPRESI</span> <span class="pre">files</span> <span class="pre">(.rdf)</span></code></p>
 <p><code class="docutils literal"><span class="pre">--spresi_reaction_type:</span> <span class="pre">Type</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">being</span> <span class="pre">added</span> <span class="pre">to</span> <span class="pre">database</span> <span class="pre">from</span> <span class="pre">spresi</span> <span class="pre">files</span> <span class="pre">chem</span> <span class="pre">(default)</span> <span class="pre">or</span> <span class="pre">bio</span></code></p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a>–mine: Set to build database with mine data ``</p>
+<p><code class="docutils literal"><span class="pre">--mine:</span> <span class="pre">Set</span> <span class="pre">to</span> <span class="pre">build</span> <span class="pre">database</span> <span class="pre">with</span> <span class="pre">mine</span> <span class="pre">data</span></code></p>
 <p><code class="docutils literal"><span class="pre">--mine_dump_directory:</span> <span class="pre">Directory</span> <span class="pre">of</span> <span class="pre">MINE</span> <span class="pre">files</span> <span class="pre">(.msp)</span></code></p>
 <p><code class="docutils literal"><span class="pre">--mine_reaction_type:</span> <span class="pre">Type</span> <span class="pre">of</span> <span class="pre">reactions</span> <span class="pre">being</span> <span class="pre">added</span> <span class="pre">to</span> <span class="pre">database</span> <span class="pre">from</span> <span class="pre">mine</span> <span class="pre">files</span> <span class="pre">bio</span> <span class="pre">(default)</span> <span class="pre">or</span> <span class="pre">chem</span></code></p>
 <p><code class="docutils literal"><span class="pre">--atlas:</span> <span class="pre">Set</span> <span class="pre">to</span> <span class="pre">build</span> <span class="pre">database</span> <span class="pre">with</span> <span class="pre">atlas</span> <span class="pre">data</span></code></p>
@@ -84,10 +89,10 @@
 <p><code class="docutils literal"><span class="pre">--k_number_of_paths:</span> <span class="pre">Specifies</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">wanted</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">user</span></code></p>
 <p><code class="docutils literal"><span class="pre">--multiple_solutions:</span> <span class="pre">Find</span> <span class="pre">all</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">(True</span> <span class="pre">(defualt)</span> <span class="pre">or</span> <span class="pre">False)</span></code></p>
 <p><code class="docutils literal"><span class="pre">--cycles:</span> <span class="pre">Elimate</span> <span class="pre">cycles</span> <span class="pre">when</span> <span class="pre">finding</span> <span class="pre">shortest</span> <span class="pre">paths</span> <span class="pre">(True</span> <span class="pre">(default)</span> <span class="pre">or</span> <span class="pre">False)</span></code></p>
-<p><a href="#id3"><span class="problematic" id="id4">``</span></a>–tanimoto_threshold: Set the tanimoto threshold to identify related compounds ``</p>
+<p><code class="docutils literal"><span class="pre">--tanimoto_threshold:</span> <span class="pre">Set</span> <span class="pre">the</span> <span class="pre">tanimoto</span> <span class="pre">threshold</span> <span class="pre">to</span> <span class="pre">identify</span> <span class="pre">related</span> <span class="pre">compounds</span></code></p>
 <p><code class="docutils literal"><span class="pre">--processors:</span> <span class="pre">Number</span> <span class="pre">of</span> <span class="pre">processors</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">when</span> <span class="pre">solving</span> <span class="pre">for</span> <span class="pre">shortest</span> <span class="pre">path</span> <span class="pre">(default</span> <span class="pre">4)</span></code></p>
 <p><code class="docutils literal"><span class="pre">--figures:</span> <span class="pre">generates</span> <span class="pre">figures</span></code></p>
-<p><code class="docutils literal"><span class="pre">--images:</span> <span class="pre">Set</span> <span class="pre">whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">chemical</span> <span class="pre">images</span> <span class="pre">or</span> <span class="pre">round</span> <span class="pre">nodes</span> <span class="pre">in</span> <span class="pre">output</span> <span class="pre">figures</span> <span class="pre">(default</span> <span class="pre">True)</span></code></p>
+<p><code class="docutils literal"><span class="pre">--images:</span> <span class="pre">Set</span> <span class="pre">whether</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">chemical</span> <span class="pre">images</span> <span class="pre">or</span> <span class="pre">round</span> <span class="pre">nodes</span> <span class="pre">in</span> <span class="pre">output</span> <span class="pre">figures</span> <span class="pre">(default</span> <span class="pre">is</span> <span class="pre">True,</span> <span class="pre">meaining</span> <span class="pre">images</span> <span class="pre">will</span> <span class="pre">be</span> <span class="pre">used)</span></code></p>
 </div>
 </div>
 
@@ -97,24 +102,21 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">RetSynth</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Parameter Documentation</a><ul>
+<li><a class="reference internal" href="#retsynth-parameters">RetSynth Parameters</a></li>
 </ul>
-</div>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/script.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -129,20 +131,21 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sandia National Laboratories.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/script.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Sandia National Laboratories.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
   </body>
 </html>
