@@ -6,15 +6,13 @@ The overaching goal of RetSynth is to streamline the arduous and complex step of
 
 ## Documentation
 
-See documentation athttps://sandialabs.github.io/RetSynth/#
+See documentation at https://sandialabs.github.io/RetSynth/#
 
 ## Build
 
 The difficult part of ensuring that RetSynth can run is installing the non-python dependencies which include:
 	
     GNU/GLPK 	 Download from the website http://ftp.gnu.org/gnu/glpk/
-	
-    GMP 		 Download from the website https://gmplib.org/
     
     GraphViz     Download from the website http://graphviz.org/ or using MacPorts
 
@@ -30,8 +28,7 @@ python setup.py install
 -------------
 RetSynth is currently only tested to work under Python 2.6 and 2.7.
 
-* glpk==0.3
-* pulp==1.6.8 
+* glpk==0.3 or pulp==1.6.8 (preferred)
 * cobra==0.6.2
 * beautifulsoup==4-4.4.1-3
 * pygraphviz==1.3.1
