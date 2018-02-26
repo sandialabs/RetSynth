@@ -123,18 +123,38 @@ def extract_KEGG_orgIDs(types_orgs, num_organisms):
     print ('STATUS: get KEGG '+types_orgs+' organism IDs')
     orgIDs = {}
     darray = extract_KEGG_data(KEGG+'list/organism')
-    for value in tqdm(darray):
-        array = value.split('\t')
-        try:
-            array[3] = array[3].lower()
-            match = re.search(types_orgs, array[3])
-            if match:
-                orgIDs[array[1]] = array[2]
-        except IndexError:
-            pass
-        if num_organisms != 'all':
-            if len(orgIDs) == int(num_organisms):
-                break
+    if types_orgs == 'all':
+        for value in tqdm(darray):
+            array = value.split('\t')
+            try:
+               orgIDs[array[1]] = array[2]
+            except IndexError:
+                pass 
+            if num_organisms != 'all':
+                if len(orgIDs) == int(num_organisms):
+                     break
+
+    else:
+        types_orgs = re.sub('\s+', '', types_orgs)
+        types_orgs_array = types_orgs.split(',')
+        print (types_orgs_array)
+        for value in tqdm(darray):
+            array = value.split('\t')
+            try:
+                array[3] = array[3].lower()
+                matches = []
+                for org in types_orgs_array:
+                    match = re.search(org, array[3])
+                    if match:
+                        matches.append(match)
+                if matches:
+                    print (array[3])
+                    orgIDs[array[1]] = array[2]
+            except IndexError:
+                pass
+            if num_organisms != 'all':
+                if len(orgIDs) == int(num_organisms):
+                     break
     print ('STATUS: {} organisms from KEGG'.format(len(orgIDs)))
     return orgIDs
 
