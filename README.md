@@ -6,7 +6,7 @@ The overaching goal of RetSynth is to streamline the arduous and complex step of
 
 ## Documentation
 
-See documentation at https://sandialabs.github.io/RetSynth/#
+See documentation at https://sandialabs.github.io/RetSynth/
 
 ## Build
 
