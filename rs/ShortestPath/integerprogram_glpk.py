@@ -6,7 +6,6 @@ __description__ = 'Sets bounds necessary for a specific taraget compound for pyg
 from copy import deepcopy
 import re
 from ShortestPath import cycle as cy
-from ShortestPath import add_cycle_constraints_glpk as acc
 from tqdm import tqdm
 
 class IntergerProgram(object):
@@ -18,7 +17,6 @@ class IntergerProgram(object):
         self.k_paths = k_paths
         self.cycle = cycle
         self.CYCLE = cy.CycleCheck(db)
-        self.ACC = acc.AddCycleConstraintsGLPK()
         self.weight_dict = {}
 
     def set_row_bounds(self, lp):
@@ -42,7 +40,7 @@ class IntergerProgram(object):
         '''Set objective function '''
         print ('STATUS: Generating objective function coefficients ...')
         obj = [0]*len(lp.cols)
-        for count, r in enumerate(tqdm(self.allrxnsrev)):
+        for count, r in enumerate(self.allrxnsrev):
             reaction = deepcopy(r)
             reaction = re.sub('_F$', '', reaction)
             reaction = re.sub('_R$', '', reaction)
@@ -113,6 +111,7 @@ class IntergerProgram(object):
         lp = self.LP.lp
         optimalsolutions = []
         optimalsolutions_internal = []
+        self.allcyclesolutions = []
 
         '''Set problem bounds and solve'''
         lp = self.set_row_bounds(lp)
@@ -128,10 +127,12 @@ class IntergerProgram(object):
         '''Add pathway to all optimal solutions'''
         if solution_internal:
             self.fill_allsolutions(solution)
-            optimalsolutions_internal.append(solution)
+            if solution:
+                optimalsolutions_internal.append(solution)
         else:
             self.fill_allsolutions(solution)
-            optimalsolutions.append(solution)
+            if solution:
+                optimalsolutions.append(solution)
 
         if multiplesolutions == 'True' and solution:
             '''Check for multiple solutions'''
@@ -267,14 +268,19 @@ class IntergerProgram(object):
             if self.cycle == 'True' and solution:
                 '''Check for cycles in pathway'''
                 solution, lp, obj = self.cycle_constraints_internal(lp, solution+solution_internal, obj, 0, initialcheck=True)
+                if solution:
+                    op.append(solution)
+
             else:
                 solution = solution + solution_internal
-
+                if solution:
+                    op.append(solution)
+ 
             '''Add pathway to all optimal solutions'''
             if solution:
                 print ('STATUS: Checking for multiple optimal solutions internal ... ')
-                op.append(solution)
                 op = self.multiple_optimal_solution_internal(lp, obj, solution, op)
+
             for count, rxn in enumerate(self.allrxnsrev):
                 if rxn.startswith('EX_') or rxn in ignorerxns:
                     lp.cols[count].bounds = 0, 0
@@ -298,7 +304,7 @@ class IntergerProgram(object):
             if solution and solution not in op:
                 op.append(solution)
                 op = self.multiple_optimal_solution_internal(lp, obj, solution, op)
-        return(op)
+        return op
 
     def cycle_constraints(self, lp, solution, solution_internal, obj, cycle_count, initialcheck=False):
         '''
@@ -322,30 +328,37 @@ class IntergerProgram(object):
             else:
                 '''If cycle checks have not been exceed or have been set to None set new constraints
                     eliminate identification of pathway and solve for new shortest path'''
-                print ('STATUS: Implementing new constraints for pathways with cycles')
-                self.ACC.add_cycle_constraints(lp, self.allrxnsrev, self.CYCLE)
 
-                print ('STATUS: Solving new integer program with cycle constraints')
-                add2obj = len(self.ACC.lp.cols)-len(obj)
-                add2obj_list = [0]*add2obj
-                obj = obj + add2obj_list
-                solution, solution_internal = self.ip_calculate(self.ACC.lp, obj)
-                '''Checks and makes sure resulting solution is of equal length as previous'''
+                if solution not in self.allcyclesolutions:
+                    lp.rows.add(1)
+                    new_row = lp.rows[-1]
+                    new_row.name = 'cycle pathway constraint '+str(len(self.allcyclesolutions))
+                    temp = []
+                    for count, r in enumerate(solution):
+                        reaction = deepcopy(r)
+                        reaction = re.sub('_F$', '', reaction)
+                        reaction = re.sub('_R$', '', reaction)
+                        if reaction not in self.inrxns:
+                            temp.append((self.allrxnsrev.index(r), 1))
+                    new_row.matrix = temp
+                    new_row.bounds = 0, len(temp)-1
+                    self.allcyclesolutions.append(solution)
+                solution, solution_internal = self.ip_calculate(lp, obj)
                 if initialcheck is False:
                     if len(solution) == len(original_solution):
-                        solution, solution_internal, self.ACC.lp, obj = self.cycle_constraints(self.ACC.lp,
-                                                                            solution, solution_internal, obj,
-                                                                            cycle_count)
-                        return (solution, solution_internal, self.ACC.lp, obj)
+                        solution, solution_internal, lp, obj = self.cycle_constraints(lp, solution, 
+                                                                                      solution_internal, obj,
+                                                                                      cycle_count)
+                        return (solution, solution_internal, lp, obj)
 
                     else:
                         print ('WARNING: new solution longer than original {}'.format(solution))
-                        return ([], [], self.ACC.lp, obj)
+                        return ([], [], lp, obj)
                 else:
-                    solution, solution_internal, self.ACC.lp, obj = self.cycle_constraints(self.ACC.lp, solution, solution_internal,
+                    solution, solution_internal, lp, obj = self.cycle_constraints(lp, solution, solution_internal,
                                                                         obj, cycle_count,
                                                                         initialcheck=True)
-                    return (solution, solution_internal, self.ACC.lp, obj)
+                    return (solution, solution_internal, lp, obj)
         else:
             return (solution, solution_internal, lp, obj)
 
@@ -370,28 +383,33 @@ class IntergerProgram(object):
             else:
                 '''If cycle checks have not been exceed or have been set to None set new constraints
                     eliminate identification of pathway and solve for new shortest path'''
-                print ('STATUS: Implementing new constraints for pathways with cycles')
-                self.ACC.add_cycle_constraints(lp, self.allrxnsrev, self.CYCLE)
-
-                print ('STATUS: Solving new integer program with cycle constraints (internal)')
-                add2obj = len(self.ACC.lp.cols)-len(obj)
-                add2obj_list = [0]*add2obj
-                obj = obj + add2obj_list
-                solution_new, solution_internal = self.ip_calculate(self.ACC.lp, obj)
-
-                '''Checks and makes sure resulting solution is of equal length as previous'''
+                if solution not in self.allcyclesolutions:
+                    lp.rows.add(1)
+                    new_row = lp.rows[-1]
+                    new_row.name = 'cycle pathway constraint '+str(len(self.allcyclesolutions))
+                    temp = []
+                    for count, r in enumerate(solution):
+                        reaction = deepcopy(r)
+                        reaction = re.sub('_F$', '', reaction)
+                        reaction = re.sub('_R$', '', reaction)
+                        if reaction not in self.inrxns:
+                            temp.append((self.allrxnsrev.index(r), 1))
+                    new_row.matrix = temp
+                    new_row.bounds = 0, len(temp)-1
+                    self.allcyclesolutions.append(solution)
+                solution, solution_internal = self.ip_calculate(lp, obj)
                 if initialcheck is False:
                     if len(solution+solution_internal) == len(original_solution):
-                        solution, self.ACC.lp, obj = self.cycle_constraints_internal(self.ACC.lp, solution+solution_internal, obj, cycle_count)
-                        return (solution, self.ACC.lp, obj)
+                        solution, lp, obj = self.cycle_constraints_internal(lp, solution+solution_internal, obj, cycle_count)
+                        return (solution, lp, obj)
 
                     else:
                         print ('WARNING: new solution longer than original {} (internal)'.format(solution))
-                        return ([], self.ACC.lp, obj)
+                        return ([], lp, obj)
                 else:
-                    solution, self.ACC.lp, obj = self.cycle_constraints_internal(self.ACC.lp, solution+solution_internal,
-                                                                                 obj, cycle_count, initialcheck=True)
-                    return (solution, self.ACC.lp, obj)
+                    solution, lp, obj = self.cycle_constraints_internal(lp, solution+solution_internal,
+                                                                        obj, cycle_count, initialcheck=True)
+                    return (solution, lp, obj)
         else:
             return (solution, lp, obj)
   

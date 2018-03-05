@@ -15,8 +15,6 @@ from Database import build_kbase_db as bkdb
 from ShortestPath import integerprogram_glpk as ip_glpk
 from ShortestPath import integerprogram_pulp as ip_pulp
 from ShortestPath import cycle as cy
-from ShortestPath import add_cycle_constraints_glpk as acc_glpk
-from ShortestPath import add_cycle_constraints_pulp as acc_pulp
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 PPATH = re.sub('/ShortestPath/tests', '', PATH)
@@ -123,8 +121,6 @@ class CycleTests(unittest.TestCase):
         try:
             import glpk
             print ("...Testing the addition of cycle constraints for glpk package")
-            ACC = acc_glpk.AddCycleConstraintsGLPK()
-            print ("Tests if cycle constraints are getting added correctly")
             inmets = DB.get_compounds_in_model('t1')
             inrxns = DB.get_reactions_in_model('t1')
             LP = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'GLPK')
@@ -132,14 +128,6 @@ class CycleTests(unittest.TestCase):
             original_col = deepcopy(len(LP.lp.cols))
             IP = ip_glpk.IntergerProgram(DB, 10, 20, 0, 'False')
             osp = IP.run_glpk(LP, inmets, inrxns, 'cpdT_c0', 'True')
-            count_arcs = 0
-            for solution in osp:
-                cycletest = self.CYCLE.run_cycle_check(solution, inmets)
-                ACC.add_cycle_constraints(LP.lp, LP.allrxnsrev, self.CYCLE)
-                self.assertEqual(self.CYCLE.totalarcs, len(ACC.storecycleindexes))
-                count_arcs += self.CYCLE.totalarcs
-            self.assertEqual(original_col+count_arcs, len(ACC.lp.cols))
-            self.assertEqual(original_row+count_arcs+len(osp), len(ACC.lp.rows))
         except ImportError:
             print ('glpk package not installed, cannot run tests for this python package')
 
@@ -148,8 +136,6 @@ class CycleTests(unittest.TestCase):
         try:
             import pulp
             print ("...Testing the addition of cycle constraints for pulp package")
-            ACC = acc_pulp.AddCycleConstraints()
-            print ("Tests if cycle constraints are getting added correctly")
             inmets = DB.get_compounds_in_model('t1')
             inrxns = DB.get_reactions_in_model('t1')
             LP = co.ConstructInitialLP(allrxns, allmets, DB, [], True, False, 'PULP')
@@ -157,15 +143,6 @@ class CycleTests(unittest.TestCase):
             original_col = deepcopy(len(LP.variables))
             IP = ip_pulp.IntergerProgram(DB, 10, 20, 0, 'False', 'None')
             osp = IP.run_glpk(LP, inmets, inrxns, 'cpdT_c0', 'True')
-            count_arcs = 0
-            for solution in osp:
-                cycletest = self.CYCLE.run_cycle_check(solution, inmets)
-                ACC.add_cycle_constraints(LP.lp, LP.variables, LP.allrxnsrev, self.CYCLE)
-                LP.variables = ACC.variables
-                self.assertEqual(self.CYCLE.totalarcs, len(ACC.storecycleindexes))
-                count_arcs += self.CYCLE.totalarcs
-            self.assertEqual(original_col+count_arcs, len(ACC.variables))
-            self.assertEqual(original_row+count_arcs+len(osp), len(ACC.lp.constraints))
         except ImportError:
             print ('pulp package not installed, cannot run tests for this python package')
 if __name__ == '__main__':
