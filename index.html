@@ -5,13 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to RetroSynth’s documentation! &#8212; RetSynth .1 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>Welcome to RetSynth’s documentation! &#8212; RetSynth 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '.1',
+        VERSION:     '1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -22,35 +22,41 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">RetSynth 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="welcome-to-retrosynth-s-documentation">
-<h1>Welcome to RetroSynth’s documentation!<a class="headerlink" href="#welcome-to-retrosynth-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>RetroSynth is a python tool which identfies enzyme/reaction pairs, using integer linear programming that need to be inserted into a select microbial organisms to produce a target chemical compound.</p>
+  <div class="section" id="welcome-to-retsynth-s-documentation">
+<h1>Welcome to RetSynth’s documentation!<a class="headerlink" href="#welcome-to-retsynth-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>RetSynth is a python tool which identfies enzyme/reaction pairs, using integer linear programming that are required in a user specified microbial organisms to produce a target chemical compound.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <dl class="last docutils">
 <dt>Required Dependencies:</dt>
-<dd><p class="first">Python packages: PyGLPK and CobraPy</p>
-<p class="last">External software: libsbml and GLPK</p>
+<dd><p class="first">Python packages: PULP (preferred, install by <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pulp</span></code>) or PyGLPK (install by <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">glpk</span></code>) and <a class="reference external" href="http://cobrapy.readthedocs.io/en/latest/">CobraPy</a></p>
+<p>PyGLPK on works with <a class="reference external" href="http://ftp.gnu.org/gnu/glpk/">GLPK</a> versions 4.39 and below. If higher versions of <a class="reference external" href="http://ftp.gnu.org/gnu/glpk/">GLPK</a> are used PULP should be utilized instead.</p>
+<p class="last">External software: <a class="reference external" href="https://pypi.python.org/pypi/python-libsbml-experimental/5.10.0">libsbml</a> and <a class="reference external" href="http://ftp.gnu.org/gnu/glpk/">GLPK</a></p>
 </dd>
 <dt>Optional Dependencies (necessary for Visualization module):</dt>
-<dd><p class="first">Python packages: PyGraphViz</p>
-<p class="last">External software: GraphViz</p>
+<dd><p class="first">Python packages: <a class="reference external" href="https://pypi.python.org/pypi/pygraphviz">PyGraphViz</a></p>
+<p class="last">External software: <a class="reference external" href="http://www.graphviz.org/">GraphViz</a></p>
 </dd>
 </dl>
 </div>
@@ -58,21 +64,33 @@
 <div class="section" id="purpose">
 <h1>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h1>
 <p>In the process of bioengineering a microbial organism, identifying reactions/enzymes to transform into an organism for optimal production of a target compound is extremely difficult due to the vast number of reactions/enzymes in numerous organisms that maybe suitable for optimal production.</p>
-<p>By assembling a database of genome-wide metabolic networks for a plethora of microbial organisms and framing this information into an integer linear program, we can identify the minimal number of enzyme/reaction pairs that need to be added into an organism for optimal synthesis of a compound.  Identifying the minimal number of genes is beneficial for metabolic engineering of an organism because less genetic manipulation is required downstream.  Using flux balance analysis FBA RetroSynth can predict production yields of a compound in a select microbial organism.</p>
-<p>The overaching goal of RetroSynth is to streamline an arduous and complex step of bioengineering a microbial organism, which will enable scientists to inexpensively expedite the production of important target compounds.</p>
+<p>By assembling a database of genome-wide metabolic networks for a plethora of microbial organisms and framing this information into an integer linear program, we can identify the optimal number of enzyme/reaction pairs that need to be added into an organism for optimal synthesis of a compound.  Specifically the goal is to identify the minimal number of reactions/enzymes as this is beneficial for metabolic engineering because less genetic manipulation would be required.  Using flux balance analysis FBA RetSynth can predict production yields of a compound in a select microbial organism.</p>
+<p>The overaching goal of RetSynth is to streamline an arduous and complex step of bioengineering a microbial organism, which will enable scientists to inexpensively expedite the production of important target compounds.</p>
 </div>
-<div class="section" id="retrosynth-workflow">
-<h1>RetroSynth Workflow<a class="headerlink" href="#retrosynth-workflow" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="retsynth-workflow">
+<h1>RetSynth Workflow<a class="headerlink" href="#retsynth-workflow" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="construction-of-metabolic-database">
 <h2>1. Construction of Metabolic Database<a class="headerlink" href="#construction-of-metabolic-database" title="Permalink to this headline">¶</a></h2>
-<p>In order for RetroSynth to identify potential genes to add to an organism for synthesis of a target compound a repository/database of genome-wide metabolic information for numerous microbial organisms must be available to the software.  RetroSynth builds an <a class="reference external" href="https://docs.python.org/2/library/sqlite3.html/">SQLite</a> database.</p>
-<p>To build a database the user must provide a directory <code class="docutils literal"><span class="pre">-d_dir</span> <span class="pre">or</span> <span class="pre">--dump_directory</span></code> of metabolic information in SBML (xml) format including reaction structure (reactants and products) as well as reaction names direction, gene and enzyme information. Additionally, the user must designate a database name with the option <code class="docutils literal"><span class="pre">-gdb</span> <span class="pre">or</span> <span class="pre">--generate_database</span></code></p>
-<p>In the event that a database has already been built and the user wants to use that database instead of building a new one, the database can be accessed by utilizing the option <code class="docutils literal"><span class="pre">-db</span> <span class="pre">or</span> <span class="pre">--database</span></code> with the name of the database.</p>
+<p>In order for RetSynth to identify potential reactions/enzymes to add to an organism for synthesis of a target compound a repository/database of genome-wide metabolic information for numerous microbial organisms must be available to the software.  RetSynth builds an <a class="reference external" href="https://docs.python.org/2/library/sqlite3.html/">SQLite</a> database.
+RetSynth can compile a metabolic database which can include metabolic information from the following Repositories:</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="https://kbase.us/">KBase</a></li>
+<li><a class="reference external" href="https://metacyc.org/">MetaCyc</a></li>
+<li><a class="reference external" href="http://www.genome.jp/kegg/kegg1.html">KEGG</a></li>
+<li><a class="reference external" href="http://minedatabase.mcs.anl.gov/#/home">Metabolic In Silico Network Expansion Database</a></li>
+<li><a class="reference external" href="http://lcsb-databases.epfl.ch/atlas/">ATLAS of BioChemistry</a></li>
+<li><a class="reference external" href="https://www.spresi.com/">SPRESI</a></li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Raw SPRESI data has to be purchased and for RetSynth currently has to in the format of <a class="reference external" href="http://www.daylight.com/meetings/mug05/Kappler/ctfile.pdf">Rxnfiles</a></p>
+</div>
+<p>To build a database the user must identify the type of data with which the database is to be constructed (<code class="docutils literal"><span class="pre">--kbase</span></code>, <code class="docutils literal"><span class="pre">--metacyc</span></code>, <code class="docutils literal"><span class="pre">--kegg</span></code>, <code class="docutils literal"><span class="pre">--atlas</span></code>, <code class="docutils literal"><span class="pre">--mine</span></code> and/or <code class="docutils literal"><span class="pre">--SPRESI</span></code>) and the directory which contains the raw database information <code class="docutils literal"><span class="pre">-k_dir</span> <span class="pre">or</span> <span class="pre">--kbase_dump_directory</span></code> for kbase data (xml files), <code class="docutils literal"><span class="pre">-a_dir</span> <span class="pre">or</span> <span class="pre">--atlas_dump_directory</span></code> for atlas data (csv files), <code class="docutils literal"><span class="pre">-m_dir</span> <span class="pre">or</span> <span class="pre">--mine_dump_directory</span></code> for mine data (msp files), <code class="docutils literal"><span class="pre">s_dir</span> <span class="pre">or</span> <span class="pre">--spresi_dump_directory</span></code> for spresi data (rdf files) and <code class="docutils literal"><span class="pre">-mc</span> <span class="pre">or</span> <span class="pre">--metacyc_addition</span> <span class="pre">(which</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">xml</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">metacyc</span> <span class="pre">database)</span> <span class="pre">and</span> <span class="pre">-tf</span> <span class="pre">or</span> <span class="pre">--translation_file</span> <span class="pre">(which</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">translation</span> <span class="pre">file</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">to</span> <span class="pre">translate</span> <span class="pre">kbase</span> <span class="pre">IDs</span> <span class="pre">universal</span> <span class="pre">IDs)</span></code> for metatcyc. The <code class="docutils literal"><span class="pre">--kegg</span></code> option does not require a directory specification as RetSynth connects directly to the kegg database.  If the user is constructing a database using multiple repositories it is suggested that the <code class="docutils literal"><span class="pre">--inchidb</span></code> option is specified.  This converts all compound IDs to their inchi values and therefore elimiates duplicate entries of metabolites and reactions from the different metabolic repositories.  Additionally, the user must designate a database name with the option <code class="docutils literal"><span class="pre">-gdb</span> <span class="pre">or</span> <span class="pre">--generate_database</span></code>. In the event that a database has already been built and the user wants to use that database instead of building a new one, the database can be accessed by utilizing the option <code class="docutils literal"><span class="pre">-db</span> <span class="pre">or</span> <span class="pre">--database</span></code> with the name of the database.</p>
 </div>
 <div class="section" id="generating-stoichiometric-matrix-for-reactions-and-compounds-in-the-metabolic-database">
 <h2>2. Generating Stoichiometric Matrix for Reactions and Compounds in the Metabolic Database<a class="headerlink" href="#generating-stoichiometric-matrix-for-reactions-and-compounds-in-the-metabolic-database" title="Permalink to this headline">¶</a></h2>
 <p>To find the minimal reactions needed to optimally produce a compound, a stoichiometric matrix for all compounds and reactions in a database is required.  The stoichiometric matrix is a mathmatical representation of the reactions and the compounds they degrade and synthesize.  If a stoichiometric has not been generated for a database the user must specify <code class="docutils literal"><span class="pre">-gdbc</span> <span class="pre">or</span> <span class="pre">--generate_database_constraints</span></code> with the file name which will generate .constraints file.</p>
-<p>Because the .constraints file does not have to be recreated if the user wants to perform multiple searchs for multiple target compounds within the same database, the user can specify the option <code class="docutils literal"><span class="pre">-dbc</span> <span class="pre">or</span> <span class="pre">--database_constraints</span></code> with the .constraints file. This option saves time as initial construction of constraints file is time-consuming for large databases.</p>
+<p>Because the .constraints file does not have to be recreated if the user wants to perform multiple searchs for multiple target compounds within the same database, the user can specify the option <code class="docutils literal"><span class="pre">-dbc</span> <span class="pre">or</span> <span class="pre">--database_constraints</span></code> with the .constraints file name. This option saves time as initial construction of constraints file is time-consuming.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Each constructed database requires its own .constraints file.</p>
@@ -81,9 +99,9 @@
 <div class="section" id="target-compounds-input-file">
 <h2>3. Target Compounds (input file)<a class="headerlink" href="#target-compounds-input-file" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt>RetroSynth also requires a list of compounds and the organism they are desired to be synthesized in <code class="docutils literal"><span class="pre">-t</span> <span class="pre">or</span> <span class="pre">--targets</span></code>.  In the input file, which must be a tab-deliminated text file, there are several options that need to be specified:</dt>
+<dt>RetSynth also requires a list of compounds and the organism they are desired to be synthesized in <code class="docutils literal"><span class="pre">-t</span> <span class="pre">or</span> <span class="pre">--targets</span></code>.  In the input file, which must be a tab-deliminated text file, there are several options that need to be specified:</dt>
 <dd><ol class="first last arabic simple">
-<li>The target compound ID, pubchem ID or name (required)</li>
+<li>The target compound ID, pubchem ID, inchi value or name (required)</li>
 <li>The desired organism ID or organism name (optional, however, if not specified the software proceeds to identify the number of reactions that need to be added to each organism in the database to produce the target)</li>
 <li>Reaction IDs that the user does not want the software to identify as a potential method of producing the target (optional)</li>
 </ol>
@@ -104,9 +122,14 @@
 <span class="mi">1</span><span class="o">-</span><span class="n">butanol</span>   <span class="n">organism_name1</span><span class="p">,</span> <span class="n">organism_name2</span>
 </pre></div>
 </div>
+<p>Example input file 4:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#name organismid</span>
+<span class="n">InChI</span><span class="o">=</span><span class="mi">1</span><span class="n">S</span><span class="o">/</span><span class="n">C4H10O</span><span class="o">/</span><span class="n">c1</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="mi">5</span><span class="o">/</span><span class="n">h5H</span><span class="p">,</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="n">H2</span><span class="p">,</span><span class="mi">1</span><span class="n">H3</span>  <span class="n">organism_name1</span><span class="p">,</span> <span class="n">organism_name2</span>
+</pre></div>
 </div>
-<div class="section" id="examples-running-retrosynth">
-<h2>4. Examples running RetroSynth<a class="headerlink" href="#examples-running-retrosynth" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="examples-running-retsynth">
+<h2>4. Examples running RetSynth<a class="headerlink" href="#examples-running-retsynth" title="Permalink to this headline">¶</a></h2>
 <p>Example 1: If database and constraint file have not already been generated:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">rs</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">t</span> <span class="n">targetfile</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">gdb</span> <span class="n">databasefile</span><span class="o">.</span><span class="n">db</span> <span class="o">-</span><span class="n">gdbc</span> <span class="n">databasefile</span><span class="o">.</span><span class="n">constraints</span>
 </pre></div>
@@ -119,7 +142,7 @@
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">rs</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">t</span> <span class="n">targetfile</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">db</span> <span class="n">databasefile</span><span class="o">.</span><span class="n">db</span> <span class="o">-</span><span class="n">gdbc</span> <span class="n">databasefile</span><span class="o">.</span><span class="n">constraints</span>
 </pre></div>
 </div>
-<p>The remainder of this documentation goes over other options that can be added for further results and analysis provided by RetroSynth.</p>
+<p>The remainder of this documentation goes over other options that can be added for further results and analysis provided by RetSynth.</p>
 <div class="section" id="results">
 <h3>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h3>
 <p>An output file is generated named optimal_pathways.txt which gives the number pathways found which could synthesize the target compound with the mimimal number of reactions.</p>
@@ -147,7 +170,12 @@
 </div>
 <div class="section" id="flux-balance-analysis-fba">
 <h2>Flux Balance Analysis (FBA)<a class="headerlink" href="#flux-balance-analysis-fba" title="Permalink to this headline">¶</a></h2>
-<p>RetroSynth, using the FBA tool <a class="reference external" href="http://cobrapy.readthedocs.io/en/latest/">CobraPy</a> , can simulate the metabolic activity of an organism and calculated the potential percent yield of a target compound using the identified enzyme/reaction pairs.  To run FBA the <code class="docutils literal"><span class="pre">-fba</span> <span class="pre">or</span> <span class="pre">--flux_balance_analysis</span></code> option must be specified.  Using the option <code class="docutils literal"><span class="pre">-media</span> <span class="pre">or</span> <span class="pre">--media_for_FBA</span></code> will specify that the organism’s metabolism will be simulated on a media with the carbon source as glucose.  Finally, the user can perform knockouts, <code class="docutils literal"><span class="pre">-ko</span> <span class="pre">or</span> <span class="pre">--knockouts</span></code> of each reaction in the organism, which will help in the understanding of which enzymes, reactions and metabolic pathways (i.e glycolysis) are important for synthesis of the target compound.</p>
+<p>RetSynth, using the FBA tool <a class="reference external" href="http://cobrapy.readthedocs.io/en/latest/">CobraPy</a>, can simulate the metabolic activity of an organism and calculated the maximum theoretical yield of a target compound using the identified enzyme/reaction pairs.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Currently FBA can only be run on organisms added from <a class="reference external" href="https://kbase.us/">KBase</a>.</p>
+</div>
+<p>To run FBA the <code class="docutils literal"><span class="pre">-fba</span> <span class="pre">or</span> <span class="pre">--flux_balance_analysis</span></code> option must be specified.  Using the option <code class="docutils literal"><span class="pre">-media</span> <span class="pre">or</span> <span class="pre">--media_for_FBA</span></code> will specify that the organism’s metabolism will be simulated on a user specified media.  Currently these media files can also be obtained from  <a class="reference external" href="https://kbase.us/">KBase</a>.  Finally, the user can perform knockouts, <code class="docutils literal"><span class="pre">-ko</span> <span class="pre">or</span> <span class="pre">--knockouts</span></code> of each reaction in the organism, which will help in the understanding of which enzymes, reactions and metabolic pathways are important for synthesis of the target compound.</p>
 <div class="section" id="fba-results">
 <h3>FBA Results<a class="headerlink" href="#fba-results" title="Permalink to this headline">¶</a></h3>
 <p>Several files are generated when the <code class="docutils literal"><span class="pre">-fba</span></code> option is run. flux_output.txt is the main output file which gives the objective function values before and after the reactions identified in the previous step are added to the organism.  Additionally, reactions whose flux changes 2.5 fold from when metabolism is simulated prior to the reactions being add to after they are added are shown in this output document.</p>
@@ -179,18 +207,27 @@
 </div>
 <div class="section" id="visualization">
 <h2>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h2>
-<p>This module, which requires <a class="reference external" href="http://www.graphviz.org/">GraphViz</a> , generates graphs of the reactions that are required to synthesize the compound in a desired organism.  To use this module the user must specify the option <code class="docutils literal"><span class="pre">--figures</span></code></p>
-<p>Example Figure:</p>
-<img alt="_images/SC_graph_cpdT_c0_test1.jpeg" src="_images/SC_graph_cpdT_c0_test1.jpeg" />
+<p>This module, which requires <a class="reference external" href="http://www.graphviz.org/">GraphViz</a> , generates graphs of the reactions that are required to synthesize the compound in a desired organism.  To use this module the user must specify the option <code class="docutils literal"><span class="pre">--figures</span></code> .  Additionaly if the user wants the chemical structures to be used in the figures instead of round nodes option <code class="docutils literal"><span class="pre">--images</span></code> must be specified.
+Example Figure:</p>
+<img alt="_images/SC_graph_1_propanol_Escherichia_coli_DH1.xml.png" src="_images/SC_graph_1_propanol_Escherichia_coli_DH1.xml.png" />
 <dl class="docutils">
-<dt>This figure shows the reactions and compounds needed to produce a target compound (cpdT_c0) in a target organism (t1).</dt>
-<dd><p class="first">Gray nodes show compounds native to the t1</p>
-<p>Red nodes show reactions that need to be added to t1</p>
-<p>Blue nodes show compounds not native to t1</p>
-<p class="last">Yellow node shows target compound (cpdT_c0)</p>
+<dt>This figure shows the reactions and compounds needed to produce a target compound (1-propanol) in a target organism (E. Coli).</dt>
+<dd><p class="first">Gray compounds indicate the compound is native to the target organism</p>
+<p>Black square nodes show reactions that need to be added to target organism</p>
+<p>Blue compounds indicate that the compound is not native to the target organism</p>
+<p class="last">Red compound indicates the target compound</p>
 </dd>
 </dl>
-<p>In this case there are a multiple pathways (with the same minimal number of reactions) to get to methanol which the different colored edges show. The values along the edges represent the flux values through those reactions from running FBA</p>
+<p>In this case there are a multiple pathways (with the same minimal number of reactions) to get to 1-propanol in E. Coli.  The red edges indicate that those are the reactions that produce the maximum theoretical yield of the target compound.</p>
+</div>
+<div class="section" id="other-options-in-retsynth">
+<h2>5. Other options in RetSynth<a class="headerlink" href="#other-options-in-retsynth" title="Permalink to this headline">¶</a></h2>
+<p>In RetSynth there are other options the user can specify to make their searches specific to their needs.</p>
+<ol class="arabic simple">
+<li>The option <code class="docutils literal"><span class="pre">--tan_thresh</span> <span class="pre">or</span> <span class="pre">--tanimoto_threshold</span></code> can be used if the inchi value is being used in the targetfile to specify the target compounds and if the <code class="docutils literal"><span class="pre">--inchidb</span></code> option is specified when generating a database(must be specifed when using option <code class="docutils literal"><span class="pre">-gdb</span></code> or when using an already developed database <code class="docutils literal"><span class="pre">-db</span></code>).  This option tells RetSynth to find pathways for all compounds in the database that have a structure similarity of the specified tanimoto score or greater (default 1) to the target compound in the target file.</li>
+<li>The option <code class="docutils literal"><span class="pre">-k</span> <span class="pre">or</span> <span class="pre">--k_number_of_paths</span></code> specifies the number of shortest pathways (pathways with mimal number of reaction/enzyme pairs) wanted by the user. If the user specified <code class="docutils literal"><span class="pre">-k</span> <span class="pre">1</span></code> that would tell RetSynth to identify the shortest pathways and then next shortest pathways, giving the user pathways of 2 different lengths to the target compound where as <code class="docutils literal"><span class="pre">-k</span> <span class="pre">2</span></code> would result in pathways of three different lengths.  The default for -k is 0.</li>
+<li>The options <code class="docutils literal"><span class="pre">-ms</span> <span class="pre">or</span> <span class="pre">--multiple_solutions</span></code> and <code class="docutils literal"><span class="pre">-cy</span> <span class="pre">or</span> <span class="pre">--cycles</span></code> indicate to RetSynth that all pathways having the minimal number of steps should be identified and that these pathways should not contain cycles.  Both of these option defaults are set true.</li>
+</ol>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -198,9 +235,9 @@
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="#"><span class="doc">Welcome to RetroSynth’s documentation!</span></a></li>
+<li><a class="reference internal" href="#"><span class="doc">Welcome to RetSynth’s documentation!</span></a></li>
 <li><a class="reference internal" href="script.html"><span class="doc">Parameter Documentation</span></a></li>
-<li><a class="reference internal" href="modules.html"><span class="doc">RetroSynth Modules</span></a></li>
+<li><a class="reference internal" href="modules.html"><span class="doc">RetSynth Modules</span></a></li>
 </ul>
 </div>
 
@@ -210,24 +247,36 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">RetSynth</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to RetSynth’s documentation!</a></li>
+<li><a class="reference internal" href="#purpose">Purpose</a></li>
+<li><a class="reference internal" href="#retsynth-workflow">RetSynth Workflow</a><ul>
+<li><a class="reference internal" href="#construction-of-metabolic-database">1. Construction of Metabolic Database</a></li>
+<li><a class="reference internal" href="#generating-stoichiometric-matrix-for-reactions-and-compounds-in-the-metabolic-database">2. Generating Stoichiometric Matrix for Reactions and Compounds in the Metabolic Database</a></li>
+<li><a class="reference internal" href="#target-compounds-input-file">3. Target Compounds (input file)</a></li>
+<li><a class="reference internal" href="#examples-running-retsynth">4. Examples running RetSynth</a><ul>
+<li><a class="reference internal" href="#results">Results</a></li>
 </ul>
-</div>
+</li>
+<li><a class="reference internal" href="#flux-balance-analysis-fba">Flux Balance Analysis (FBA)</a><ul>
+<li><a class="reference internal" href="#fba-results">FBA Results</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#visualization">Visualization</a></li>
+<li><a class="reference internal" href="#other-options-in-retsynth">5. Other options in RetSynth</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -242,20 +291,21 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, Sandia National Laboratories.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/index_main.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">RetSynth 1 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Sandia National Laboratories.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
   </body>
 </html>
