@@ -1,15 +1,7 @@
 #General files to ignore#
 **/*.pyc
-**/KbaseAllGenes.txt
-**/output_*.txt
-**/.jpeg
-**/slurm*
 
 #MAC Files#
 **/.DS_Store
 **/.DS_Store?
 
-#Stored Database Folder
-**/DevelopedDatabases/
-**/rs/RSjuptyer_files/*
-**/rs/.ipynb_checkpoints/*
