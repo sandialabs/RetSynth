@@ -412,7 +412,7 @@ class Connector(object):
         Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
         if Q:
             if Q.arraysize > 0:
-                result = Q.fetchone()[0]
+                result = Q.fetchall()[0][0]
                 return str(result)
             else:
                 return str(None)
@@ -690,6 +690,20 @@ class Connector(object):
             else:
                 return 'None'
 
+        else:
+            print ('WARNING: Issue with database')
+            return str(None)
+
+    def get_all_kegg_cpd_ID(self):
+        '''Retrieves reactions based on type'''
+        query = "select kegg_id from compound"
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        if Q:
+            if Q.arraysize > 0:
+                hits = Q.fetchall()
+                return [i[0] for i in hits]
+            else:
+                return str(None)
         else:
             print ('WARNING: Issue with database')
             return str(None)
