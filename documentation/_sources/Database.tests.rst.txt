@@ -80,3 +80,10 @@ Database.tests.query_inchidb_tests
     :members:
     :undoc-members:
     :show-inheritance:
+
+Database.tests.remove_duplicate_cpds_test
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.tests.remove_duplicate_cpds_test
+    :members:
+    :undoc-members:
+    :show-inheritance:

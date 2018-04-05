@@ -5,27 +5,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Index &#8212; RetSynth 1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -110,6 +101,8 @@
         <li><a href="Database.tests.html#Database.tests.query_tests.all_rev">(in module Database.tests.query_tests)</a>
 </li>
       </ul></li>
+      <li><a href="Visualization.html#Visualization.SP_Graph_dot.GraphDot.alter_name_length">alter_name_length() (Visualization.SP_Graph_dot.GraphDot method)</a>
+</li>
       <li><a href="FBA.html#FBA.compare_results.Compare.analyze_fluxes">analyze_fluxes() (FBA.compare_results.Compare method)</a>
 
       <ul>
@@ -224,6 +217,8 @@
 </li>
       <li><a href="Database.html#module-Database.query">Database.query (module)</a>
 </li>
+      <li><a href="Database.html#module-Database.remove_duplicate_cpds">Database.remove_duplicate_cpds (module)</a>
+</li>
       <li><a href="RetSynth.html#module-Database.tests">Database.tests (module)</a>
 </li>
       <li><a href="Database.tests.html#module-Database.tests.adding_2_database_tests">Database.tests.adding_2_database_tests (module)</a>
@@ -249,6 +244,8 @@
       <li><a href="Database.tests.html#module-Database.tests.query_inchidb_tests">Database.tests.query_inchidb_tests (module)</a>
 </li>
       <li><a href="Database.tests.html#module-Database.tests.query_tests">Database.tests.query_tests (module)</a>
+</li>
+      <li><a href="Database.tests.html#module-Database.tests.remove_duplicate_cpds_test">Database.tests.remove_duplicate_cpds_test (module)</a>
 </li>
       <li><a href="Database.html#module-Database.translate_kbase_genes">Database.translate_kbase_genes (module)</a>
 </li>
@@ -332,10 +329,10 @@
 </li>
       <li><a href="FBA.tests.html#module-FBA.tests.retrieve_producable_mets_tests">FBA.tests.retrieve_producable_mets_tests (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Visualization.html#Visualization.SP_Graph_dot.GraphDot.FBA_weights">FBA_weights() (Visualization.SP_Graph_dot.GraphDot method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Parser.html#Parser.read_targets.Readfile.file_opener">file_opener() (Parser.read_targets.Readfile method)</a>
 </li>
       <li><a href="ShortestPath.html#ShortestPath.integerprogram_glpk.IntergerProgram.fill_allsolutions">fill_allsolutions() (ShortestPath.integerprogram_glpk.IntergerProgram method)</a>
@@ -357,6 +354,8 @@
       <li><a href="Database.html#Database.build_ATLAS_db.fill_dictionary">fill_dictionary() (in module Database.build_ATLAS_db)</a>
 </li>
       <li><a href="Database.html#Database.build_ATLAS_db.fill_dictionary_atlasbiochem">fill_dictionary_atlasbiochem() (in module Database.build_ATLAS_db)</a>
+</li>
+      <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.fill_final_targets">fill_final_targets() (Parser.structure_similarity.TanimotoStructureSimilarity method)</a>
 </li>
       <li><a href="Database.html#Database.build_KEGG_db.CompileKEGGIntoDB.fill_new_database">fill_new_database() (Database.build_KEGG_db.CompileKEGGIntoDB method)</a>
 </li>
@@ -395,6 +394,8 @@
       <li><a href="Database.html#Database.build_MINE_db.BuildMINEdb.generate_reactions">generate_reactions() (Database.build_MINE_db.BuildMINEdb method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_all_compounds">get_all_compounds() (Database.query.Connector method)</a>
+</li>
+      <li><a href="Database.html#Database.query.Connector.get_all_kegg_cpd_ID">get_all_kegg_cpd_ID() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_all_keggIDs">get_all_keggIDs() (Database.query.Connector method)</a>
 </li>
@@ -496,6 +497,8 @@
 </li>
       <li><a href="Database.html#Database.query.Connector.get_stoichiometry">get_stoichiometry() (Database.query.Connector method)</a>
 </li>
+      <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.get_tanimoto_score">get_tanimoto_score() (Parser.structure_similarity.TanimotoStructureSimilarity method)</a>
+</li>
       <li><a href="Database.html#Database.query.Connector.get_temperature">get_temperature() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_time">get_time() (Database.query.Connector method)</a>
@@ -518,6 +521,8 @@
         <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.identify_internal_rxns">(ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
 </li>
       </ul></li>
+      <li><a href="Database.html#Database.remove_duplicate_cpds.OverlappingCpdIDs.identify_overlapping_ids">identify_overlapping_ids() (Database.remove_duplicate_cpds.OverlappingCpdIDs method)</a>
+</li>
       <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.initial_A_matrix">initial_A_matrix() (ShortestPath.constraints.ConstructInitialLP method)</a>
 </li>
       <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.initial_reaction_constraints">initial_reaction_constraints() (ShortestPath.constraints.ConstructInitialLP method)</a>
@@ -526,10 +531,10 @@
 </li>
       <li><a href="Database.html#Database.build_kbase_db.insert_comprehensive_model_results_2_db">insert_comprehensive_model_results_2_db() (in module Database.build_kbase_db)</a>
 </li>
-      <li><a href="Database.html#Database.build_kbase_db.insert_individual_model_results_2_db">insert_individual_model_results_2_db() (in module Database.build_kbase_db)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Database.html#Database.build_kbase_db.insert_individual_model_results_2_db">insert_individual_model_results_2_db() (in module Database.build_kbase_db)</a>
+</li>
       <li><a href="ShortestPath.html#ShortestPath.integerprogram_glpk.IntergerProgram">IntergerProgram (class in ShortestPath.integerprogram_glpk)</a>
 
       <ul>
@@ -652,6 +657,8 @@
 </li>
       <li><a href="Parser.html#Parser.generate_output.Output.output_theoretical_yield">output_theoretical_yield() (Parser.generate_output.Output method)</a>
 </li>
+      <li><a href="Database.html#Database.remove_duplicate_cpds.OverlappingCpdIDs">OverlappingCpdIDs (class in Database.remove_duplicate_cpds)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -735,6 +742,8 @@
       <li><a href="Visualization.html#Visualization.SP_Graph_dot.GraphDot.reformat_inchi">reformat_inchi() (Visualization.SP_Graph_dot.GraphDot method)</a>
 </li>
       <li><a href="FBA.html#FBA.optimize_target.OptimizeTarget.remove_modifications">remove_modifications() (FBA.optimize_target.OptimizeTarget method)</a>
+</li>
+      <li><a href="Database.tests.html#Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests">RemoveDuplicateCpdsTests (class in Database.tests.remove_duplicate_cpds_test)</a>
 </li>
       <li><a href="Database.html#Database.build_metacyc_db.MetaCyc.retrieve_compartment_4_compartment">retrieve_compartment_4_compartment() (Database.build_metacyc_db.MetaCyc method)</a>
 </li>
@@ -833,6 +842,8 @@
 </li>
         <li><a href="Database.tests.html#Database.tests.query_tests.Generate_databaseTests.setUp">(Database.tests.query_tests.Generate_databaseTests method)</a>
 </li>
+        <li><a href="Database.tests.html#Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests.setUp">(Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests method)</a>
+</li>
         <li><a href="FBA.tests.html#FBA.tests.build_model_tests.BuildFBATests.setUp">(FBA.tests.build_model_tests.BuildFBATests method)</a>
 </li>
         <li><a href="FBA.tests.html#FBA.tests.compareKO_results_tests.RuncompareKO_resultsTests.setUp">(FBA.tests.compareKO_results_tests.RuncompareKO_resultsTests method)</a>
@@ -900,8 +911,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity">TanimotoStructureSimilarity (class in Parser.structure_similarity)</a>
 </li>
-      <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.targets">targets (Parser.structure_similarity.TanimotoStructureSimilarity attribute)</a>
-</li>
       <li><a href="Database.tests.html#Database.tests.adding_2_database_tests.Adding_to_current_DBTests.tearDown">tearDown() (Database.tests.adding_2_database_tests.Adding_to_current_DBTests method)</a>
 
       <ul>
@@ -922,6 +931,8 @@
         <li><a href="Database.tests.html#Database.tests.query_inchidb_tests.Generate_databaseTests.tearDown">(Database.tests.query_inchidb_tests.Generate_databaseTests method)</a>
 </li>
         <li><a href="Database.tests.html#Database.tests.query_tests.Generate_databaseTests.tearDown">(Database.tests.query_tests.Generate_databaseTests method)</a>
+</li>
+        <li><a href="Database.tests.html#Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests.tearDown">(Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests method)</a>
 </li>
         <li><a href="FBA.tests.html#FBA.tests.build_model_tests.BuildFBATests.tearDown">(FBA.tests.build_model_tests.BuildFBATests method)</a>
 </li>
@@ -1174,6 +1185,8 @@
 </li>
       <li><a href="Parser.tests.html#Parser.tests.read_targets_tests.PubchemTests.test_read_targets5inchi">test_read_targets5inchi() (Parser.tests.read_targets_tests.PubchemTests method)</a>
 </li>
+      <li><a href="Database.tests.html#Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests.test_removeduplicatecpds">test_removeduplicatecpds() (Database.tests.remove_duplicate_cpds_test.RemoveDuplicateCpdsTests method)</a>
+</li>
       <li><a href="FBA.tests.html#FBA.tests.retrieve_producable_mets_tests.Retrieve_producable_compoundsTests.test_retrieve_producable_compounds">test_retrieve_producable_compounds() (FBA.tests.retrieve_producable_mets_tests.Retrieve_producable_compoundsTests method)</a>
 </li>
       <li><a href="ShortestPath.tests.html#ShortestPath.tests.integerprogramming_tests.ConstraintsTests.test_run_glpk_multipaths_cycle_glpk">test_run_glpk_multipaths_cycle_glpk() (ShortestPath.tests.integerprogramming_tests.ConstraintsTests method)</a>
@@ -1197,6 +1210,8 @@
       <li><a href="Database.tests.html#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader">tests_RDFileReader() (Database.tests.build_SPRESI_db_tests.RDFileReaderTests method)</a>
 </li>
       <li><a href="Database.tests.html#Database.tests.build_SPRESI_db_tests.RDFileReaderTests.tests_RDFileReader_inchi">tests_RDFileReader_inchi() (Database.tests.build_SPRESI_db_tests.RDFileReaderTests method)</a>
+</li>
+      <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.track_final_cpd">track_final_cpd (Parser.structure_similarity.TanimotoStructureSimilarity attribute)</a>
 </li>
       <li><a href="Database.html#Database.build_metacyc_db.Translate">Translate (class in Database.build_metacyc_db)</a>
 </li>
@@ -1236,17 +1251,16 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-
-   
-
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1267,7 +1281,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Sandia National Laboratories.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>

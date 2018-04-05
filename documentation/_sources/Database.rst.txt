@@ -11,6 +11,13 @@ Database.initialize_database
     :undoc-members:
     :show-inheritance:
 
+Database.query
+^^^^^^^^^^^^^^
+.. automodule:: Database.query
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Database.build_ATLAS_db
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_ATLAS_db
@@ -39,13 +46,6 @@ Database.build_metacyc_db
     :undoc-members:
     :show-inheritance:
 
-Database.build_MINE_db
-^^^^^^^^^^^^^^^^^^^^^^
-.. automodule:: Database.build_MINE_db
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Database.build_SPRESI_db
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_SPRESI_db
@@ -53,9 +53,16 @@ Database.build_SPRESI_db
     :undoc-members:
     :show-inheritance:
 
-Database.query
-^^^^^^^^^^^^^^
-.. automodule:: Database.query
+Database.build_MINE_db
+^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_MINE_db
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Database.remove_duplicate_cpds
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.remove_duplicate_cpds
     :members:
     :undoc-members:
     :show-inheritance:

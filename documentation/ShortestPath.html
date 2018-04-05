@@ -4,27 +4,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>ShortestPath module &#8212; RetSynth 1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +43,7 @@
 <dl class="class">
 <dt id="ShortestPath.constraints.ConstructInitialLP">
 <em class="property">class </em><code class="descclassname">ShortestPath.constraints.</code><code class="descname">ConstructInitialLP</code><span class="sig-paren">(</span><em>allrxns</em>, <em>allcpds</em>, <em>db</em>, <em>ignorerxns</em>, <em>gdbc</em>, <em>reverse_constraints=False</em>, <em>specified_pysolver=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Constructs A matrix and indidvidual reaction constraints</p>
 <dl class="method">
 <dt id="ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_glpk">
@@ -129,7 +120,7 @@ set reaction constraints</p>
 <dl class="class">
 <dt id="ShortestPath.cycle.CycleCheck">
 <em class="property">class </em><code class="descclassname">ShortestPath.cycle.</code><code class="descname">CycleCheck</code><span class="sig-paren">(</span><em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.cycle.CycleCheck" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Runs check to see if a cycle is present in solution (shortest path)</p>
 <dl class="method">
 <dt id="ShortestPath.cycle.CycleCheck.run_cycle_check">
@@ -145,7 +136,7 @@ set reaction constraints</p>
 <dl class="class">
 <dt id="ShortestPath.extractinfo.Extract_Information">
 <em class="property">class </em><code class="descclassname">ShortestPath.extractinfo.</code><code class="descname">Extract_Information</code><span class="sig-paren">(</span><em>optimal_pathways</em>, <em>incpds</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.extractinfo.Extract_Information" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Retrieves names of compounds, reactions and organisms for
 reactions and compounds that need to be added
 to produce a target compound</p>
@@ -169,7 +160,7 @@ to produce a target compound</p>
 <dl class="class">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram">
 <em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_glpk.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Sets final constraints and solved integer linear program</p>
 <dl class="method">
 <dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints">
@@ -257,7 +248,7 @@ and resolve if cycle is identified for solutions with internal reactions</p>
 <dl class="class">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram">
 <em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em>, <em>time_limit</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Sets final constraints and solved integer linear program</p>
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints">
@@ -345,7 +336,7 @@ if cycle is identified</p>
 <dl class="class">
 <dt id="ShortestPath.search_sp_metclusters.SearchMetabolicClusters">
 <em class="property">class </em><code class="descclassname">ShortestPath.search_sp_metclusters.</code><code class="descname">SearchMetabolicClusters</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>LP</em>, <em>IP</em>, <em>OUTPUT</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.search_sp_metclusters.SearchMetabolicClusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Species with the same metabolism are grouped into a defined cluster in the database,
 this goes through all defined clusters and determines the number of
 reactions that need to be added to each cluster to produce a target compound</p>
@@ -393,12 +384,14 @@ added to produce a target compound</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -419,7 +412,7 @@ added to produce a target compound</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Sandia National Laboratories.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
     </div>
   </body>
 </html>
