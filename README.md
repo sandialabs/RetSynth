@@ -34,7 +34,8 @@ RetSynth is currently only tested to work under Python 2.6 and 2.7.
 * pygraphviz==1.3.1
 * python-libsbml-experimental==5.10.0
 
-## Publication (please cite)
+### Publication (please cite)
+*  Whitmore L. S., et al. RetSynth: Solving all optimal retrosynthesis solutions using dynamically constrained integer linear programming, bioRxiv doi: https://doi.org/10.1101/223271
 
 ### License
 -----------
