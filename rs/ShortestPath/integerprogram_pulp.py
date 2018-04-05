@@ -171,7 +171,7 @@ class IntergerProgram(object):
                 solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables,
                                                                                          solution, solution_internal, obj, 0)
             if solution_internal:
-                if solution and solution not in op_internal:
+                if solution and solution not in op_internal+op:
                     op_internal.append(solution)
                     self.fill_allsolutions(solution)
                     op = self.multiple_optimal_solution(lp, variables, obj, solution, op, op_internal, count_k_paths)
@@ -189,7 +189,6 @@ class IntergerProgram(object):
         print ('IDENTIFY INTERNAL REACTIONS')
         ignorerxns = []
         for orig_solution in op_internal:
-            print (str(orig_solution)+' op internal solution')
             for count, rxn in enumerate(self.allrxnsrev):
                 reaction = deepcopy(rxn)
                 reaction = re.sub('_F$', '', reaction)
@@ -221,7 +220,6 @@ class IntergerProgram(object):
             if solution:
                 print ('STATUS: Checking for multiple optimal solutions internal ... ')
                 op = self.multiple_optimal_solution_internal(lp, variables, obj, solution, op)
-                print (op)
 
             for count, rxn in enumerate(self.allrxnsrev):
                 if rxn.startswith('EX_') or rxn in ignorerxns:
@@ -281,8 +279,6 @@ class IntergerProgram(object):
                 if solution and solution not in  op_internal+op:
                     op.append(solution)
                     self.fill_allsolutions(solution)
-                    if op_internal:
-                        op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
                     op = self.multiple_optimal_solution(lp, variables, obj,
                                                         solution, op, [], count_k_paths)
 
@@ -326,8 +322,6 @@ class IntergerProgram(object):
                 '''If cycle checks have not been exceed or have been set to None set new constraints
                     eliminate identification of pathway and solve for new shortest path'''
                 if solution not in self.allcyclesolutions:
-                    print (self.target)
-                    print (solution)
                     temp = []
                     for count, r in enumerate(solution):
                         reaction = deepcopy(r)
@@ -350,9 +344,6 @@ class IntergerProgram(object):
                         solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution, solution_internal, obj, cycle_count, initialcheck=True)
                         return (solution, solution_internal, lp, variables, obj)
                 else:
-                    print (self.target)
-                    print (solution)
-                    print ("Solution already in all cycle solutions")
                     return ([], [], lp, variables, obj)
 
         else:
@@ -382,8 +373,6 @@ class IntergerProgram(object):
                 '''If cycle checks have not been exceed or have been set to None set new constraints
                     eliminate identification of pathway and solve for new shortest path'''
                 if solution not in self.allcyclesolutions:
-                    print (self.target+' Internal')
-                    print (solution)
                     temp = []
                     for count, r in enumerate(solution):
                         reaction = deepcopy(r)
@@ -406,8 +395,6 @@ class IntergerProgram(object):
                         solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal, obj, cycle_count, initialcheck=True)
                         return (solution, lp, variables, obj)
                 else:
-                    print (self.target+' Internal')
-                    print (solution)
                     print ("Solution already in all cycle solutions internal")                    
                     return ([], lp, variables, obj) 
         else:
