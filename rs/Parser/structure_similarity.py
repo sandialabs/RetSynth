@@ -4,6 +4,7 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Check based on compound structure if it is in the database'
 
 import re
+from tqdm import tqdm
 from copy import deepcopy
 from sys import platform
 if platform == 'darwin':
@@ -20,13 +21,19 @@ class TanimotoStructureSimilarity(object):
     def __init__(self, targets, all_compounds, cytosol, extracellular, threshold_score = 1):
         """Initialize"""
         self.targets = []
+        self.track_final_cpd = []
         '''Remove duplicated targets'''
         for target in targets:
             if target not in self.targets:
                 self.targets.append(target)
         self.individualtargets = []
+        self.organisms = []
         for target in self.targets:
             self.individualtargets.append(target[0])
+            organism = ','.join([target[1], target[2], target[3]])
+            if organism not in self.organisms:
+                self.organisms.append(organism)
+        self.organisms = list(set(self.organisms))
         self.all_compounds = all_compounds
         self.cytosol = cytosol
         self.extracellular = extracellular
@@ -55,43 +62,59 @@ class TanimotoStructureSimilarity(object):
             return (None)
         else:
             return index
+
+    def get_tanimoto_score(self, tmol, threshold):
+        temp = {}
+        for db_cpd in self.db_cpds_fp:
+            score = self.IN.similarity(self.individualtargets_p_fp[tmol], self.db_cpds_fp[db_cpd], 'tanimoto')
+            temp[db_cpd] = score
+        max_score_cpds = [temp.keys()[temp.values().index(i)] for i in temp.values() if float(i) >= float(threshold)]
+        return (max_score_cpds)
+
     def calculate_tanimoto_score(self):
         """Calculate similarity for compounds that are not in the database"""
-        self.outlier_cpds = set(self.individualtargets) - set(self.all_compounds)
-        if self.outlier_cpds:
-            self.finaltargets = self.targets
-            self.outlier_cpds = self.process_targets(self.outlier_cpds)
-            self.retrieve_fingerprints()
-            for count ,tmol in enumerate(self.outlier_cpds_fp.keys()):
-                if tmol in self.cpd_dict.keys():
+           
+        self.finaltargets = self.targets
+        self.individualtargets_p = self.process_targets(set(self.individualtargets))
+        self.retrieve_fingerprints()
+        for count ,tmol in enumerate(self.individualtargets_p_fp.keys()):
+            if tmol+'_'+self.cytosol in self.all_compounds:
+                max_score_cpds = self.get_tanimoto_score(tmol, 1)
+                if max_score_cpds:
+                    for max_score_cpd in set(max_score_cpds):
+                        if max_score_cpd != tmol:
+                            new_target = self.extract_db_cpd_ID(max_score_cpd)
+                            if new_target not in self.individualtargets and new_target not in self.track_final_cpd:
+                                print ("STATUS: The following compound {} have 100 percent similarity with the original target {} therefore adding them to to targets".format(max_score_cpd, tmol))                
+                                self.fill_final_targets(new_target)
+            
+            elif tmol in self.cpd_dict.keys():
+                index = self.get_original_target(tmol+'_'+self.cytosol)
+                if index:
+                    new_target = self.extract_db_cpd_ID(tmol)
+                    print ("STATUS: Switching target ID from {} to {}".format(tmol+'_'+self.cytosol, new_target))
+                    self.finaltargets[index][0] = new_target
+
+            else:
+                max_score_cpds = self.get_tanimoto_score(tmol, self.threshold_score)
+                if max_score_cpds:
                     index = self.get_original_target(tmol+'_'+self.cytosol)
                     if index:
-                        new_target = self.extract_db_cpd_ID(tmol)
-                        print ("Switching target ID from {} to {}".format(tmol+'_'+self.cytosol, new_target))
-                        self.finaltargets[index][0] = new_target
+                        del self.finaltargets[index]
+                    print ('STATUS: {} compounds have {} or greater similarity to target compound {}'.format(len(set(max_score_cpds)), self.threshold_score, tmol+'_'+self.cytosol))
+                    for max_score_cpd in set(max_score_cpds):
+                        new_target = self.extract_db_cpd_ID(max_score_cpd)
+                        if new_target not in self.individualtargets and new_target not in self.track_final_cpd:
+                            print ('STATUS: Adding compound {} to target list'.format(max_score_cpd))
+                            self.fill_final_targets(new_target)
                 else:
-                    temp = {}
-                    for db_cpd in self.db_cpds_fp:
-                        score = self.IN.similarity(self.outlier_cpds_fp[tmol], self.db_cpds_fp[db_cpd], 'tanimoto')
-                        temp[db_cpd] = score
-                    max_score = max(temp.values())
-                    max_score_cpd = [temp.keys()[temp.values().index(i)] for i in temp.values() if i == max_score]
-                    if max_score == self.threshold_score:
-                        new_target = self.extract_db_cpd_ID(max_score_cpd[0])
-                        print ("Changed {} to {}".format(tmol+'_'+self.cytosol, new_target))
-                        if new_target not in self.individualtargets:
-                            index = self.get_original_target(tmol+'_'+self.cytosol)
-                            if index:
-                                self.finaltargets[index][0] = new_target
-                                self.individualtargets[index] = new_target
-                        elif new_target in self.individualtargets:
-                            print ("New target {} already in list...removing old target {}".format(new_target, tmol+'_'+self.cytosol))
-                            index = self.get_original_target(tmol+'_'+self.cytosol)
-                            if index:
-                                self.finaltargets.remove(self.finaltargets[index])
-        else:
-            print ("All compounds are in the database")
-            self.finaltargets = self.targets
+                    print ('STATUS: No compounds in the database that are {} percent similar to target {}'.format(self.threshold_score*100, tmol+'_'+self.cytosol))
+
+    def fill_final_targets(self, new_target):
+        for organism in self.organisms:
+            organisms = organism.split(',')
+            self.finaltargets.append([new_target]+organisms)
+            self.track_final_cpd.append(new_target)
 
     def retrieve_fingerprints(self):
         """Retrieve fingerprints for database compounds and targets"""
@@ -126,15 +149,17 @@ class TanimotoStructureSimilarity(object):
             db_cpds.append(cpd)
             self.cpd_dict.setdefault(cpd, []).append(originalcpd)
 
-        self.outlier_cpds_fp = {}
-        for count, tmol in enumerate(self.outlier_cpds):
+        self.individualtargets_p_fp = {}
+        print ("STATUS: getting fingerprints for target compounds")
+        for count, tmol in enumerate(tqdm(self.individualtargets_p)):
             try:
-                self.outlier_cpds_fp[tmol] = self.INCHI.loadMolecule(tmol).fingerprint('full')
+                self.individualtargets_p_fp[tmol] = self.INCHI.loadMolecule(tmol).fingerprint('full')
             except indigo.IndigoException:
                 print ('Could not get fingerprint for {}'.format(tmol))        
         self.db_cpds_fp = {}
         db_cpds_set = set(db_cpds)
-        for db_cpd in db_cpds_set:
+        print ("STATUS: getting fingerprints for database compounds")        
+        for db_cpd in tqdm(db_cpds_set):
             try:
                 mol = self.INCHI.loadMolecule(db_cpd)
                 self.db_cpds_fp[db_cpd] = mol.fingerprint('full')
