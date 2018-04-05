@@ -17,7 +17,7 @@ class BuildModel(object):
         self.target_org = target_organism_ID
         self.model = Model(target_organism_ID)
         self.rxns = inrxns
-        self.metabolites = inmets
+        self.metabolites = list(set(inmets))
         self.DB = db
         self.media_constraints = {}
         if media:
