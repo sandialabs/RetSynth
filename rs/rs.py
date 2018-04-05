@@ -1,7 +1,7 @@
 from __future__ import print_function
 __author__ = 'Leanne Whitmore and Corey Hudson'
 __email__ = 'lwhitmo@sandia.gov and cmhudso@sandia.gov'
-__description__ = 'Main code to RetroSynthesis (RS)'
+__description__ = 'Main code to RetSynth (RS)'
 
 from multiprocessing import Process, Queue
 import argparse
@@ -28,11 +28,13 @@ from Database import build_ATLAS_db as batlasdb
 from Database import build_MINE_db as bminedb
 from Database import build_SPRESI_db as bspresidb
 from Database import query as Q
+from Database import remove_duplicate_cpds as rdc
 from FBA import build_model as bm
 from FBA import optimize_target as ot
 from FBA import compare_results as cr
 from FBA import retrieve_producable_mets as rpm
 from FBA import compareKO_results as crko
+#from toxicity import TrainToxModel as tt
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -42,7 +44,7 @@ def parse_arguments():
     chemical and output the minimum number of steps/reactions required to
     produce the target chemical in the organism.
     '''
-    parser = argparse.ArgumentParser(description="BioRetroSynthesis Software: \
+    parser = argparse.ArgumentParser(description="RetSynth Software: \
                                     Software identifies reactions and \
                                     corresponding genes that need to be added\
                                     to a desired organism to produce a target\
@@ -59,6 +61,7 @@ def parse_arguments():
                                                                             only works with glpk package 4.3 or lower \
                                                                             or PULP (default))',
                         required=False, type=str, default='PULP')
+ 
     parser.add_argument('-tmlim', '--solver_time_limit', help='time limit for solver to solve shortest \
                                                                 path (note: only function with PULP python \
                                                                 solver package)',
@@ -76,14 +79,14 @@ def parse_arguments():
                         help='Generate output constraint file for entire \
                         database', required=False, type=str)
 
-    parser.add_argument('--kbase', help='Set to build database with  Kbase data',  required=False,
+    parser.add_argument('--kbase', help='Set whether to build database with  Kbase data',  required=False,
                         action="store_true")
     
     parser.add_argument('-k_dir', '--kbase_dump_directory', help='Path to folder \
                         of SBML network files from kbase',
                         required=False, type=str)
 
-    parser.add_argument('--metacyc', help='Set to build database with metacyc',  required=False,
+    parser.add_argument('--metacyc', help='Set whether to build database with metacyc',  required=False,
                         action="store_true")    
     
     parser.add_argument('-mc', '--metacyc_addition', help='Add metacyc xml \
@@ -93,25 +96,25 @@ def parse_arguments():
                         metacyc and kbase IDs', required=False, type=str)    
 
 
-    parser.add_argument('--SPRESI', help='Set to build database with SPRESI information',
+    parser.add_argument('--SPRESI', help='Set whether to build database with SPRESI information',
                         required=False, action="store_true")
     
     parser.add_argument('-s_dir', '--spresi_dump_directory', help='Path to folder of \
                         SPRESI files (.rdf)', required=False, type=str)
 
-    parser.add_argument('--mine', help='Set to build database with mine data',  required=False,
+    parser.add_argument('--mine', help='Set whether to build database with mine data',  required=False,
                         action="store_true")
     
     parser.add_argument('-m_dir', '--mine_dump_directory', help='Path to folder \
                         of .msp files from MINE database',
                         required=False, type=str)
 
-    parser.add_argument('--atlas', help='Set to build database with atlas data',  required=False,
+    parser.add_argument('--atlas', help='Set whether to build database with atlas data',  required=False,
                         action="store_true")
     parser.add_argument('-a_dir', '--atlas_dump_directory', help='Path to folder \
                         of ATLAS files (.csv)', required=False, type=str)
 
-    parser.add_argument('--kegg', help='Set to build database with Kegg data',  required=False,
+    parser.add_argument('--kegg', help='Set whether to build database with Kegg data',  required=False,
                         action="store_true")
 
     parser.add_argument('-kbaserxntype', '--kbase_reaction_type', help='Define type of reactions \
@@ -130,8 +133,10 @@ def parse_arguments():
 
     parser.add_argument('-keggorganismtype', '--kegg_organism_type', help='Define type of organisms \
                                                                            reactions to be added to \
-                                                                           the database bacteria (default) \
-                                                                            or archea',
+                                                                           the database bacteria (default), \
+                                                                           algae, plants, fungi, Eukaryotes, \
+                                                                           prokaryotes, or all.  If user wants both plants \
+                                                                           and bacteria seperate list by comma i.e. plants,bacteria', 
                         required=False, type=str, default='bacteria')
 
     parser.add_argument('-keggnunorganisms', '--kegg_number_of_organisms', help='Define number of organisms \
@@ -230,6 +235,10 @@ def parse_arguments():
                                           (default True)', required=False,
                         type=str, default='True')
 
+    ###TOXICITY OPTIONS###
+    parser.add_argument('-toxicity','--predict_toxicity',help='Predict whether non native compounds are \
+                                                               toxic to host organism (currently only works with E. Coli Strains)',
+                        required=False, action="store_true")
 
     return parser.parse_args()
 
@@ -293,7 +302,7 @@ def read_in_and_generate_output_files(args, database):
         raise ValueError('ERROR: No targets, try different compounds')
     OUTPUT = go.Output(DB, args.output_path, args.flux_balance_analysis, args.knockouts)
     if args.inchidb:
-        print (str(args.tanimoto_threshold)+' tanimoto threshold being used')
+        print ('STATUS: {} tanimoto threshold being used'.format(float(args.tanimoto_threshold)))
         SIM = ss.TanimotoStructureSimilarity(R.targets, DB.get_all_compounds(),
                                              DB.get_compartment('cytosol')[0],
                                              DB.get_compartment('extracellular')[0],
@@ -377,6 +386,7 @@ def retrieve_database_info(args):
         if args.atlas:
             batlasdb.build_atlas(args.atlas_dump_directory, args.generate_database, args.inchidb,
                                  args.processors, args.atlas_reaction_type)
+        rdc.OverlappingCpdIDs(database)
         database = args.generate_database
 
     elif args.database:
@@ -427,6 +437,9 @@ def retrieve_database_info(args):
         if args.atlas:
             batlasdb.build_atlas(args.atlas_dump_directory, args.database, args.inchidb,
                                  args.processors, args.atlas_reaction_type)
+        if args.inchidb and (args.kbase or args.metacyc or args.kegg or args.SPRESI or args.mine or args.atlas):
+            '''only run to remove overlapping ids if a database was added''' 
+            rdc.OverlappingCpdIDs(database)
 
         database = args.database
 
@@ -484,8 +497,12 @@ def construct_and_run_integerprogram(args, targets, LP, output, database):
         active_metabolism = retrieve_active_FBA_metabolism(targets, DB, args, output)
     else:
         active_metabolism = {}
-
-    return (IP, active_metabolism)
+    if args.predict_toxicity:
+        print ('WARNING: currently will work only with host organisms E. Coli')
+        toxicity_train = tt.TrainToxModel()
+        return (IP, active_metabolism, toxicity_train)
+    else:
+        return (IP, active_metabolism, None)
 
 def _specific_target(target_id):
     '''Determines if there was a specified organism'''
@@ -494,7 +511,7 @@ def _specific_target(target_id):
     else:
         return True
 
-def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_metabolism):
+def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_metabolism, toxicity_train):
     '''Retrieve the shortest path for target organism'''
     DB = Q.Connector(database)
     print (target_info)
@@ -526,7 +543,7 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
         else:
             optimal_pathways = IP.run_glpk(LP, incpds_active, inrxns, target_info[0],
                                            multiplesolutions=args.multiple_solutions)
-            if optimal_pathways[0]:
+            if optimal_pathways:                    
                 uniq_externalrxns = []
                 for path in optimal_pathways:
                     path_org = []
@@ -537,7 +554,11 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                     uniq_externalrxns.append(list(set(path_org) - set(inrxns)))
 
                 ex_info = ei.Extract_Information(optimal_pathways, incpds_active, DB)
-                output.output_shortest_paths(target_info, ex_info.temp_rxns)
+                if toxicity_train:
+                    tox_excpd = toxicity_train.predict_toxicity(ex_info.temp_exmets)
+                    output.output_shortest_paths(target_info, ex_info.temp_rxns, tox_excpd)
+                else:
+                    output.output_shortest_paths(target_info, ex_info.temp_rxns)
                 if args.flux_balance_analysis:
                     opt_fba = run_flux_balance_analysis(target_info, ex_info, incpds,
                                                         incpds_active, inrxns_active,
@@ -558,7 +579,7 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                                          target_info[0], target_info[2], incpds_active)
                     output.output_extra(target_info[0], R.ordered_paths, ex_info.temp_rxns, incpds_active)
             else:
-                output.output_shortest_paths(target_info, optimal_pathways[0])
+                output.output_shortest_paths(target_info, [])
                 if args.flux_balance_analysis:
                     print('WARNING: No optimal path for %s in species %s therefore no \
                           flux balance will be performed' % (target_info[0], target_info[2]))
@@ -618,28 +639,27 @@ def main():
     args = parse_arguments()
     check_arguments(args)
     all_db_compounds, all_db_reactions, database = retrieve_database_info(args)
-    print (database)
     targets, ignore_reactions, output = read_in_and_generate_output_files(args, database)
     LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
-    IP, active_metabolism = construct_and_run_integerprogram(args, targets, LP, output, database)
+    IP, active_metabolism, toxicity_train = construct_and_run_integerprogram(args, targets, LP, output, database)
     args_rcp_chunks = [targets[i:i+args.processors]
                        for i in range(0, len(targets), args.processors)]
     for chunks in args_rcp_chunks:
         processes = [Process(target=retrieve_shortestpath,
                              args=(chunk, IP, LP, database,
-                                   args, output, active_metabolism)) for chunk in chunks]
+                                   args, output, active_metabolism,
+                                   toxicity_train)) 
+                     for chunk in chunks]
         for p in processes:
             p.start()
         for p in processes:
             p.join()
 
     '''Remove all temporary images'''
-    # if args.images == 'True':
-    #     for filename in glob.glob(PATH+"/Visualization/compound*"):
-    #         os.remove(filename)
+    if args.images == 'True':
+        for filename in glob.glob(PATH+"/Visualization/compound*"):
+            os.remove(filename)
 
-    # for target in targets:
-    #     retrieve_shortestpath(target,  IP, LP, database, args, output, active_metabolism)
     '''Removes all dot files if they exist'''
     for filename in glob.glob(args.output_path+"/reaction_figures/*.dot"):
         os.remove(filename)
