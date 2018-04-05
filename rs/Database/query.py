@@ -6,6 +6,7 @@ __description__ = 'Interface for database of FBA models and compounds within SBM
 import sqlite3
 
 def test_db_4_error(cnx, query, db):
+    '''tests database for errors'''
     try:
         Q = cnx.execute(query)
         return(Q, cnx)
