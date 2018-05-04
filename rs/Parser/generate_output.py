@@ -9,7 +9,7 @@ import shutil
 
 class Output(object):
     """Opens and fills output files produced by software"""
-    def __init__(self, db, output_path, FBA=False, KO=False, extraoutput=True):
+    def __init__(self, db, output_path, FBA=False, KO=False, raw_solutions=True):
         '''Initialize class: generates new output files for this analysis of rs'''
         self.DB = db
         self.FBA = FBA
@@ -33,12 +33,12 @@ class Output(object):
             self.fluxKO_ouptput = open(output_path+'/fluxKO_output.txt', 'w')
             self.essentialrxns.close()
             self.fluxKO_ouptput.close()
-        if extraoutput:
+        if raw_solutions:
             try:
-                os.mkdir(output_path+'/extraoutput')
+                os.mkdir(output_path+'/raw_compound_solutions')
             except OSError:
-                shutil.rmtree(output_path+'/extraoutput')
-                os.mkdir(output_path+'/extraoutput')
+                shutil.rmtree(output_path+'/raw_compound_solutions')
+                os.mkdir(output_path+'/raw_compound_solutions')
 
     def output_open_paths_all_organism_file(self, target_compound_ID):
         '''
@@ -49,50 +49,45 @@ class Output(object):
         self.all_organisms = open(self.output_path+'/'+file_name, 'w')
         self.all_organisms.close()
 
-    def output_extra(self, compound, ordered_paths, reactions, incpds):
+    def output_raw_solutions(self, compound, org_ID, ordered_paths, reactions, incpds):
         cpdname = self.DB.get_compound_name(compound)
+        org_name = self.DB.get_organism_name(org_ID)
         if cpdname == 'None' or cpdname == 'none' or cpdname == '':
             cpdname = re.sub('/', '_', compound)
-        with open(self.output_path+'/extraoutput/compound_'+cpdname+'_outputfile.txt', 'w') as fin:
+
+        def add_info_to_output(reactants, products, fin, protein, incpds):
+            for react in reactants:
+                type_cpd = 'Ext'
+                if react in incpds:
+                    type_cpd = 'Int'
+                if protein != 'None':
+                    line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway), type_cpd])
+                else:
+                    line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway), type_cpd])
+                fin.write(line+'\n')
+
+            for prod in products:
+                type_cpd = 'Ext'
+                if prod in incpds:
+                    type_cpd = 'Int'
+                if protein != 'None':
+                    line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway), type_cpd])
+                else:
+                    line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway),  type_cpd])
+                fin.write(line+'\n')
+
+        with open(self.output_path+'/raw_compound_solutions/compound_'+cpdname+'_'+org_name+'_outputfile.txt', 'w') as fin:
             for count_pathway, os_dict in reactions.iteritems():
                 for counter in reversed(ordered_paths[count_pathway].keys()):
                     rxn = ordered_paths[count_pathway][counter]
                     org = os_dict[rxn]['organisms'][0]
                     protein = self.DB.get_proteins(rxn, org)
                     if os_dict[rxn]['direction'] == 'forward':
-                        for react in os_dict[rxn]['reactants']:
-                            if react in incpds:
-                                react = re.sub('\_\w{1}0$', '_t0', react)
-                            if protein != 'None':
-                                line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway)])
-                            else:
-                                line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway)])
-                            fin.write(line+'\n')
-                        for prod in os_dict[rxn]['products']:
-                            if prod in incpds:
-                                prod = re.sub('\_\w{1}0$', '_t0', prod)                            
-                            if protein != 'None':
-                                line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway)])
-                            else:
-                                line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway)])
-                            fin.write(line+'\n')
+                        add_info_to_output(os_dict[rxn]['reactants'], os_dict[rxn]['products'], fin, protein, incpds)
+
                     else:
-                        for react in os_dict[rxn]['products']:
-                            if react in incpds:
-                                react = re.sub('_\w{1}0$', '_t0', react)
-                            if protein != 'None':
-                                line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway)])
-                            else:
-                                line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway)])
-                            fin.write(line+'\n')
-                        for prod in os_dict[rxn]['reactants']:
-                            if prod in incpds:
-                                prod = re.sub('_\w{1}0$', '_t0', prod)                            
-                            if protein != 'None':
-                                line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway)])
-                            else:
-                                line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway)])
-                            fin.write(line+'\n')
+                        add_info_to_output(os_dict[rxn]['products'], os_dict[rxn]['reactants'], fin, protein, incpds)
+
     def output_paths_all_organisms(self, target_compound_ID, pathlength, orgs, org_names):
         '''
         Outputs information on the number of reactions that need to be added to an
@@ -112,7 +107,7 @@ class Output(object):
             print ('{} in species {} already'.format(target_info[0], target_info[2]))
             self.optimal_paths.write('{} in species {} already\n'.format(target_info[0], target_info[2]))
 
-    def output_shortest_paths(self, target_info, temp_rxns):
+    def output_shortest_paths(self, target_info, temp_rxns, tox_excpds=None):
         #self.optimal_paths = optimal_paths
         # self.optimal_paths = open(self.output_path+'/optimal_pathways.txt', 'a')
         '''
@@ -175,14 +170,42 @@ class Output(object):
                                                                 ' number of species that contain this reaction',
                                                                 '.'.join(os_dict[r]['organisms'])])+'\n')
 
-                        for react in os_dict[r]['reactants']:
-                            print ('\t{}\t{} reactants'.format(react, os_dict[r]['reactants'][react]))
-                            self.optimal_paths.write('\t{}\t{} reactants\n'.format(react,
-                                                                                   os_dict[r]['reactants'][react]))
-                        for prod in os_dict[r]['products']:
-                            print ('\t{}\t{} products'.format(prod, os_dict[r]['products'][prod]))
-                            self.optimal_paths.write('\t{}\t{} products\n'.format(prod, os_dict[r]['products'][prod]))
-            #self.optimal_paths.close()
+                        if tox_excpds:
+                            for react in os_dict[r]['reactants']:
+                                try: 
+                                    print ('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(react, os_dict[r]['reactants'][react],
+                                                                                                                                                   tox_excpds[react][0], tox_excpds[react][1][0], tox_excpds[react][1][1]))
+                                    self.optimal_paths.write('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(react,
+                                                                                                                                                                       os_dict[r]['reactants'][react]),
+                                                                                                                                                                       tox_excpds[react][0],
+                                                                                                                                                                       tox_excpds[react][1][0],
+                                                                                                                                                                       tox_excpds[react][1][1])
+                                except IndexError:
+                                    print ('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(react, os_dict[r]['reactants'][react],
+                                                                                                                                                   'None', 'None', 'None'))
+                                    self.optimal_paths.write('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(react,
+                                                                                                                                                                       os_dict[r]['reactants'][react],
+                                                                                                                                                                       'None', 'None', 'None'))
+                            for prod in os_dict[r]['products']:
+                                try:
+                                    print ('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(prod, os_dict[r]['products'][prod],
+                                                                                                                                                  tox_excpds[prod][0], tox_excpds[prod][1][0], tox_excpds[prod][1][1]))
+                                    self.optimal_paths.write('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(prod, os_dict[r]['products'][prod],
+                                                                                                                                                                      tox_excpds[prod][0], tox_excpds[prod][1][0],
+                                                                                                                                                                      tox_excpds[prod][1][1]))
+                                except IndexError:
+                                    print ('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(prod, os_dict[r]['products'][prod],
+                                                                                                                                                  'None', 'None', 'None'))
+                                    self.optimal_paths.write('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(prod, os_dict[r]['products'][prod],
+                                                                                                                                                                      'None', 'None', 'None'))
+                        else:
+                            for react in os_dict[r]['reactants']:
+                                print ('\t{}\t{} reactants'.format(react, os_dict[r]['reactants'][react]))
+                                self.optimal_paths.write('\t{}\t{} reactants\n'.format(react,
+                                                                                       os_dict[r]['reactants'][react]))
+                            for prod in os_dict[r]['products']:
+                                print ('\t{}\t{} products'.format(prod, os_dict[r]['products'][prod]))
+                                self.optimal_paths.write('\t{}\t{} products\n'.format(prod, os_dict[r]['products'][prod]))
     def output_activemetabolism(self, am):
         '''
         Outputs metabolites that are actively produced in a specific compund

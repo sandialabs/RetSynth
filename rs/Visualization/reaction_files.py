@@ -137,19 +137,19 @@ class ReactionFiles(object):
     def generate_reaction_SMILES(self):
         '''Produce files that have reaction smiles for each reaction in a pathway'''
         target_reformat = re.sub('/', '_', self.target)
-        self.generate_output_folders(self.output_path+'/reaction_smiles')
-        self.generate_output_folders(self.output_path+'/reaction_cdxml')
-        self.generate_output_folders(self.output_path+'/reaction_cdxml/'+
+        self.generate_output_folders(self.output_path+'/solution_smiles')
+        self.generate_output_folders(self.output_path+'/solution_cdxml')
+        self.generate_output_folders(self.output_path+'/solution_cdxml/'+
                                      target_reformat+'_solutions')
-        self.generate_output_folders(self.output_path+'/reaction_figures')
-        self.generate_output_folders(self.output_path+'/reaction_figures/'+
+        self.generate_output_folders(self.output_path+'/solution_figures')
+        self.generate_output_folders(self.output_path+'/solution_figures/'+
                                      target_reformat+'_solutions')
         ordered_paths = self.order_of_paths()
         for count_pathway, os_dict in self.reactions.iteritems():
             smiles_reactants = {}
             smiles_products = {}
 
-            with open(self.output_path+'/reaction_smiles/reaction_smile_'+
+            with open(self.output_path+'/solution_smiles/reaction_smile_'+
                       target_reformat+'_solution_'+str(count_pathway)+
                       '.smi', 'w') as fout:
                 array = self.IN.createArray()
@@ -176,7 +176,7 @@ class ReactionFiles(object):
                     self.IN.setOption('render-grid-title-property', str(key)+
                                       ' '+str(self.DB.get_reaction_name(key)))
                     array.arrayAdd(rxn)
-                    self.IR.renderToFile(rxn, self.output_path+'/reaction_cdxml/'+target_reformat+
+                    self.IR.renderToFile(rxn, self.output_path+'/solution_cdxml/'+target_reformat+
                                          '_solutions/'+'Solution_'+str(count_pathway)+'_rxn_'+
                                          str(count_rxn)+'_'+self.target_organism_name+'.cdxml')
                 self.IN.setOption('render-output-format', 'png')
@@ -184,7 +184,7 @@ class ReactionFiles(object):
                 self.IN.setOption("render-margins", "80, 30, 10, 30")
                 self.IN.setOption("render-grid-margins", "5, 5, 5, 5")
                 self.IR.renderGridToFile(array, None, len(smiles_reactants.keys()),
-                                         self.output_path+'/reaction_figures/'+target_reformat+
+                                         self.output_path+'/solution_figures/'+target_reformat+
                                          '_solutions/'+'Solution_'+str(count_pathway)+'_'+
                                          self.target_organism_name+'.png')
         self.ordered_paths = ordered_paths

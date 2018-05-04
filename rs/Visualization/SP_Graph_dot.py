@@ -65,10 +65,10 @@ class GraphDot(object):
         self.compartments = [i[0] for i in hits]
 
         try:
-            os.mkdir(output_path+'/reaction_figures/')
+            os.mkdir(output_path+'/solution_figures/')
         except OSError:
             pass
-        self.GRAPHPATH = output_path+'/reaction_figures'
+        self.GRAPHPATH = output_path+'/solution_figures'
         self.output_path = output_path
         self.incpds = incpds
         self.inrxns = inrxns
@@ -99,7 +99,7 @@ class GraphDot(object):
         cb.ax.set_xticklabels(["0-.99", "5-99.99", "100-199.99", "200-299.99", "300-399.99",
                                "400-499.99", "500-599.99", "600-699.99", "700-799.99",
                                "800-899.99", "900-1000"], rotation=90)
-        pl.savefig(self.output_path+"/reaction_figures/colorbarforreactionflux.png")
+        pl.savefig(self.output_path+"/solution_figures/colorbarforreactionflux.png")
 
     def get_mol_from_name(self, cpd_name):
         '''Get molecule for a compound from its' name'''
@@ -119,6 +119,13 @@ class GraphDot(object):
         imageBox = im.getbbox()
         cropped = im.crop(imageBox)
         return cropped
+
+    def alter_name_length(self, path_to_figure, cpdname):
+        '''Shorten compound name if it is too long'''
+        if len(path_to_figure) > 250:
+            remove_variable = len(path_to_figure) - 250
+            cpdname = cpdname[:-remove_variable]
+        return cpdname
 
     def get_figure(self, cpdID, cpdname, rxn, type_node):
         '''Get smiles for a compounds'''
@@ -151,6 +158,7 @@ class GraphDot(object):
             self.IN.setOption("render-image-size", "300,200")
             self.IN.setOption("render-margins", "40, 0, 0, 0")
             cpdname = self.reformat_inchi(cpdname)
+            cpdname = self.alter_name_length(PATH+'/compound_'+cpdname+'_'+rxn+'.png', cpdname)
             self.IR.renderToFile(mol, PATH+'/compound_'+cpdname+'_'+rxn+'.png')
             cropped = self.crop_figure(PATH+'/compound_'+cpdname+'_'+rxn+'.png')
             cropped.save(PATH+'/compound_'+cpdname+'_'+rxn+'_cropped.png', transparent=True)
@@ -176,6 +184,7 @@ class GraphDot(object):
             name = re.sub('_', '-', name)
             namereformat = self.reformat_inchi(name)
             figure_bool = self.get_figure(cpdID, namereformat, rxn, 'synthetic')
+            namereformat = self.alter_name_length(PATH+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
             if figure_bool:
                 self.outputfile_dot.append('    "{}" [color="{}", image="{}", shape={}, label=""];\n'.format(origname, 'None', PATH+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
@@ -193,6 +202,7 @@ class GraphDot(object):
             name = re.sub('_', '-', name)
             namereformat = self.reformat_inchi(name)
             figure_bool = self.get_figure(cpdID, namereformat, rxn, 'internal')
+            namereformat = self.alter_name_length(PATH+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
             if figure_bool:
                 self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(origname, 'None', PATH+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
@@ -257,6 +267,7 @@ class GraphDot(object):
                 if prod == self.target:
                     if self.images is True:
                         figure_bool = self.get_figure(prod, prodname, rxn, 'target')
+                        prodnamereformat = self.alter_name_length(PATH+'/compound_'+prodnamereformat+'_'+rxn+'.png', prodnamereformat)
                         if figure_bool:
                             self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(prodname, 'None', PATH+'/compound_'+prodnamereformat+'_'+rxn+'_cropped.png', 'None'))
                         else:
