@@ -109,7 +109,7 @@ class IntergerProgram(object):
         optimalsolutions = []
         optimalsolutions_internal = []
         self.allcyclesolutions = []
-
+        self.solution_threshold = 1499
 
         '''Set problem bounds and solve'''
         lp = self.set_row_bounds(lp)
@@ -135,6 +135,9 @@ class IntergerProgram(object):
             print ('STATUS: Checking for multiple optimal solutions ... ')
             optimalsolutions = self.multiple_optimal_solution(lp, self.LP.variables,
                                                               obj, solution, optimalsolutions, optimalsolutions_internal, 0)
+
+        if len(optimalsolutions) > self.solution_threshold:
+            print ('STATUS: Number of solutions {} exceeded limit {} therefore stopping search'.format(len(optimalsolutions), self.solution_threshold))
         return optimalsolutions
 
     def set_weight(self, number_rxn_steps):
@@ -178,7 +181,7 @@ class IntergerProgram(object):
                 else:
                     op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
             else:
-                if solution and solution not in op_internal+op:
+                if solution and solution not in op_internal+op and len(op) <= self.solution_threshold:
                     op.append(solution)
                     self.fill_allsolutions(solution)
                     op = self.multiple_optimal_solution(lp, variables, obj,
@@ -208,16 +211,16 @@ class IntergerProgram(object):
                 '''Check for cycles in pathway'''
                 solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal,
                                                                                                   obj, 0, initialcheck=True)
-                if solution:
+                if solution and len(op) <= self.solution_threshold:
                     op.append(solution)
             else:
                 solution = solution + solution_internal
-                if solution:
+                if solution and len(op) <= self.solution_threshold:
                     op.append(solution)
 
             '''Add pathway to all optimal solutions'''
 
-            if solution:
+            if solution and len(op) <= self.solution_threshold:
                 print ('STATUS: Checking for multiple optimal solutions internal ... ')
                 op = self.multiple_optimal_solution_internal(lp, variables, obj, solution, op)
 
@@ -242,7 +245,7 @@ class IntergerProgram(object):
             solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal, obj, 0)
         else:
             solution = solution+solution_internal
-        if len(solution) == len(originalsolution):
+        if len(solution) == len(originalsolution) and len(op) <= self.solution_threshold:
             if solution and solution not in op:
                 op.append(solution)
                 op = self.multiple_optimal_solution_internal(lp, variables, obj, solution, op)
@@ -264,7 +267,7 @@ class IntergerProgram(object):
             solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables,
                                                                                     solution, solution_internal, obj, 0)
 
-        if len(solution) == len(originalsolution):
+        if len(solution) == len(originalsolution) and len(op) <= self.solution_threshold:
             '''If pathway not already identified add to total solution and check for more '''
             if solution_internal:
                 if solution and solution not in op_internal:
@@ -276,7 +279,7 @@ class IntergerProgram(object):
                    count_k_paths += 1
                    op = self.k_number_paths(lp, variables, obj, op, [], count_k_paths)
             else:
-                if solution and solution not in  op_internal+op:
+                if solution and solution not in op_internal+op:
                     op.append(solution)
                     self.fill_allsolutions(solution)
                     op = self.multiple_optimal_solution(lp, variables, obj,
