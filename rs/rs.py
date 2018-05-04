@@ -9,6 +9,7 @@ import cPickle
 import os
 import re
 import glob
+import time
 from Parser import read_startcompounds as rtsc
 from Parser import read_targets as rt
 from Parser import generate_output as go
@@ -570,14 +571,14 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                         G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
                         R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
                                          target_info[0], target_info[2], incpds_active)
-                        output.output_extra(target_info[0], R.ordered_paths, ex_info.temp_rxns, incpds_active)
+                        output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
 
                 elif args.figures and not args.flux_balance_analysis:
                     G = spgd.GraphDot(DB, args.output_path, incpds, inrxns)
                     G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
                     R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
                                          target_info[0], target_info[2], incpds_active)
-                    output.output_extra(target_info[0], R.ordered_paths, ex_info.temp_rxns, incpds_active)
+                    output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
             else:
                 output.output_shortest_paths(target_info, [])
                 if args.flux_balance_analysis:
@@ -642,26 +643,48 @@ def main():
     targets, ignore_reactions, output = read_in_and_generate_output_files(args, database)
     LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
     IP, active_metabolism, toxicity_train = construct_and_run_integerprogram(args, targets, LP, output, database)
-    args_rcp_chunks = [targets[i:i+args.processors]
-                       for i in range(0, len(targets), args.processors)]
-    for chunks in args_rcp_chunks:
-        processes = [Process(target=retrieve_shortestpath,
-                             args=(chunk, IP, LP, database,
-                                   args, output, active_metabolism,
-                                   toxicity_train)) 
-                     for chunk in chunks]
+
+    def start_processes_new(index, target):
+        print ('STATUS: Inititate new process for target {}'.format(target))
+        p = Process(target=retrieve_shortestpath, args=(target, IP, LP, database, args, output,
+                                                        active_metabolism, toxicity_train))
+        p.start()
+        return (p)
+
+    def start_processes(targets, processors):
+        print ('STATUS: Initiating solving of solutions for initial of {} targets'.format(processors))
+        processes = []
+        for i in range(0, int(processors)):
+            try:
+                processes.append(Process(target=retrieve_shortestpath, args=(targets[i], IP, LP, database, args, output,
+                                                                             active_metabolism, toxicity_train)))
+                index = i
+            except IndexError:  
+                pass
         for p in processes:
             p.start()
-        for p in processes:
-            p.join()
-
+        sleep_time = float(processors)/float(10)
+        while index < len(targets)-1:
+            time.sleep(sleep_time)
+            for p in processes:
+                if not p.is_alive():
+                    index+=1
+                    processes.remove(p)
+                    p_new = start_processes_new(index, targets[index])
+                    processes.append(p_new)
+        if index == len(targets)-1:
+            print ('STATUS: Solving last set of solutions for targets..waiting until all {} targets are complete'.format(len(processes)))
+            for p in processes:
+                p.join()
+    
+    start_processes(targets, args.processors)
     '''Remove all temporary images'''
-    if args.images == 'True':
-        for filename in glob.glob(PATH+"/Visualization/compound*"):
-            os.remove(filename)
+    # if args.images == 'True':
+    #     for filename in glob.glob(PATH+"/Visualization/compound*"):
+    #         os.remove(filename)
 
     '''Removes all dot files if they exist'''
-    for filename in glob.glob(args.output_path+"/reaction_figures/*.dot"):
+    for filename in glob.glob(args.output_path+"/solution_figures/*.dot"):
         os.remove(filename)
 
 if __name__ == '__main__':
