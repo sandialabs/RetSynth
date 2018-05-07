@@ -5,7 +5,7 @@ __description__ = 'Gets IDs from compound chemical formulas or names'
 
 import re
 from Pubchem import pubchem_compounds as pc
-
+from copy import deepcopy
 class Readfile(object):
     """Reads the input file containing target compounds"""
     def __init__(self, file_name, db, inchidb=False, compartment='cytosol'):
@@ -91,26 +91,38 @@ class Readfile(object):
                 if 'organismid' in values.keys():
                     multiplevalues = values['organismid'].split(',')
                     for m in multiplevalues:
-                        temp2 = []
-                        temp2 = temp2+temp
+                        temp2 = deepcopy(temp)
                         temp2.extend((m, ''))
                         self.targets.append(temp2)
                 elif 'organism' in values.keys():
-                    multiplevalues = values['organism'].split(',')
-                    for m in multiplevalues:
-                        temp2 = []
-                        temp2 = temp2+temp
-                        if m == 'NA' or m == 'N/A':
-                            temp2.extend((m, ''))
+                    multipleorgs = values['organism'].split(',')
+                    for org in multipleorgs:
+                        if org == 'NA' or org == 'N/A':
+                            temp2.extend((org, ''))
                             self.targets.append(temp2)
                         else:
                             try:
-                                orgID = self.modelfilename_dict[m.upper()]
-                                temp2.extend((orgID, m))
+                                new_org_format = re.sub(' ', '', org)
+                                new_org_format = re.sub('_', '', new_org_format)
+                                orgID = self.modelfilename_dict[new_org_format.upper()]
+                                temp2 = deepcopy(temp)
+                                temp2.extend((orgID, org))
+                                self.targets.append(temp2)
                             except KeyError:
-                                print ('WARNING: No species ID could be found for {} will proceed without ID'.format(m))
-                                temp2.extend(('', m))
-                            self.targets.append(temp2)
+                                print ('WARNING: No exact species ID could be found for {} will look to see if multiple strains exist'.format(org))
+                                strains = self.strain_check(new_org_format)
+                                if strains:
+                                    print ('WARNING: Found {} strains of {}, if more than 5 recommend specifying strain in organisms name'.format(len(strains), org))
+                                    for orgID in strains:
+                                    	temp2 = deepcopy(temp)
+                                        temp2.extend((orgID, org))
+                                        self.targets.append(temp2)
+                                else:
+                                    print ('WARNING: No species ID could be found for {} will proceed without ID'.format(org))
+                                    temp2 = deepcopy(temp)
+                                    temp2.extend(('', org))
+                                    self.targets.append(temp2)
+                	
                 else:
                     print ('WARNING: No organism was given or found')
                     temp.extend(('', ''))
@@ -118,6 +130,13 @@ class Readfile(object):
                 if 'ignore reactions' in values.keys():
                     multiplereactions = values['ignore reactions'].split(',')
                     self.ignorerxns = self.ignorerxns+multiplereactions
+    def strain_check(self,new_org_format):
+    	'''Extract all strains for a specified organism'''
+        strains = []
+        for key in self.modelfilename_dict:
+            if key.startswith(new_org_format.upper()):
+                strains.append(self.modelfilename_dict[key])
+        return (strains)
 
     def modelinfo_opener(self):
         '''
@@ -130,6 +149,6 @@ class Readfile(object):
         for file_name in modelIDs:
             fn = re.sub('.xml', '', file_name[1])
             fn = re.sub('_', ' ', fn)
-            fn = re.sub('\s+', ' ', fn)
+            fn = re.sub('\s+', '', fn)
             self.modelfilename_dict[fn.upper()] = file_name[0]
             self.modelID_dict[file_name[0]] = fn
