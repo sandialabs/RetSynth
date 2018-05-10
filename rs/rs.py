@@ -678,10 +678,12 @@ def main():
                 p.join()
     
     start_processes(targets, args.processors)
+    output.convert_output_2_xlsx()
+
     '''Remove all temporary images'''
-    # if args.images == 'True':
-    #     for filename in glob.glob(PATH+"/Visualization/compound*"):
-    #         os.remove(filename)
+    if args.images == 'True':
+        for filename in glob.glob(PATH+"/Visualization/compound*"):
+            os.remove(filename)
 
     '''Removes all dot files if they exist'''
     for filename in glob.glob(args.output_path+"/solution_figures/*.dot"):
