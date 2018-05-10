@@ -4,7 +4,9 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Generate output'
 
 import re
-import os 
+import os
+import csv
+import openpyxl
 import shutil
 
 class Output(object):
@@ -31,8 +33,13 @@ class Output(object):
         if self.KO:
             self.essentialrxns = open(output_path+'/essentialrxns_output.txt', 'w')
             self.fluxKO_ouptput = open(output_path+'/fluxKO_output.txt', 'w')
+            self.fluxKO_ty_output = open(output_path+'/fluxKO_theoreticalyields_output.txt', 'w')
+            self.fluxKO_in_ty_output = open(output_path+'/fluxKO_increased_theoreticalyields_output.txt', 'w')
+            self.fluxKO_in_ty_output.close()
             self.essentialrxns.close()
+            self.fluxKO_ty_output.close()
             self.fluxKO_ouptput.close()
+
         if raw_solutions:
             try:
                 os.mkdir(output_path+'/raw_compound_solutions')
@@ -56,6 +63,7 @@ class Output(object):
             cpdname = re.sub('/', '_', compound)
 
         def add_info_to_output(reactants, products, fin, protein, incpds):
+            '''adding reaction info to output file '''
             for react in reactants:
                 type_cpd = 'Ext'
                 if react in incpds:
@@ -75,7 +83,15 @@ class Output(object):
                 else:
                     line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway),  type_cpd])
                 fin.write(line+'\n')
+        
+        def alter_name_length(path_to_figure, cpdname):
+            '''Shorten compound name if it is too long'''
+            if len(path_to_figure) > 250:
+                remove_variable = len(path_to_figure) - 250
+                cpdname = cpdname[:-remove_variable]
+            return cpdname
 
+        cpdname = alter_name_length(self.output_path+'/raw_compound_solutions/compound_'+cpdname+'_'+org_name+'_outputfile.txt', cpdname)
         with open(self.output_path+'/raw_compound_solutions/compound_'+cpdname+'_'+org_name+'_outputfile.txt', 'w') as fin:
             for count_pathway, os_dict in reactions.iteritems():
                 for counter in reversed(ordered_paths[count_pathway].keys()):
@@ -263,7 +279,7 @@ class Output(object):
                                                                              temp[comparisonresults.maxpath].keys(),
                                                                              comparisonresults.maxflux))
 
-    def output_FBA_KOs(self, target_info, comparisonKOresults, temp):
+    def output_FBA_KOs(self, target_info, fbasolution, compound_dict, comparisonKOresults, temp):
         '''
         When reaction knockouts are performed list all reaction that have a significant
         flux difference from the orignal FBA simulation
@@ -288,6 +304,41 @@ class Output(object):
                                                                          temp[comparisonKOresults.maxpath[r]].keys()))
                     self.fluxKO_ouptput.write('\t\t'+'Total flux through path: {}\n'.format(comparisonKOresults.maxflux[r]))
 
+        objectivesol = fbasolution.x_dict['Sink_'+compound_dict[target]]
+        glucose = True
+        try:
+            glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
+        except KeyError:
+            print ('No transport reaction glucose rxn')
+            glucose = False
+        if glucose:
+            try:
+                wt_ty = abs(round(round(objectivesol, 2)/round(glucoseimport,2), 2))
+            except ZeroDivisionError:
+                wt_ty = 'NA'
+        else:
+            wt_ty = 'NA'
+        with open(self.output_path+'/fluxKO_theoreticalyields_output.txt') as self.fluxKO_ty_output:
+            line = self.fluxKO_ty_output.readline()
+        with open(self.output_path+'/fluxKO_theoreticalyields_output.txt', 'a') as self.fluxKO_ty_output:
+            if line.startswith('#'):
+                self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
+                self.fluxKO_ty_output.write(target+'-'+self.DB.get_compound_name(target)+'\t'+target_info[2]+'-'+self.DB.get_organism_name(target_info[2])+'\t'+str(wt_ty)+'\t'+self.ko_ty+'\n')
+            else:
+                self.fluxKO_ty_output.write('#Target ID\tOrganism ID\twild type theoretical yield\t'+'\t'.join(comparisonKOresults.objective_function_ko.keys())+'\n')
+                self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
+                self.fluxKO_ty_output.write(target+'-'+self.DB.get_compound_name(target)+'\t'+target_info[2]+'-'+self.DB.get_organism_name(target_info[2])+'\t'+str(wt_ty)+'\t'+self.ko_ty+'\n')                
+        with open(self.output_path+'/fluxKO_increased_theoreticalyields_output.txt', 'a') as self.fluxKO_in_ty_output:
+            if wt_ty != 'NA':
+                self.fluxKO_in_ty_output.write('Reaction knockouts that increase theoretical yield of {} of compound {} in organism {}\n'.format(wt_ty,target+'-'+self.DB.get_compound_name(target), target_info[2]+'-'+self.DB.get_organism_name(target_info[2])))
+                self.fluxKO_in_ty_output.write("Reaction knockout\tcatalytic genes\tproteins\tyield\n")
+                for rko, value in comparisonKOresults.objective_function_ko.iteritems():
+                    if rko.startswith('EX'):
+                        pass
+                    else:
+                        if value > wt_ty:
+                            self.fluxKO_in_ty_output.write("{}\t{}\t{}\t{}\n".format(rko, self.DB.get_genes(rko, target[2]), self.DB.get_proteins(rko, target[2]), value))
+ 
     def output_essential_reactions(self, target_compound_ID, target_organism_ID, er):
         '''
         When reaction knockouts are performed, outputs all reactions that when removed
@@ -297,7 +348,10 @@ class Output(object):
             self.essentialrxns.write('Essential rxns for production of {} in {}\n'.format(target_compound_ID,
                                                                                           target_organism_ID))
             for rxn in er:
-                self.essentialrxns.write('{}\t{}\n'.format(rxn, self.DB.get_reaction_name(rxn)))
+                if rxn.startswith('EX'):
+                    pass
+                else:
+                    self.essentialrxns.write('{}\t{}\n'.format(rxn, self.DB.get_reaction_name(rxn)))
 
     def output_theoretical_yield(self, target_compound_ID, target_organism_ID,
                                  fbasolution, compounds_dict):
@@ -306,90 +360,56 @@ class Output(object):
         '''
         objectivesol = fbasolution.x_dict['Sink_'+compounds_dict[target_compound_ID]]
         glucose = True
-        biomass = True
+        ##########CHECK FOR GLUCOSE IMPORT REACTION (CURRENTLY KBASE RXN))###########
         try:
             glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
         except KeyError:
             print ('No transport reaction glucose rxn')
             glucose = False
+        ##########CHECK FOR BIOMASS REACTION (CURRENTLY KBASE RXN))###########
         try:
             biomassrxn = fbasolution.x_dict['biomass0_'+target_organism_ID]
         except KeyError:
-            biomass = False
-        with open(self.output_path+'/theoretical_yield.txt', 'a') as self.theoyield:
-            if glucose is True and biomass is True:
-                if glucoseimport != 0:
-                    self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                  self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                  target_organism_ID,
-                                                                                                                                                                  self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                  round(glucoseimport, 2),
-                                                                                                                                                                  round(objectivesol, 2),
-                                                                                                                                                                  abs(round(objectivesol/glucoseimport, 2)),
-                                                                                                                                                                  target_compound_ID, biomassrxn))
-                else:
-                    self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                  self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                  target_organism_ID,
-                                                                                                                                                                  self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                  round(glucoseimport, 2),
-                                                                                                                                                                  round(objectivesol, 2),
-                                                                                                                                                                  abs(round(objectivesol, 2)),
-                                                                                                                                                                  target_compound_ID, biomassrxn))
-            elif glucose is True and biomass is False:
-                if glucoseimport != 0:
-                    self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                  self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                  target_organism_ID,
-                                                                                                                                                                  self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                  round(glucoseimport, 2),
-                                                                                                                                                                  round(objectivesol, 2),
-                                                                                                                                                                  abs(round(objectivesol/glucoseimport, 2)),
-                                                                                                                                                                  target_compound_ID, 'NA'))
-                else:
-                    self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                  self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                  target_organism_ID,
-                                                                                                                                                                  self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                  round(glucoseimport, 2),
-                                                                                                                                                                  round(objectivesol, 2),
-                                                                                                                                                                  abs(round(objectivesol, 2)),
-                                                                                                                                                                  target_compound_ID, 'NA'))
-            elif glucose is False and biomass is True:
-                self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                              self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                              target_organism_ID,
-                                                                                                                                                              self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                              'NA', str(round(objectivesol, 2)), 'NA', target_compound_ID,
-                                                                                                                                                              str(biomassrxn)))
-            elif glucose is False and biomass is False:
-                print ('WARNING: Could not identify glucose import reation or biomass reaction trying corny biomass and glucose reactions')
-                try:
-                    glucoseimport = fbasolution.x_dict['R_EX_glc_e']
-                    biomassrxn = fbasolution.x_dict['R_biomass_a']
-                    if glucoseimport != 0:
-                        self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                      self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                      target_organism_ID,
-                                                                                                                                                                      self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                      round(glucoseimport, 2),
-                                                                                                                                                                      round(objectivesol, 2),
-                                                                                                                                                                      abs(round(objectivesol/glucoseimport, 2)),
-                                                                                                                                                                      target_compound_ID, biomassrxn))
-                    else:
-                        self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                      self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                      target_organism_ID,
-                                                                                                                                                                      self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                      round(glucoseimport, 2),
-                                                                                                                                                                      round(objectivesol, 2),
-                                                                                                                                                                      abs(round(objectivesol, 2)),
-                                                                                                                                                                      target_compound_ID, str(biomassrxn)))
-                except KeyError:
-                    print ('WARNING: no glucose or biomass reaction could be identified')
-                    self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
-                                                                                                                                                                  self.DB.get_compound_name(target_compound_ID),
-                                                                                                                                                                  target_organism_ID,
-                                                                                                                                                                  self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                                  'NA', round(objectivesol, 2), 'NA', 'NA', 'NA'))
+            biomassrxn = 'NA'
+        ##########CALCULATE WT THEORETICAL YIELD###########
+        if glucose:
+            try:
+                wt_ty = abs(round(round(objectivesol, 2)/round(glucoseimport,2), 2))
+            except ZeroDivisionError:
+                wt_ty = 'NA'
+        else: 
+            wt_ty = 'NA'
 
+        with open(self.output_path+'/theoretical_yield.txt', 'a') as self.theoyield:
+            self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
+                                                                                                                                                          self.DB.get_compound_name(target_compound_ID),                                                                                                                                                         target_organism_ID,
+                                                                                                                                                          self.DB.get_organism_name(target_organism_ID),
+                                                                                                                                                          round(glucoseimport, 2),
+                                                                                                                                                          round(objectivesol, 2),
+                                                                                                                                                          wt_ty, target_compound_ID, biomassrxn))
+    def convert_output_2_xlsx(self):
+        '''converts txt files to output files'''
+        print ('STATUS: Converting output text files to xlsx format')
+        def convert_output_txt_files_2_xlsx(input_file, output_file):
+            wb = openpyxl.Workbook()
+            ws = wb.worksheets[0]
+
+            with open(input_file, 'rb') as data:
+                reader = csv.reader(data, delimiter='\t')
+                for row in reader:
+                    ws.append(row)
+            wb.save(output_file)
+
+        convert_output_txt_files_2_xlsx(self.output_path+'/optimal_pathways.txt', self.output_path+'/optimal_pathways.xlsx')
+        if self.FBA:
+            convert_output_txt_files_2_xlsx(self.output_path+'/active_metabolism.txt', self.output_path+'/active_metabolism.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/flux_individualfluxes_output.txt', self.output_path+'/flux_individualfluxes_output.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/flux_output.txt', self.output_path+'/flux_output.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/theoretical_yield.txt', self.output_path+'/theoretical_yield.xlsx')
+        if self.KO:
+            convert_output_txt_files_2_xlsx(self.output_path+'/essentialrxns_output.txt', self.output_path+'/essentialrxns_output.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/fluxKO_output.txt', self.output_path+'/fluxKO_output.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/fluxKO_theoreticalyields_output.txt', self.output_path+'/fluxKO_theoreticalyields_output.xlsx')
+            convert_output_txt_files_2_xlsx(self.output_path+'/fluxKO_increased_theoreticalyields_output.txt', self.output_path+'/fluxKO_increased_theoreticalyields_output.xlsx')
+
+        
