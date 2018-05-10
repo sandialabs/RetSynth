@@ -9,12 +9,13 @@ class CompareKO(object):
     Compares flux values between simulation with added reactions simulations
     for each reaction knockout
     """
-    def __init__(self, target_compound_ID, wtresults, exresults, ex_paths, DB, fold_threshold=1.5):
+    def __init__(self, target_compound_ID, compounds_dict, wtresults, exresults, ex_paths, DB, fold_threshold=1.5):
         '''Initalize classes'''
         self.wtresults = wtresults
         self.exresults = exresults
         self.target = target_compound_ID
         self.ex_paths = ex_paths
+        self.compounds_dict = compounds_dict
         self.DB = DB
         self.fold_threshold = float(fold_threshold)+float(1)
         self.fluxchange = {}
@@ -62,7 +63,7 @@ class CompareKO(object):
                         if (self.exresults[rko].x_dict[r] <= lowerfold or
                                 self.exresults[rko].x_dict[r] >= upperfold):
                             self.fluxchange[rko][r] = '\t'.join([name,
-                            	                                    str(self.wtresults.x_dict[r]),
+                                                                 str(self.wtresults.x_dict[r]),
                                                                  str(self.exresults[rko].x_dict[r])
                                                                 ])
                 elif self.wtresults.x_dict[r] == 0 and self.exresults[rko].x_dict[r] != 0:
@@ -84,6 +85,7 @@ class CompareKO(object):
         Extracts external path carrying the most flux
         '''
         pathwayflux = {}
+        self.objective_function_ko = {}
         self.maxflux = {}
         self.maxpath = {}
         for rko in self.fluxchange:
@@ -109,3 +111,19 @@ class CompareKO(object):
             else:
                 self.maxpath[rko] = 'No added path'
                 self.maxflux[rko] = self.exresults[rko].x_dict['Sink_'+self.target]
+            glucose = True
+            try:
+                glucoseimport = self.exresults[rko].x_dict['EX_cpd00027_e0']
+            except KeyError:
+                glucose = False
+            if glucose:
+                objectivesol = self.exresults[rko].x_dict['Sink_'+self.compounds_dict[self.target]]
+                glucoseimport = round(glucoseimport, 2)
+                try:
+                    ty = abs(round(round(objectivesol, 2)/round(glucoseimport,2), 2))
+                    self.objective_function_ko[rko] = ty
+                except ZeroDivisionError:
+                    self.objective_function_ko[rko] = float(0)
+            else:
+                self.objective_function_ko[rko] = float(0)
+
