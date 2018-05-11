@@ -368,7 +368,7 @@ def parse_file(output_file, RDF_dict, filenumber, file_name, options):
         #Print warning if reference type was not identified by code
         if reference_type_string == 'PATENT':
             full_citation_string = 'PATENT '+', '.join([''.join(reference_t_details_array),
-            	                                           ''.join(reference_a_details_array),
+                                                           ''.join(reference_a_details_array),
                                                         ''.join(reference_j_details_array),
                                                         'Patent number-'+''.join(reference_n_details_array),
                                                         ''.join(reference_co_details_array),
@@ -514,7 +514,7 @@ def add_info_2_database(DBpath, rxntype, compartment):
     '''
     Adds data from text files too database
     '''
-    conn = sqlite3.connect(DBpath, check_same_thread=False)
+    conn = sqlite3.connect(DBpath)
     conn.text_factory = str
     cnx = conn.cursor()
     cnx.execute("PRAGMA synchronous = OFF")
@@ -545,9 +545,15 @@ def add_info_2_database(DBpath, rxntype, compartment):
         cnx.execute("INSERT INTO model VALUES (?,?)", ('SR1', 'Synthetic_reactions'))
 
     text_files = glob.glob(os.path.join(PATH+'/temp', '*'))
+    consildation_dict = {} 
+    eliminate_duplicates = {}
+    identification = 0
     for text_file in text_files:
         print ('STATUS: Adding {} to database'.format(text_file))
-        add_individual_file_info(text_file, cnx, conn, rxntype, compartment)
+        eliminate_duplicates, identification = add_individual_file_info(text_file, cnx, conn, 
+                                                                        rxntype, compartment,
+                                                                        eliminate_duplicates, 
+                                                                        identification)
 
     cnx.execute("""DELETE FROM model_compound WHERE rowid NOT IN
                    (SELECT min(rowid) from model_compound group by cpd_ID,model_ID)""")
@@ -580,7 +586,18 @@ def add_info_2_database(DBpath, rxntype, compartment):
 
     shutil.rmtree(PATH+'/temp')
 
-def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
+def check_refs(table, rxn_id, test_info_ref, new_rxn_info, larray, cnx):
+    '''check if reference info is already in database'''
+    q =  cnx.execute("SELECT {} FROM reaction_spresi_info WHERE reaction_ID = ? and reference = ?".format(table), (rxn_id, test_info_ref))
+    hits = q.fetchall()
+    if hits[0] == 'None' and str(new_rxn_info) != 'None':
+        cnx.execute("UPDATE reaction_spresi_info SET {} = ? WHERE reaction_ID = ? and reference = ?".format(table), (new_rxn_info, rxn_id, test_info_ref))
+    elif hits[0] != 'None' and str(new_rxn_info) != 'None' and  hits[0] != str(new_rxn_info):
+        cnx.execute("INSERT INTO reaction_spresi_info VALUES (?,?,?,?,?,?)",
+                    (str(rxn_id), str(larray[5]), str(larray[6]), str(larray[7]), str(larray[8]),
+                     larray[9].decode('utf-8')))
+
+def add_individual_file_info(text_file, cnx, conn, rxntype, compartment, eliminate_duplicates, identification):
     '''
     Specifically adds individual file info from to database
     '''
@@ -590,69 +607,90 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment):
         for line in open_file:
             line = line.strip('\n\r')
             larray = line.split('\t')
-            cnx.execute("INSERT INTO model_reaction VALUES (?,?,?)", (larray[0], 'SR1', 'false'))
-            cnx.execute("INSERT INTO reaction VALUES (?,?, ?, ?)", (larray[0], 'None', 'None', rxntype))
-            cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)", (larray[0], 'false'))
-            cnx.execute("INSERT INTO reaction_gene VALUES (?,?,?)", (larray[0], 'SR1', 'None'))
-            cnx.execute("INSERT INTO reaction_protein VALUES (?,?,?)", (larray[0], 'SR1', 'None'))
             reactants = larray[1].split('|----|')
             products = larray[2].split('|----|')
             catalysts = larray[3].split('|----|')
             solvents = larray[4].split('|----|')
-            if larray[1] != '':
-                for reactant in reactants:
-                    compound = reactant.split('|---|')
-                    modelcompounds.append((compound[0], 'SR1'))
-                    cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
-                                (larray[0], compound[0], 0, 1, 0))
-                    if len(compound) == 2:
-                        allcompounds.append((compound[0], compound[1], compartment,  'None'))
-                    elif len(compound) < 2:
-                        print ('WARNING: Issue with name and ID {} {} reactant'.format(compound, larray[0]))
-                        allcompounds.append((compound[0], 'None', compartment,  'None'))
-                conn.commit()
-            if larray[2] != '':
-                for product in products:
-                    compound = product.split('|---|')
-                    modelcompounds.append((compound[0], 'SR1'))
-                    cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
-                                (larray[0], compound[0], 1, 1, 0))
-                    if len(compound) == 2:
-                        allcompounds.append((compound[0], compound[1], compartment,  'None'))
-                    elif len(compound) < 2:
-                        print ('WARNING: Issue with name and ID {} {} product'.format(compound, larray[0]))
-                        allcompounds.append((compound[0], 'None', compartment, 'None'))
+            if larray[1]+larray[2] not in eliminate_duplicates:
+                identification+=1
+                rxn_id = 'rxn'+str(identification)+'_s'
+                eliminate_duplicates[larray[1]+larray[2]] = {}
+                eliminate_duplicates[larray[1]+larray[2]]['id'] = rxn_id
+                eliminate_duplicates[larray[1]+larray[2]]['catsolv'] = []
+                eliminate_duplicates[larray[1]+larray[2]]['ref'] = []
+                cnx.execute("INSERT INTO model_reaction VALUES (?,?,?)", (eliminate_duplicates[larray[1]+larray[2]]['id'], 'SR1', 'false'))
+                cnx.execute("INSERT INTO reaction VALUES (?,?,?,?)", (eliminate_duplicates[larray[1]+larray[2]]['id'], 'None', 'None', rxntype))
+                cnx.execute("INSERT INTO reaction_reversibility VALUES (?,?)", (eliminate_duplicates[larray[1]+larray[2]]['id'], 'false'))
+                cnx.execute("INSERT INTO reaction_gene VALUES (?,?,?)", (eliminate_duplicates[larray[1]+larray[2]]['id'], 'SR1', 'None'))
+                cnx.execute("INSERT INTO reaction_protein VALUES (?,?,?)", (eliminate_duplicates[larray[1]+larray[2]]['id'], 'SR1', 'None'))
+                if larray[1] != '':
+                    for reactant in reactants:
+                        compound = reactant.split('|---|')
+                        modelcompounds.append((compound[0], 'SR1'))
+                        cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
+                                    (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 0, 1, 0))
+                        if len(compound) == 2:
+                            allcompounds.append((compound[0], compound[1], compartment,  'None'))
+                        elif len(compound) < 2:
+                            print ('WARNING: Issue with name and ID {} {} reactant'.format(compound, eliminate_duplicates[larray[1]+larray[2]]['id']))
+                            allcompounds.append((compound[0], 'None', compartment,  'None'))
+                    conn.commit()
+                if larray[2] != '':
+                    for product in products:
+                        compound = product.split('|---|')
+                        modelcompounds.append((compound[0], 'SR1'))
+                        cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
+                                    (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 1, 1, 0))
+                        if len(compound) == 2:
+                            allcompounds.append((compound[0], compound[1], compartment,  'None'))
+                        elif len(compound) < 2:
+                            print ('WARNING: Issue with name and ID {} {} product'.format(compound, eliminate_duplicates[larray[1]+larray[2]]['id']))
+                            allcompounds.append((compound[0], 'None', compartment, 'None'))
+                    conn.commit()
+            
+            test_info_cat_solv = larray[3]+larray[4]
+            test_info_ref = str(larray[9]).decode('utf-8')
+            if test_info_cat_solv not in eliminate_duplicates[larray[1]+larray[2]]['catsolv']:
+                eliminate_duplicates[larray[1]+larray[2]]['catsolv'].append(test_info_cat_solv)
+                if larray[3] != '':
+                    for catalyst in catalysts:
+                        compound = catalyst.split('|---|')
+                        if len(compound) == 2:
+                            cnx.execute("INSERT INTO reaction_catalysts VALUES (?,?,?)",
+                                        (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], compound[1]))
+                        elif len(compound) < 2:
+                            print ('WARNING: Issue with name and ID {} {} catalyst'.format(compound,eliminate_duplicates[larray[1]+larray[2]]['id']))
+                            cnx.execute("INSERT INTO reaction_catalysts VALUES (?,?,?)",
+                                        (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 'None'))
+                    conn.commit()
+                if larray[4] != '':
+                    for solvent in solvents:
+                        compound = solvent.split('|---|')
+                        if len(compound) == 2:
+                            cnx.execute("INSERT INTO reaction_solvents VALUES (?,?,?)",
+                                        (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], compound[1]))
+                        elif len(compound) < 2:
+                            print ('WARNING: Issue with name and ID {} {} solvent'.format(compound, eliminate_duplicates[larray[1]+larray[2]]['id']))
+                            print (larray[4])
+                            cnx.execute("INSERT INTO reaction_solvents VALUES (?,?,?)",
+                                        (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 'None'))
                 conn.commit()
 
-            if larray[3] != '':
-                for catalyst in catalysts:
-                    compound = catalyst.split('|---|')
-                    if len(compound) == 2:
-                        cnx.execute("INSERT INTO reaction_catalysts VALUES (?,?,?)",
-                                    (larray[0], compound[0], compound[1]))
-                    elif len(compound) < 2:
-                        print ('WARNING: Issue with name and ID {} {} catalyst'.format(compound, larray[0]))
-                        cnx.execute("INSERT INTO reaction_catalysts VALUES (?,?,?)",
-                                    (larray[0], compound[0], 'None'))
+            if test_info_ref not in  eliminate_duplicates[larray[1]+larray[2]]['ref']:
+                eliminate_duplicates[larray[1]+larray[2]]['ref'].append(test_info_ref)
+                cnx.execute("INSERT INTO reaction_spresi_info VALUES (?,?,?,?,?,?)",
+                            (str(eliminate_duplicates[larray[1]+larray[2]]['id']), str(larray[5]), str(larray[6]), str(larray[7]), str(larray[8]),
+                             larray[9].decode('utf-8')))
                 conn.commit()
-            if larray[4] != '':
-                for solvent in solvents:
-                    compound = solvent.split('|---|')
-                    if len(compound) == 2:
-                        cnx.execute("INSERT INTO reaction_solvents VALUES (?,?,?)",
-                                    (larray[0], compound[0], compound[1]))
-                    elif len(compound) < 2:
-                        print ('WARNING: Issue with name and ID {} {} solvent'.format(compound, larray[0]))
-                        cnx.execute("INSERT INTO reaction_solvents VALUES (?,?,?)",
-                                    (larray[0], compound[0], 'None'))
-                conn.commit()
-            cnx.execute("INSERT INTO reaction_spresi_info VALUES (?,?,?,?,?,?)",
-                        (str(larray[0]), str(larray[5]), str(larray[6]), str(larray[7]), str(larray[8]),
-                         larray[9].decode('utf-8')))
-            conn.commit()
+            else:
+                check_refs('temperature', str(eliminate_duplicates[larray[1]+larray[2]]['id']), test_info_ref, larray[5], larray, cnx)
+                check_refs('pressure', str(eliminate_duplicates[larray[1]+larray[2]]['id']), test_info_ref, larray[6], larray, cnx)
+                check_refs('total_time', str(eliminate_duplicates[larray[1]+larray[2]]['id']), test_info_ref, larray[7], larray, cnx)
+                check_refs('yield', str(eliminate_duplicates[larray[1]+larray[2]]['id']), test_info_ref, larray[8], larray, cnx)
 
     allcompounds = list(set(allcompounds))
     modelcompounds = list(set(modelcompounds))
     cnx.executemany("INSERT INTO model_compound VALUES (?,?)", modelcompounds)
     cnx.executemany("INSERT INTO compound VALUES (?,?,?,?)", allcompounds)
     conn.commit()
+    return(eliminate_duplicates, identification)
