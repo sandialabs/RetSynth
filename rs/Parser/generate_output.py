@@ -3,11 +3,13 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Generate output'
 
+import sys
 import re
 import os
 import csv
 import openpyxl
 import shutil
+csv.field_size_limit(sys.maxsize)
 
 class Output(object):
     """Opens and fills output files produced by software"""
@@ -184,7 +186,7 @@ class Output(object):
                                                                 os_dict[r]['direction'], finalprotein, finalgene,
                                                                 str(len(os_dict[r]['organisms']))+
                                                                 ' number of species that contain this reaction',
-                                                                '.'.join(os_dict[r]['organisms'])])+'\n')
+                                                                ','.join(os_dict[r]['organisms'])])+'\n')
 
                         if tox_excpds:
                             for react in os_dict[r]['reactants']:
@@ -337,7 +339,7 @@ class Output(object):
                         pass
                     else:
                         if value > wt_ty:
-                            self.fluxKO_in_ty_output.write("{}\t{}\t{}\t{}\n".format(rko, self.DB.get_genes(rko, target[2]), self.DB.get_proteins(rko, target[2]), value))
+                            self.fluxKO_in_ty_output.write("{}\t{}\t{}\t{}\n".format(rko, self.DB.get_genes(rko, target_info[2]), self.DB.get_proteins(rko, target_info[2]), value))
  
     def output_essential_reactions(self, target_compound_ID, target_organism_ID, er):
         '''
