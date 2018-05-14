@@ -565,20 +565,17 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                                                         incpds_active, inrxns_active,
                                                         args.media_for_FBA, args.knockouts,
                                                         output, DB)
+                    R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
+                                     target_info[0], target_info[2], incpds_active, args.figures)
+                    output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
                     if args.figures:
                         G = spgd.GraphDot(DB, args.output_path, incpds_active, inrxns,
                                           opt_fba.fbasol.x_dict)
                         G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
-                        R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
-                                         target_info[0], target_info[2], incpds_active)
-                        output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
 
                 elif args.figures and not args.flux_balance_analysis:
                     G = spgd.GraphDot(DB, args.output_path, incpds, inrxns)
                     G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
-                    R = rf.ReactionFiles(args.output_path, DB, ex_info.temp_rxns,
-                                         target_info[0], target_info[2], incpds_active)
-                    output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
             else:
                 output.output_shortest_paths(target_info, [])
                 if args.flux_balance_analysis:

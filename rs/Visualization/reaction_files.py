@@ -20,7 +20,7 @@ elif platform == "win32" or platform == 'win64':
 
 class ReactionFiles(object):
     def __init__(self, output_path, DB, reactions, target,
-                 target_organism, incpds, cdxmlfiles=True):
+                 target_organism, incpds, figures, cdxmlfiles=True):
         self.output_path = output_path
         self.DB = DB
         self.incpds = incpds
@@ -28,6 +28,7 @@ class ReactionFiles(object):
         self.reactions = reactions
         self.target = target
         self.target_organism = target_organism
+        self.figures = figures
         self.target_organism_name = self.DB.get_organism_name(target_organism)
         self.IN = indigo.Indigo()
         self.IR = indigo_renderer.IndigoRenderer(self.IN)
@@ -136,55 +137,56 @@ class ReactionFiles(object):
         return ordered_paths
     def generate_reaction_SMILES(self):
         '''Produce files that have reaction smiles for each reaction in a pathway'''
-        target_reformat = re.sub('/', '_', self.target)
-        self.generate_output_folders(self.output_path+'/solution_smiles')
-        self.generate_output_folders(self.output_path+'/solution_cdxml')
-        self.generate_output_folders(self.output_path+'/solution_cdxml/'+
-                                     target_reformat+'_solutions')
-        self.generate_output_folders(self.output_path+'/solution_figures')
-        self.generate_output_folders(self.output_path+'/solution_figures/'+
-                                     target_reformat+'_solutions')
         ordered_paths = self.order_of_paths()
-        for count_pathway, os_dict in self.reactions.iteritems():
-            smiles_reactants = {}
-            smiles_products = {}
-
-            with open(self.output_path+'/solution_smiles/reaction_smile_'+
-                      target_reformat+'_solution_'+str(count_pathway)+
-                      '.smi', 'w') as fout:
-                array = self.IN.createArray()
-                for counter in reversed(ordered_paths[count_pathway].keys()):
-                    rxn = ordered_paths[count_pathway][counter]
-                    smiles_reactants[rxn] = []
-                    smiles_products[rxn] = []
-                    if os_dict[rxn]['direction'] == 'forward':
-                        smiles_reactants[rxn] = self.get_SMILES(os_dict[rxn]['reactants'],
-                                                                smiles_reactants[rxn])
-                        smiles_products[rxn] = self.get_SMILES(os_dict[rxn]['products'],
-                                                               smiles_products[rxn])
-                    else:
-                        smiles_reactants[rxn] = self.get_SMILES(os_dict[rxn]['products'],
-                                                                smiles_reactants[rxn])
-                        smiles_products[rxn] = self.get_SMILES(os_dict[rxn]['reactants'],
-                                                               smiles_products[rxn])
-                for count_rxn in reversed(ordered_paths[count_pathway].keys()):
-                    key = ordered_paths[count_pathway][count_rxn]
-                    fout.write('.'.join(smiles_reactants[key])+'>>'+
-                               '.'.join(smiles_products[key])+'\n')
-                    rxn = self.IN.loadReaction('.'.join(smiles_reactants[key])+'>>'+
-                                               '.'.join(smiles_products[key]))
-                    self.IN.setOption('render-grid-title-property', str(key)+
-                                      ' '+str(self.DB.get_reaction_name(key)))
-                    array.arrayAdd(rxn)
-                    self.IR.renderToFile(rxn, self.output_path+'/solution_cdxml/'+target_reformat+
-                                         '_solutions/'+'Solution_'+str(count_pathway)+'_rxn_'+
-                                         str(count_rxn)+'_'+self.target_organism_name+'.cdxml')
-                self.IN.setOption('render-output-format', 'png')
-                self.IN.setOption("render-bond-length", "50")
-                self.IN.setOption("render-margins", "80, 30, 10, 30")
-                self.IN.setOption("render-grid-margins", "5, 5, 5, 5")
-                self.IR.renderGridToFile(array, None, len(smiles_reactants.keys()),
-                                         self.output_path+'/solution_figures/'+target_reformat+
-                                         '_solutions/'+'Solution_'+str(count_pathway)+'_'+
-                                         self.target_organism_name+'.png')
         self.ordered_paths = ordered_paths
+        if self.figures:
+            target_reformat = re.sub('/', '_', self.target)
+            self.generate_output_folders(self.output_path+'/solution_smiles')
+            self.generate_output_folders(self.output_path+'/solution_cdxml')
+            self.generate_output_folders(self.output_path+'/solution_cdxml/'+
+                                         target_reformat+'_solutions')
+            self.generate_output_folders(self.output_path+'/solution_figures')
+            self.generate_output_folders(self.output_path+'/solution_figures/'+
+                                         target_reformat+'_solutions')
+            for count_pathway, os_dict in self.reactions.iteritems():
+                smiles_reactants = {}
+                smiles_products = {}
+
+                with open(self.output_path+'/solution_smiles/reaction_smile_'+
+                          target_reformat+'_solution_'+str(count_pathway)+
+                          '.smi', 'w') as fout:
+                    array = self.IN.createArray()
+                    for counter in reversed(ordered_paths[count_pathway].keys()):
+                        rxn = ordered_paths[count_pathway][counter]
+                        smiles_reactants[rxn] = []
+                        smiles_products[rxn] = []
+                        if os_dict[rxn]['direction'] == 'forward':
+                            smiles_reactants[rxn] = self.get_SMILES(os_dict[rxn]['reactants'],
+                                                                    smiles_reactants[rxn])
+                            smiles_products[rxn] = self.get_SMILES(os_dict[rxn]['products'],
+                                                                   smiles_products[rxn])
+                        else:
+                            smiles_reactants[rxn] = self.get_SMILES(os_dict[rxn]['products'],
+                                                                    smiles_reactants[rxn])
+                            smiles_products[rxn] = self.get_SMILES(os_dict[rxn]['reactants'],
+                                                                   smiles_products[rxn])
+                    for count_rxn in reversed(ordered_paths[count_pathway].keys()):
+                        key = ordered_paths[count_pathway][count_rxn]
+                        fout.write('.'.join(smiles_reactants[key])+'>>'+
+                                   '.'.join(smiles_products[key])+'\n')
+                        rxn = self.IN.loadReaction('.'.join(smiles_reactants[key])+'>>'+
+                                                   '.'.join(smiles_products[key]))
+                        self.IN.setOption('render-grid-title-property', str(key)+
+                                          ' '+str(self.DB.get_reaction_name(key)))
+                        array.arrayAdd(rxn)
+                        self.IR.renderToFile(rxn, self.output_path+'/solution_cdxml/'+target_reformat+
+                                             '_solutions/'+'Solution_'+str(count_pathway)+'_rxn_'+
+                                             str(count_rxn)+'_'+self.target_organism_name+'.cdxml')
+                    self.IN.setOption('render-output-format', 'png')
+                    self.IN.setOption("render-bond-length", "50")
+                    self.IN.setOption("render-margins", "80, 30, 10, 30")
+                    self.IN.setOption("render-grid-margins", "5, 5, 5, 5")
+                    self.IR.renderGridToFile(array, None, len(smiles_reactants.keys()),
+                                             self.output_path+'/solution_figures/'+target_reformat+
+                                             '_solutions/'+'Solution_'+str(count_pathway)+'_'+
+                                             self.target_organism_name+'.png')
