@@ -101,14 +101,14 @@ class TanimotoStructureSimilarity(object):
                     index = self.get_original_target(tmol+'_'+self.cytosol)
                     if index:
                         del self.finaltargets[index]
-                    print ('STATUS: {} compounds have {} or greater similarity to target compound {}'.format(len(set(max_score_cpds)), self.threshold_score, tmol+'_'+self.cytosol))
+                    print ('STATUS: {} compounds have {} or greater similarity to target compound {}'.format(len(set(max_score_cpds)), float(self.threshold_score)*100, tmol+'_'+self.cytosol))
                     for max_score_cpd in set(max_score_cpds):
                         new_target = self.extract_db_cpd_ID(max_score_cpd)
                         if new_target not in self.individualtargets and new_target not in self.track_final_cpd:
                             print ('STATUS: Adding compound {} to target list'.format(max_score_cpd))
                             self.fill_final_targets(new_target)
                 else:
-                    print ('STATUS: No compounds in the database that are {} percent similar to target {}'.format(self.threshold_score*100, tmol+'_'+self.cytosol))
+                    print ('STATUS: No compounds in the database that are {} percent similar to target {}'.format(float(self.threshold_score)*100, tmol+'_'+self.cytosol))
 
     def fill_final_targets(self, new_target):
         for organism in self.organisms:
