@@ -303,7 +303,7 @@ def read_in_and_generate_output_files(args, database):
         raise ValueError('ERROR: No targets, try different compounds')
     OUTPUT = go.Output(DB, args.output_path, args.flux_balance_analysis, args.knockouts)
     if args.inchidb:
-        print ('STATUS: {} tanimoto threshold being used'.format(float(args.tanimoto_threshold)))
+        print ('STATUS: {} percent similarity tanimoto threshold being used'.format(float(args.tanimoto_threshold)*100))
         SIM = ss.TanimotoStructureSimilarity(R.targets, DB.get_all_compounds(),
                                              DB.get_compartment('cytosol')[0],
                                              DB.get_compartment('extracellular')[0],
