@@ -57,7 +57,7 @@ def load_compounds(model, metabolites, DB):
     compounds = {}
     for c, metabolite in enumerate(metabolites):
         compounds[metabolite] = 'cpd'+str(c)
-        met = Metabolite('cpd'+str(c), name=DB.get_compound_name(metabolite),
+        met = Metabolite('cpd'+str(c), name='cpd'+str(c),
                          compartment=DB.get_compound_compartment(metabolite))
         model.add_metabolites(met)
 
