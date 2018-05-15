@@ -321,8 +321,10 @@ class Output(object):
                 wt_ty = 'NA'
         else:
             wt_ty = 'NA'
+
         with open(self.output_path+'/fluxKO_theoreticalyields_output.txt') as self.fluxKO_ty_output:
             line = self.fluxKO_ty_output.readline()
+
         with open(self.output_path+'/fluxKO_theoreticalyields_output.txt', 'a') as self.fluxKO_ty_output:
             if line.startswith('#'):
                 self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
@@ -331,16 +333,26 @@ class Output(object):
                 self.fluxKO_ty_output.write('#Target ID\tOrganism ID\twild type theoretical yield\t'+'\t'.join(comparisonKOresults.objective_function_ko.keys())+'\n')
                 self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
                 self.fluxKO_ty_output.write(target+'-'+self.DB.get_compound_name(target)+'\t'+target_info[2]+'-'+self.DB.get_organism_name(target_info[2])+'\t'+str(wt_ty)+'\t'+self.ko_ty+'\n')                
+
         with open(self.output_path+'/fluxKO_increased_theoreticalyields_output.txt', 'a') as self.fluxKO_in_ty_output:
             if wt_ty != 'NA':
+                count=0
                 for rko, value in comparisonKOresults.objective_function_ko.iteritems():
                     if rko.startswith('EX'):
                         pass
                     else:
                         if value > wt_ty:
-                            self.fluxKO_in_ty_output.write('Reaction knockouts that increase theoretical yield of {} of compound {} in organism {}\n'.format(wt_ty,target+'-'+self.DB.get_compound_name(target), target_info[2]+'-'+self.DB.get_organism_name(target_info[2])))
-                            self.fluxKO_in_ty_output.write("Reaction knockout\tcatalytic genes\tproteins\tyield\n")
-                            self.fluxKO_in_ty_output.write("{}\t{}\t{}\t{}\n".format(rko, self.DB.get_genes(rko, target_info[2]), self.DB.get_proteins(rko, target_info[2]), value))
+                            count+=1
+                            if count == 1:
+                                self.fluxKO_in_ty_output.write('Reaction knockouts that increase theoretical yield of {} of compound {} in organism {}\n'.format(wt_ty, 
+                                                                                                                                                             target+'-'+self.DB.get_compound_name(target),
+                                                                                                                                                             target_info[2]+'-'+self.DB.get_organism_name(target_info[2])))
+                                self.fluxKO_in_ty_output.write("reaction knockout ID\treaction knockout name\tcatalytic genes\tcatalytic proteins\treaction formula\tyield\n")
+                            self.fluxKO_in_ty_output.write("{}\t{}\t{}\t{}\t{}\t{}\n".format(rko, self.DB.get_reaction_name(rko),
+                                                                                             self.DB.get_genes(rko, target_info[2]),
+                                                                                             self.DB.get_proteins(rko, target_info[2]),
+                                                                                             ','.join(self.DB.get_reactants(rko))+'-->'+','.join(self.DB.get_products(rko)),
+                                                                                             value))
  
     def output_essential_reactions(self, target_compound_ID, target_organism_ID, er):
         '''
