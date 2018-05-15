@@ -601,9 +601,9 @@ def run_flux_balance_analysis(target_info, ex_info, incpds_original,
                                     opt_fba.compounds_dict)
     if ko:
         output.output_essential_reactions(target_info[0], target_info[2], opt_fba.essentialrxns)
-        comparisonKOresults = crko.CompareKO(target_info[0], opt_fba.fbasol, opt_fba.KOsolutions,
+        comparisonKOresults = crko.CompareKO(target_info[0], opt_fba.compounds_dict, opt_fba.fbasol, opt_fba.KOsolutions,
                                              ex_info.temp_rxns, DB)
-        output.output_FBA_KOs(target_info, comparisonKOresults, ex_info.temp_rxns)
+        output.output_FBA_KOs(target_info, opt_fba.fbasol, opt_fba.compounds_dict, comparisonKOresults, ex_info.temp_rxns)
     return opt_fba
 
 def retrieve_active_FBA_metabolism(targets, DB, args, output):
