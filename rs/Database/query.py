@@ -5,30 +5,21 @@ __description__ = 'Interface for database of FBA models and compounds within SBM
 
 import sqlite3
 
-def test_db_4_error(cnx, query, db):
-    '''tests database for errors'''
-    try:
-        Q = cnx.execute(query)
-        return(Q, cnx)
-    except sqlite3.DatabaseError:
-        print ('WARNING: Database Error with ('+str(query)+') ...reconnect to the database')
-        conn = sqlite3.connect(db, check_same_thread=False)
-        conn.text_factory = str
-        cnx = conn.cursor()
+def test_db_4_error(cnx, query, db, count):
+    count+=1
+    while count < 4:
         try:
             Q = cnx.execute(query)
             return(Q, cnx)
+            break
         except sqlite3.DatabaseError:
-            print ('WARNING: Database Error with ('+str(query)+') ...reconnect to the database four second time')
+            print ('WARNING: Database Error with ('+str(query)+') ...reconnect to the database for {} time'.format(count))
             conn = sqlite3.connect(db, check_same_thread=False)
             conn.text_factory = str
             cnx = conn.cursor()
-            try:
-                Q = cnx.execute(query)
-                return(Q, cnx)
-            except sqlite3.DatabaseError:
-                print ('WARNING: Database Error with ('+str(query)+') ...reconnect to the database four third time returning empty query')
-                return (None, cnx)
+            Q, cnx = test_db_4_error(cnx, query, db, 0)
+    if count == 4:
+        return (None, cnx)
 
 class Connector(object):
     """Connects to a generated database"""
@@ -42,7 +33,7 @@ class Connector(object):
         '''Retrieves unique metabolic clusters (organisms
             with the exact same metabolism) in the database'''
         query = "SELECT DISTINCT cluster_num FROM cluster"
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         #Q = self.cnx.execute(query,)
         if Q:
             if Q.arraysize > 0:
@@ -58,7 +49,7 @@ class Connector(object):
     def get_models_from_cluster(self, cluster):
         '''Retrieves model IDs from a specified cluster in the database'''
         query = "select ID from cluster where cluster_num = '%s'" % cluster
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -76,7 +67,7 @@ class Connector(object):
     def get_all_models(self):
         '''Retrieves all model IDs in the database'''
         query = "select * from model"
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchall()
@@ -93,7 +84,7 @@ class Connector(object):
     def get_organism_name(self, organism_ID):
         '''Retrieves name of metabolic model given a specific model ID'''
         query = "select file_name from model where ID = '%s'" % organism_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -111,7 +102,7 @@ class Connector(object):
         '''Retrieves ID of metabolic model given a specific model name'''
         organism_name = str('%')+organism_name+str('%')
         query = "select ID from model where name like '%s'" % organism_name
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -129,7 +120,7 @@ class Connector(object):
         '''Retrieves compound ID given a compound name'''
         compound_ID = compound_ID+str('%')
         query = "select ID from compound where name like '%s'" % compound_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchall()
@@ -149,7 +140,7 @@ class Connector(object):
             return None
 
         query = "select name from compound where ID = '%s'" % compound_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -173,7 +164,7 @@ class Connector(object):
             return None
 
         query = "select compartment from compound where ID = '%s'" % compound_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -194,7 +185,7 @@ class Connector(object):
             return None
 
         query = "select name from reaction where ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -214,7 +205,7 @@ class Connector(object):
             return False
 
         query = "select reaction_ID from reaction_compound where cpd_ID = '%s' and is_prod = '%s'" % (compound_ID, is_prod)
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -233,7 +224,7 @@ class Connector(object):
 
         query = "select model_ID from model_reaction indexed by\
                  modelreaction_ind2 where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -252,7 +243,7 @@ class Connector(object):
 
         query = "select cpd_ID from reaction_compound where reaction_ID = '%s' and\
                  is_prod = (0)" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -270,7 +261,7 @@ class Connector(object):
 
         query = ("select reaction_ID from reaction_compound where cpd_ID = '%s' and \
                 is_prod = (0)") % compound_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -289,7 +280,7 @@ class Connector(object):
         query = ("select reaction_ID from reaction_compound where cpd_ID = '%s' and \
                 is_prod = (1)") % compound_ID
 
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -308,7 +299,7 @@ class Connector(object):
         query = ("select cpd_ID from reaction_compound where reaction_ID = '%s' and \
                 is_prod = (1)") % reaction_ID
 
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -326,7 +317,7 @@ class Connector(object):
 
         query = "select cpd_ID from model_compound indexed by \
                 modelcompound_ind1 where model_ID = '%s'" % organism_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -340,7 +331,7 @@ class Connector(object):
     def get_all_compounds(self):
         '''Retrieves all compounds in the database'''
         query = "select ID from compound"
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -358,7 +349,7 @@ class Connector(object):
 
         query = "select reaction_ID from model_reaction indexed by \
                 modelreaction_ind1 where model_ID = '%s'" % organism_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -372,7 +363,7 @@ class Connector(object):
     def get_all_reactions(self):
         '''Retrieves all reactions in the database'''
         query = "select ID from reaction"
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -391,7 +382,7 @@ class Connector(object):
 
         query = "select is_rev from model_reaction where \
                 model_ID = '%s' and reaction_ID = '%s'" % (organism_ID, reaction_ID)
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -410,7 +401,7 @@ class Connector(object):
 
         query = "select is_reversible from reaction_reversibility \
                 where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchall()[0][0]
@@ -428,7 +419,7 @@ class Connector(object):
             return None
         query = "select gene_ID from reaction_gene where \
                 reaction_ID = '%s' and model_ID = '%s'" % (reaction_ID, organism_ID)
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -449,7 +440,7 @@ class Connector(object):
             return None
         query = "select protein_ID from reaction_protein where\
                  reaction_ID = '%s' and model_ID = '%s'" % (reaction_ID, organism_ID)
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -470,7 +461,7 @@ class Connector(object):
             return None
         query = "select stoichiometry from reaction_compound where \
                 reaction_ID = '%s' and cpd_ID = '%s' and is_prod = '%s'" % (reaction_ID, compound_ID, is_prod)
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -487,7 +478,7 @@ class Connector(object):
             return None
 
         query = "select catalysts_ID from reaction_catalysts where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -505,7 +496,7 @@ class Connector(object):
             return None
         compartment = str('%')+compartment+str('%')
         query = "select ID from compartments where name like '%s'" % compartment
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -523,7 +514,7 @@ class Connector(object):
             return None
 
         query = "select solvents_ID from reaction_solvents where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -541,7 +532,7 @@ class Connector(object):
             return None
 
         query = "select temperature from reaction_spresi_info where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -559,7 +550,7 @@ class Connector(object):
             return None
 
         query = "select pressure from reaction_spresi_info where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -577,7 +568,7 @@ class Connector(object):
             return None
 
         query = "select total_time from reaction_spresi_info where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -595,7 +586,7 @@ class Connector(object):
             return None
 
         query = "select yield from reaction_spresi_info where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -613,7 +604,7 @@ class Connector(object):
             return None
 
         query = "select reference from reaction_spresi_info where reaction_ID = '%s'" % reaction_ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -631,7 +622,7 @@ class Connector(object):
             return None
 
         query = "select ID from reaction where type = '%s'" % rxntype
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
 
         if Q:
             if Q.arraysize > 0:
@@ -647,7 +638,7 @@ class Connector(object):
     def get_all_keggIDs(self):
         '''Retrieves reactions based on type'''
         query = "select kegg_id from reaction" 
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
@@ -662,7 +653,7 @@ class Connector(object):
     def get_kegg_reaction_ID(self, ID):
         '''Retrieves reactions based on type'''
         query = "select kegg_id from reaction where ID = '%s'"  % ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -680,7 +671,7 @@ class Connector(object):
     def get_kegg_cpd_ID(self, ID):
         '''Retrieves reactions based on type'''
         query = "select kegg_id from compound where ID = '%s'"  % ID
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 result = Q.fetchone()
@@ -698,7 +689,7 @@ class Connector(object):
     def get_all_kegg_cpd_ID(self):
         '''Retrieves reactions based on type'''
         query = "select kegg_id from compound"
-        Q, self.cnx = test_db_4_error(self.cnx, query, self.db)
+        Q, self.cnx = test_db_4_error(self.cnx, query, self.db, 0)
         if Q:
             if Q.arraysize > 0:
                 hits = Q.fetchall()
