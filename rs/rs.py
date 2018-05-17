@@ -18,7 +18,6 @@ from Visualization import SP_Graph_dot as spgd
 from Visualization import reaction_files as rf
 from ShortestPath import extractinfo as ei
 from ShortestPath import constraints as co
-from ShortestPath import integerprogram_glpk as ip_glpk
 from ShortestPath import integerprogram_pulp as ip_pulp
 from ShortestPath import search_sp_metclusters as smc
 from Database import initialize_database as init_db
@@ -54,15 +53,7 @@ def parse_arguments():
                                                  compounds and organisms \
                                                  (tab deliminated)',
                         required=True, type=str)
-    ###SOLVER OPTIONS###
-    parser.add_argument('-solver', '--python_glpk_connector_package', help='python package to use \
-                                                                            to connect to glpk \
-                                                                            solver software (can \
-                                                                            use PYGLPK (GLPK) note that pyglpk \
-                                                                            only works with glpk package 4.3 or lower \
-                                                                            or PULP (default))',
-                        required=False, type=str, default='PULP')
- 
+    ###SOLVER OPTIONS### 
     parser.add_argument('-tmlim', '--solver_time_limit', help='time limit for solver to solve shortest \
                                                                 path (note: only function with PULP python \
                                                                 solver package)',
@@ -463,8 +454,7 @@ def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
     if args.generate_database_constraints:
         LP = co.ConstructInitialLP(allrxns, allcpds, DB,
                                    ignore_reactions, True,
-                                   reverse_constraints=False,
-                                   specified_pysolver=args.python_glpk_connector_package)
+                                   reverse_constraints=False)
         with open(args.generate_database_constraints, 'wb') as fout1:
             cPickle.dump(LP.A, fout1)
             cPickle.dump(LP.allcpds, fout1)
@@ -475,25 +465,18 @@ def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
             allcompounds4matrix = cPickle.load(fin1)
         LP = co.ConstructInitialLP(allrxns, allcompounds4matrix, DB,
                                    ignore_reactions, A,
-                                   reverse_constraints=False,
-                                   specified_pysolver=args.python_glpk_connector_package)
+                                   reverse_constraints=False)
     DB.conn.close()
     return LP
 
-def construct_and_run_integerprogram(args, targets, LP, output, database):
+def construct_and_run_integerprogram(args, targets, output, database):
     '''
     Constructs ILP and solves it identifying shortest path to the target
     '''
     DB = Q.Connector(database)
-    if LP.PYSOLVER == 'GLPK':
-        IP = ip_glpk.IntergerProgram(DB, args.limit_reactions,
-                                     args.limit_cycles, args.k_number_of_paths, args.cycles)
-    elif LP.PYSOLVER == 'PULP':
-        IP = ip_pulp.IntergerProgram(DB, args.limit_reactions,
-                                     args.limit_cycles, args.k_number_of_paths, args.cycles,
-                                     args.solver_time_limit)
-    else:
-        raise IOError('ERROR: NO PYTHON SOLVER PACKAGE COULD BE IDENTIFIED. INSTALL PYGLPK, PYMPROG, OR PULP')
+    IP = ip_pulp.IntergerProgram(DB, args.limit_reactions,
+                                 args.limit_cycles, args.k_number_of_paths, args.cycles,
+                                 args.solver_time_limit)
     if args.flux_balance_analysis:
         active_metabolism = retrieve_active_FBA_metabolism(targets, DB, args, output)
     else:
@@ -639,7 +622,7 @@ def main():
     all_db_compounds, all_db_reactions, database = retrieve_database_info(args)
     targets, ignore_reactions, output = read_in_and_generate_output_files(args, database)
     LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
-    IP, active_metabolism, toxicity_train = construct_and_run_integerprogram(args, targets, LP, output, database)
+    IP, active_metabolism, toxicity_train = construct_and_run_integerprogram(args, targets, output, database)
 
     def start_processes_new(index, target):
         print ('STATUS: Inititate new process for target {}'.format(target))

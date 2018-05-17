@@ -3,15 +3,8 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'retrieves necessary matricies for interger program'
 
-try:
-    import glpk
-    PYSOLVER = 'GLPK'
-except ImportError:
-    try:
-        import pulp
-        PYSOLVER = 'PULP'
-    except ImportError:
-        print ('Need to install either GLPK or PULP')
+
+import pulp
 from copy import deepcopy
 from tqdm import tqdm
 import time
@@ -49,8 +42,7 @@ def load_stoichometry_for_met(reactantrxns, productsrxns, allrxnsrev,
 
 class ConstructInitialLP(object):
     """Constructs A matrix and indidvidual reaction constraints"""
-    def __init__(self, allrxns, allcpds, db, ignorerxns, gdbc,
-                 reverse_constraints=False, specified_pysolver=None):
+    def __init__(self, allrxns, allcpds, db, ignorerxns, gdbc, reverse_constraints=False):
         '''Initalize class'''
         self.allrxns = allrxns
         self.allcpds = deepcopy(allcpds)
@@ -66,30 +58,13 @@ class ConstructInitialLP(object):
         self.allrxnsrev_index = {}
         self.variables = []
         self.rxnnames = []
-        if specified_pysolver is None:
-            self.PYSOLVER = PYSOLVER
+        self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
+        self.initial_reaction_constraints()
+        if self.gdbc is True:
+            self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
+            self.initial_A_matrix(pulp)
         else:
-            self.PYSOLVER = specified_pysolver
-        if self.PYSOLVER == 'GLPK':
-            glpk.env.term_on = False
-            self.lp = glpk.LPX()
-            self.lp.name = 'ShortestPath'
-            self.lp.obj.maximize = False
-            self.initial_reaction_constraints()
-            if self.gdbc is True:
-                self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
-                self.initial_A_matrix()
-            else:
-                self.existing_A_matrix_glpk()
-        elif self.PYSOLVER == 'PULP':
-            import pulp
-            self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
-            self.initial_reaction_constraints()
-            if self.gdbc is True:
-                self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
-                self.initial_A_matrix(pulp)
-            else:
-                self.existing_A_matrix_pulp(pulp)
+            self.existing_A_matrix_pulp(pulp)
 
     def retrieve_stoichiometry(self, met):
         '''Retrieve stoichometry for each compound'''
@@ -119,18 +94,6 @@ class ConstructInitialLP(object):
                                        lowBound=0, upBound=1)
         self.variables.append(variable)
 
-#################PULP#############################
-    def set_reaction_constraints(self, name, rxnname, solver=None):
-        '''
-        Determines what solver (pulp or pyglpk) should be used to
-        set reaction constraints
-        '''
-        if self.PYSOLVER == 'PULP':
-            import pulp
-            self.reaction_constraints_pulp(name, rxnname, pulp)
-        elif self.PYSOLVER == 'GLPK':
-            self.reaction_constraints_glpk(name, rxnname)
-
     def initial_reaction_constraints(self):
         '''Sets up column (individual reaction) constraints'''
         count = 0
@@ -142,28 +105,28 @@ class ConstructInitialLP(object):
                     self.rxnnames.append('R' + str(count))
                     self.allrxnsrev.append(str(rxn) + '_F')
                     self.allrxnsrevset.add(str(rxn) + '_F')
-                    self.set_reaction_constraints('R' + str(count), str(rxn),
-                                                  self.PYSOLVER)
+                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+
                     count += 1
                     self.rxnnames.append('R' + str(count))
                     self.allrxnsrev.append(str(rxn) + '_R')
                     self.allrxnsrevset.add(str(rxn) + '_R')
-                    self.set_reaction_constraints('R' + str(count), str(rxn),
-                                                  self.PYSOLVER)
+                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+
                 else:
                     count += 1
                     self.rxnnames.append('R' + str(count))
                     self.allrxnsrev.append(str(rxn))
                     self.allrxnsrevset.add(str(rxn))
-                    self.set_reaction_constraints('R' + str(count), str(rxn),
-                                                  self.PYSOLVER)
+                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+
         else:
             for count, rxn in enumerate(self.allrxns):
                 self.rxnnames.append('R' + str(count))
                 self.allrxnsrev.append(str(rxn))
                 self.allrxnsrevset.add(str(rxn))
-                self.set_reaction_constraints(rxn + self.reverse_constraints[count],
-                                              pulp)
+                self.reaction_constraints_pulp(rxn + self.reverse_constraints[count], str(rxn), pulp)
+
         self.allrxnsrev_index = {key: index for index, key in enumerate(self.allrxnsrev)}
 
     def initial_A_matrix(self, solver=False):
@@ -179,10 +142,7 @@ class ConstructInitialLP(object):
             else:
                 pass
         self.allcpds = self.allcpds_new
-        if self.PYSOLVER == 'PULP':
-            self.load_pulp_row_constraints(solver)
-        elif self.PYSOLVER == 'GLPK':
-            self.load_glpk_row_constraints()
+        self.load_pulp_row_constraints(solver)
 
     def load_pulp_row_constraints(self, pulp):
         '''Loads constraints in to pulp integer linear problem'''
@@ -195,38 +155,3 @@ class ConstructInitialLP(object):
         print ('STATUS: Generating compound constraints from preloaded file (pulp) ...')
         for count, stoich in enumerate(tqdm(self.gdbc)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
-
-#################GLPK#############################
-    def reaction_constraints_glpk(self, variable_name, rxn_name):
-        '''Set reaction constraints (glpk)'''
-        self.lp.cols.add(1)
-        col = self.lp.cols[-1]
-        col.name = variable_name
-        if rxn_name.startswith('EX_') or rxn_name in self.ignorerxns:
-            col.bounds = 0, 0
-            col.kind = int
-        else:
-            col.bounds = 0, 1
-            col.kind = int
-
-    def load_glpk_row_constraints(self):
-        '''Loads constraints in to glpk integer linear problem'''
-        print ('STATUS: Loading database A matrix (pyglpk)...')
-        self.lp.rows.add(len(self.A))
-        for count, stoich in enumerate(tqdm(self.A)):
-            temp = []
-            for i, v in stoich.iteritems():
-                temp.append((i,v))
-            self.lp.rows[count].matrix = temp
-            self.lp.rows[count].name = 'c' + str(count) + ' constraint'
-
-    def existing_A_matrix_glpk(self):
-        '''Loads existing matrix into glpk integer linear problem'''
-        print ('STATUS: Generating compound constraints from preloaded file ...')
-        self.lp.rows.add(len(self.gdbc))
-        for count, stoich in enumerate(tqdm(self.gdbc)):
-            temp = []
-            for i, v in stoich.iteritems():
-                temp.append((i,v))
-            self.lp.rows[count].matrix = temp
-            self.lp.rows[count].name = 'c' + str(count) + ' constraint'
