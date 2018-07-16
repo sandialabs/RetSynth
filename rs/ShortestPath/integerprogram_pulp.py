@@ -5,12 +5,13 @@ __description__ = 'Sets bounds necessary for a specific taraget compound for pul
 
 import re
 from copy import deepcopy
+from timeit import default_timer as timer
 import pulp
 from ShortestPath import cycle as cy
 
 class IntergerProgram(object):
     """Sets final constraints and solved integer linear program"""
-    def __init__(self, db, limit_reactions, limit_cycle, k_paths, cycle, time_limit):
+    def __init__(self, db, limit_reactions, limit_cycle, k_paths, cycle, time_limit, OUTPUT):
         '''initialize class'''
         self.limit_cycle = limit_cycle
         self.limit_reactions = limit_reactions
@@ -18,7 +19,7 @@ class IntergerProgram(object):
         self.cycle = cycle
         self.time_limit = time_limit
         self.CYCLE = cy.CycleCheck(db)
-        self.weight_dict = {}
+        self.OUTPUT = OUTPUT
 
     def set_row_bounds(self, lp):
         '''Set row bounds'''
@@ -40,21 +41,31 @@ class IntergerProgram(object):
     def set_objective_function(self, variables):
         '''Set objective function '''
         print ('STATUS: Generating objective function coefficients ...')
+        start = timer()
         obj = [0]*len(variables)
-        for count, r in enumerate(self.allrxnsrev):
-            reaction = deepcopy(r)
+        for count, variable in enumerate(variables):
+            reaction = deepcopy(self.allrxnsrev_dict[str(variable)])
             reaction = re.sub('_F$', '', reaction)
             reaction = re.sub('_R$', '', reaction)
             if reaction not in self.inrxns:
                 obj[count] = 1
-
+        end = timer()
+        print ("Time(seconds) to set objective function "+str(self.target)+' '+str(end - start))
+        if self.OUTPUT:
+            self.OUTPUT.output_timer('Setting objective functions for {}\t{}\t{}\n'.format(self.target, (end-start), (end-start)/60))
         return obj
+    
     def set_objective_function_internal(self, variables):
         '''Set objective function '''
         print ('STATUS: Generating objective function coefficients (internal)...')
+        start = timer()
         obj = [0]*len(variables)
-        for count, r in enumerate(self.allrxnsrev):
+        for count in range(0, len(variables)):
             obj[count] = 1
+        end = timer()
+        print ("Time(seconds) to set internal objective function "+str(self.target)+' '+str(end - start))
+        if self.OUTPUT:
+            self.OUTPUT.output_timer('Setting internal objective function for {}\t{}\t{}\n'.format(self.target, (end-start), (end-start)/60))
         return obj
 
     def fill_allsolutions(self, solution):
@@ -63,12 +74,13 @@ class IntergerProgram(object):
 
     def ip_calculate(self, lp, variables, obj):
         '''Run glpk solver'''
+        start = timer()
         solution = []
         solution_internal = []
         print ('STATUS: Setting objective function ...')
         lp.setObjective(pulp.lpSum(obj[i]*variables[i] for i in range(len(obj))))
 
-        print ('STATUS: Solving problem ...')
+        print ('STATUS: Solving problem for {}...'.format(self.target))
         if self.time_limit == 'None':
             lp.solve(pulp.GLPK(msg=0))
         else:
@@ -79,19 +91,23 @@ class IntergerProgram(object):
                 if variable.name.startswith('Cycle Variable') or variable.name.startswith('cycle'):
                     pass
                 else:
-                    rxn_sol = self.allrxnsrev[self.LP.rxnnames.index(variable.name)]
+                    rxn_sol = deepcopy(self.allrxnsrev_dict[variable.name])
                     if rxn_sol.endswith('_F'):
                         rxn_sol = re.sub('_F$', '', rxn_sol)
                     elif rxn_sol.endswith('_R'):
                         rxn_sol = re.sub('_R$', '', rxn_sol)
                     if rxn_sol not in self.inrxns:
-                        solution.append(self.allrxnsrev[self.LP.rxnnames.index(variable.name)])
+                        solution.append(self.allrxnsrev_dict[variable.name])
                     else:
-                        solution_internal.append(self.allrxnsrev[self.LP.rxnnames.index(variable.name)])
+                        solution_internal.append(self.allrxnsrev_dict[variable.name])
         if self.limit_reactions != 'None' and len(solution) > int(self.limit_reactions):
             print ('STATUS: Path contains too many reaction steps, consider increasing limit up from {}'.format(self.limit_reactions))
             solution = []
             solution_internal = []
+        end = timer()
+        print ("Time(seconds) to solve for specific path "+str(self.target)+' '+str(end - start))
+        if self.OUTPUT:
+            self.OUTPUT.output_timer('Solve for specific path for {}\t{}\t{}\n'.format(self.target, (end-start), (end-start)/60))
         return solution, solution_internal
 
     def run_glpk(self, LP, incpds, inrxns, target_compound_ID, multiplesolutions=True):
@@ -101,15 +117,18 @@ class IntergerProgram(object):
         self.incpds = incpds
         self.target = target_compound_ID
         self.LP = LP
-        self.allrxnsrev = self.LP.allrxnsrev
         self.allcpds = self.LP.allcpds
+        self.allrxnsrev_dict = self.LP.allrxnsrev_dict
+        self.allrxnsrev_dict_rev = self.LP.allrxnsrev_dict_rev
         lp = self.LP.lp
         self.allsolutions = []
         self.k_bounds = []
+        self.multiplesolutions = multiplesolutions
         optimalsolutions = []
         optimalsolutions_internal = []
         self.allcyclesolutions = []
-        self.solution_threshold = 1499
+        self.solution_threshold = 150
+        self.variables_strings = [str(variable) for variable in self.LP.variables]
 
         '''Set problem bounds and solve'''
         lp = self.set_row_bounds(lp)
@@ -119,22 +138,26 @@ class IntergerProgram(object):
         if self.cycle == 'True' and solution:
             '''Check for cycles in pathway'''
             solution, solution_internal, lp, self.LP.variables, obj = self.cycle_constraints(lp, self.LP.variables,
-                                                                          solution, solution_internal, obj, 0,
-                                                                          initialcheck=True)
-        if solution_internal:
+                                                                                             solution, solution_internal,
+                                                                                             obj, 0, initialcheck=True)
+        if solution_internal and solution:
             self.fill_allsolutions(solution)
-            if solution:
-                optimalsolutions_internal.append(solution)
-        else:
+            optimalsolutions_internal.append(solution)
+
+        elif not solution_internal and solution:
             self.fill_allsolutions(solution)
-            if solution:
-                optimalsolutions.append(solution)            
+            optimalsolutions.append(solution)            
 
         if multiplesolutions == 'True' and solution:
             '''Check for multiple solutions'''
             print ('STATUS: Checking for multiple optimal solutions ... ')
             optimalsolutions = self.multiple_optimal_solution(lp, self.LP.variables,
-                                                              obj, solution, optimalsolutions, optimalsolutions_internal, 0)
+                                                              obj, solution, optimalsolutions,
+                                                              optimalsolutions_internal, 0)
+
+        if multiplesolutions == 'False' and solution_internal:
+            optimalsolutions, variables = self.identify_internal_rxns(self.LP.variables, optimalsolutions,
+                                                                      optimalsolutions_internal, lp)
 
         if len(optimalsolutions) > self.solution_threshold:
             print ('STATUS: Number of solutions {} exceeded limit {} therefore stopping search'.format(len(optimalsolutions), self.solution_threshold))
@@ -162,8 +185,10 @@ class IntergerProgram(object):
                         reaction = re.sub('_F$', '', reaction)
                         reaction = re.sub('_R$', '', reaction)
                         if reaction not in self.inrxns:
-                            temp.append(self.allrxnsrev.index(r))
-                    lp += pulp.LpConstraint(pulp.lpSum(1*variables[j] for j in temp), name='K pathway constraint '+str(count_solution), sense=-1, rhs=len(temp)-1)
+                            temp.append(self.variables_strings.index(self.allrxnsrev_dict_rev[r]))
+                    lp += pulp.LpConstraint(pulp.lpSum(1*variables[j] for j in temp),
+                                            name='K pathway constraint '+str(count_solution),
+                                            sense=-1, rhs=len(temp)-1)
                     self.k_bounds.append(count_solution)
             solution, solution_internal = self.ip_calculate(lp, variables, obj)
             self.fill_allsolutions(solution)
@@ -171,46 +196,48 @@ class IntergerProgram(object):
             '''If pathway is greater in steps than the previous path add too optimal solutions
                 check for multiple solution'''
             if self.cycle == 'True':
-                solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables,
-                                                                                         solution, solution_internal, obj, 0)
+                solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution,
+                                                                                         solution_internal, obj, 0)
             if solution_internal:
                 if solution and solution not in op_internal+op:
                     op_internal.append(solution)
                     self.fill_allsolutions(solution)
-                    op = self.multiple_optimal_solution(lp, variables, obj, solution, op, op_internal, count_k_paths)
+                    op = self.multiple_optimal_solution(lp, variables, obj, solution,
+                                                        op, op_internal, count_k_paths)
                 else:
                     op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
             else:
                 if solution and solution not in op_internal+op and len(op) <= self.solution_threshold:
                     op.append(solution)
                     self.fill_allsolutions(solution)
-                    op = self.multiple_optimal_solution(lp, variables, obj,
-                                                        solution, op, op_internal, count_k_paths)
+                    op = self.multiple_optimal_solution(lp, variables, obj, solution,
+                                                        op, op_internal, count_k_paths)
         return op
  
     def identify_internal_rxns(self, variables, op, op_internal, lp):
-        print ('IDENTIFY INTERNAL REACTIONS')
+        print ('STATUS: Identifying internal reactions for {} solutions'.format(len(op_internal)))
         ignorerxns = []
         for orig_solution in op_internal:
-            for count, rxn in enumerate(self.allrxnsrev):
-                reaction = deepcopy(rxn)
+            for count, variable in enumerate(variables):
+                rxn = self.allrxnsrev_dict[str(variable)]
+                reaction = deepcopy(self.allrxnsrev_dict[str(variable)])
                 reaction = re.sub('_F$', '', reaction)
                 reaction = re.sub('_R$', '', reaction)
                 if rxn in orig_solution:
-                    variables[count].lowBound = 1
-                    variables[count].upBound = 1
+                    variable.lowBound = 1
+                    variable.upBound = 1
                 elif reaction not in self.inrxns:
-                    if variables[count].lowBound == 0 and variables[count].upBound == 0:
+                    if variable.lowBound == 0 and variable.upBound == 0:
                         ignorerxns.append(rxn) 
-                    variables[count].lowBound = 0
-                    variables[count].upBound = 0
+                    variable.lowBound = 0
+                    variable.upBound = 0
 
             obj = self.set_objective_function_internal(variables)
             solution, solution_internal = self.ip_calculate(lp, variables, obj)
             if self.cycle == 'True' and solution:
                 '''Check for cycles in pathway'''
                 solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal,
-                                                                                                  obj, 0, initialcheck=True)
+                                                                               obj, 0, initialcheck=True)
                 if solution and len(op) <= self.solution_threshold:
                     op.append(solution)
             else:
@@ -220,29 +247,32 @@ class IntergerProgram(object):
 
             '''Add pathway to all optimal solutions'''
 
-            if solution and len(op) <= self.solution_threshold:
+            if solution and len(op) <= self.solution_threshold and self.multiplesolutions == 'True':
                 print ('STATUS: Checking for multiple optimal solutions internal ... ')
                 op = self.multiple_optimal_solution_internal(lp, variables, obj, solution, op)
 
-            for count, rxn in enumerate(self.allrxnsrev):
+            for variable in variables:
+                rxn = self.allrxnsrev_dict[str(variable)]
                 if rxn.startswith('EX_') or rxn in ignorerxns:
-                    variables[count].lowBound = 0
-                    variables[count].upBound = 0
+                    variable.lowBound = 0
+                    variable.upBound = 0
 
                 else:
-                    variables[count].lowBound = 0
-                    variables[count].upBound = 1
+                    variable.lowBound = 0
+                    variable.upBound = 1
         return op, variables
 
     def multiple_optimal_solution_internal(self, lp, variables, obj, originalsolution, op):
         '''Find multiple solutions that use organisms internal reactions'''
         E = self.set_weight(len(originalsolution))
         for rxn in originalsolution:
-            index = self.allrxnsrev.index(rxn)
+            index = self.variables_strings.index(self.allrxnsrev_dict_rev[rxn])
             obj[index] = (1+E)
         solution, solution_internal = self.ip_calculate(lp, variables, obj)
         if self.cycle =='True' and solution_internal:
-            solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal, obj, 0)
+            solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, 
+                                                                           solution+solution_internal,
+                                                                           obj, 0)
         else:
             solution = solution+solution_internal
         if len(solution) == len(originalsolution) and len(op) <= self.solution_threshold:
@@ -258,22 +288,23 @@ class IntergerProgram(object):
 
         '''Set weight for reactions in objective function'''
         for rxn in originalsolution:
-            index = self.allrxnsrev.index(rxn)
+            index = self.variables_strings.index(self.allrxnsrev_dict_rev[rxn])
             obj[index] = (1+E)
         solution, solution_internal = self.ip_calculate(lp, variables, obj)
         self.fill_allsolutions(solution)
         '''Check for cycles'''
         if self.cycle == 'True':
-            solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables,
-                                                                                    solution, solution_internal, obj, 0)
+            solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution,
+                                                                                     solution_internal, obj, 0)
 
-        if len(solution) == len(originalsolution) and len(op) <= self.solution_threshold:
+        if len(solution) == len(originalsolution) and len(op) <= self.solution_threshold and len(op_internal) <= self.solution_threshold:
             '''If pathway not already identified add to total solution and check for more '''
             if solution_internal:
                 if solution and solution not in op_internal:
                     op_internal.append(solution)
                     self.fill_allsolutions(solution)
-                    op = self.multiple_optimal_solution(lp, variables, obj, solution, op, op_internal, count_k_paths)
+                    op = self.multiple_optimal_solution(lp, variables, obj, solution,
+                                                        op, op_internal, count_k_paths)
                 else:
                    op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
                    count_k_paths += 1
@@ -282,8 +313,8 @@ class IntergerProgram(object):
                 if solution and solution not in op_internal+op:
                     op.append(solution)
                     self.fill_allsolutions(solution)
-                    op = self.multiple_optimal_solution(lp, variables, obj,
-                                                        solution, op, [], count_k_paths)
+                    op = self.multiple_optimal_solution(lp, variables, obj, solution,
+                                                        op, [], count_k_paths)
 
                 else:
                     '''If pathway already in solution check for next shortest pathway'''
@@ -294,11 +325,17 @@ class IntergerProgram(object):
         else:
             '''If solution is 0 or not the same length as previous solution check for next
                 shortest solution'''
-            if op_internal:
-                op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
-            count_k_paths += 1
-            op = self.k_number_paths(lp, variables, obj, op, [], count_k_paths)
-            print ('STATUS: No more multiple solutions...')
+
+            if len(op) <= self.solution_threshold and len(op_internal) <= self.solution_threshold:
+                if op_internal:
+                    op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
+                count_k_paths += 1
+                op = self.k_number_paths(lp, variables, obj, op, [], count_k_paths)
+                print ('STATUS: No more multiple solutions...')
+            else:
+                print ('STATUS: Either solutions types internal {} and/or external {} have exceeded the solution threshold {}'.format(len(op_internal), len(op), self.solution_threshold))
+                if op_internal:
+                    op, variables = self.identify_internal_rxns(variables, op, op_internal, lp)
         return op
 
     def cycle_constraints(self, lp, variables, solution, solution_internal, obj, cycle_count, initialcheck=False):
@@ -331,20 +368,23 @@ class IntergerProgram(object):
                         reaction = re.sub('_F$', '', reaction)
                         reaction = re.sub('_R$', '', reaction)
                         if reaction not in self.inrxns:
-                            temp.append(self.allrxnsrev.index(r))
+                            temp.append(self.variables_strings.index(self.allrxnsrev_dict_rev[r]))
                     self.allcyclesolutions.append(solution)
                     lp += pulp.LpConstraint(pulp.lpSum(1*variables[j] for j in temp), name='cycle pathway constraint '+str(len(self.allcyclesolutions)), sense=-1, rhs=len(temp)-1)
                     solution, solution_internal = self.ip_calculate(lp, variables, obj)
 
                     if initialcheck is False:
                         if len(solution) == len(original_solution):
-                            solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution, solution_internal, obj, cycle_count)
+                            solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution,
+                                                                                                     solution_internal, obj, cycle_count)
                             return (solution, solution_internal, lp, variables, obj)
                         else:
                             print ('WARNING: new solution longer than original {}'.format(solution))
                             return ([], [], lp, variables, obj)
                     else:
-                        solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution, solution_internal, obj, cycle_count, initialcheck=True)
+                        solution, solution_internal, lp, variables, obj = self.cycle_constraints(lp, variables, solution,
+                                                                                                 solution_internal, obj, cycle_count,
+                                                                                                 initialcheck=True)
                         return (solution, solution_internal, lp, variables, obj)
                 else:
                     return ([], [], lp, variables, obj)
@@ -357,7 +397,7 @@ class IntergerProgram(object):
         Check solution for cycles and implement new constraints and resolve
         if cycle is identified
         '''
-        print ('STATUS: Checking for cycles in the identified pathways')
+        print ('STATUS: Checking for cycles in the identified internal pathways')
 
         '''Check if there is a cycle in identified pathway'''
         cycletest = self.CYCLE.run_cycle_check(solution, self.incpds)
@@ -369,7 +409,7 @@ class IntergerProgram(object):
             if self.limit_cycle != 'None' and cycle_count > int(self.limit_cycle):
                 '''Count number of cycle checks performed, if it exceeds designated limit
                     of cycle checks stop check for cycles and returns no path'''
-                print ('STATUS: Exceeded number of cycle checks, no pathways without cycles, consider increasing limit up from {}'.format(self.limit_cycle))
+                print ('STATUS: Path (internal) exceeded number of cycle checks, no pathways without cycles, consider increasing limit up from {}'.format(self.limit_cycle))
                 return ([], lp, variables, obj)
 
             else:
@@ -382,20 +422,24 @@ class IntergerProgram(object):
                         reaction = re.sub('_F$', '', reaction)
                         reaction = re.sub('_R$', '', reaction)
                         if reaction not in self.inrxns:
-                            temp.append(self.allrxnsrev.index(r))
+                            temp.append(self.variables_strings.index(self.allrxnsrev_dict_rev[r]))
                     self.allcyclesolutions.append(solution)
                     lp += pulp.LpConstraint(pulp.lpSum(1*variables[j] for j in temp), name='cycle pathway constraint '+str(len(self.allcyclesolutions)), sense=-1, rhs=len(temp)-1)
                     solution, solution_internal = self.ip_calculate(lp, variables, obj)
 
                     if initialcheck is False:
                         if len(solution+solution_internal) == len(original_solution):
-                            solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal, obj, cycle_count)
+                            solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables,
+                                                                                           solution+solution_internal,
+                                                                                           obj, cycle_count)
                             return (solution, lp, variables, obj)
                         else:
-                            print ('WARNING: new solution longer than original {}'.format(solution))
+                            print ('WARNING: new solution longer than original (internal) {}'.format(solution))
                             return ([], lp, variables, obj)
                     else:
-                        solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables, solution+solution_internal, obj, cycle_count, initialcheck=True)
+                        solution, lp, variables, obj = self.cycle_constraints_internal(lp, variables,
+                                                                                       solution+solution_internal,
+                                                                                       obj, cycle_count, initialcheck=True)
                         return (solution, lp, variables, obj)
                 else:
                     print ("Solution already in all cycle solutions internal")                    

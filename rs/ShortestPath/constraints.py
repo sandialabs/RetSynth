@@ -11,8 +11,6 @@ import time
 import re
 from sys import platform
 
-_OPTIMAL = True
-
 
 def load_stoichometry_for_met(reactantrxns, productsrxns, allrxnsrev,
                               allrxnsrev_index, allrxnsrevset):
@@ -53,6 +51,8 @@ class ConstructInitialLP(object):
         self.A = []
         self.allcpds_new = []
         self.allrxnsrev = []
+        self.allrxnsrev_dict = {}
+        self.allrxnsrev_dict_rev = {}
         self.allrxnsrevset = set()
         self.allrxnsrev_names = set()
         self.allrxnsrev_index = {}
@@ -106,12 +106,16 @@ class ConstructInitialLP(object):
                     self.allrxnsrev.append(str(rxn) + '_F')
                     self.allrxnsrevset.add(str(rxn) + '_F')
                     self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+                    self.allrxnsrev_dict['R' + str(count)] = str(rxn) + '_F'
+                    self.allrxnsrev_dict_rev[str(rxn) + '_F'] = 'R' + str(count)
 
                     count += 1
                     self.rxnnames.append('R' + str(count))
                     self.allrxnsrev.append(str(rxn) + '_R')
                     self.allrxnsrevset.add(str(rxn) + '_R')
                     self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+                    self.allrxnsrev_dict['R' + str(count)] = str(rxn) + '_R'
+                    self.allrxnsrev_dict_rev[str(rxn) + '_R'] = 'R' + str(count)
 
                 else:
                     count += 1
@@ -119,6 +123,8 @@ class ConstructInitialLP(object):
                     self.allrxnsrev.append(str(rxn))
                     self.allrxnsrevset.add(str(rxn))
                     self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
+                    self.allrxnsrev_dict['R' + str(count)] = str(rxn)
+                    self.allrxnsrev_dict_rev[str(rxn)] = 'R' + str(count)
 
         else:
             for count, rxn in enumerate(self.allrxns):
@@ -149,9 +155,10 @@ class ConstructInitialLP(object):
         print ('STATUS: Loading database A matrix (pulp)... ')
         for count, stoich in enumerate(tqdm(self.A)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
-
+        self.variables = self.lp.variables()
     def existing_A_matrix_pulp(self, pulp):
         '''Loads existing matrix into pulp integer linear problem'''
         print ('STATUS: Generating compound constraints from preloaded file (pulp) ...')
         for count, stoich in enumerate(tqdm(self.gdbc)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
+        self.variables = self.lp.variables()
