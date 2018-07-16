@@ -28,7 +28,6 @@ elif platform == "linux" or platform == "linux2":
 elif platform == "win32" or platform == 'win64':
     raise ImportError('Cannot translate RDF file on windows machine')
 
-
 warnings.filterwarnings("ignore")
 edgeweights = []
 edgeweights.append([0, .99999999])
@@ -43,7 +42,6 @@ edgeweights.append([700, 799.99999999])
 edgeweights.append([800, 899.99999999])
 edgeweights.append([900, 1000.00000])
 PATH = os.path.dirname(os.path.abspath(__file__))
-
 start = 0.0
 stop = 0.4
 number_of_lines = 10
@@ -58,16 +56,18 @@ class GraphDot(object):
     Generates figure of Shortest Path (external reactions and compounds needed to produce
     target compound)
     """
-    def __init__(self, db, output_path, incpds, inrxns, FBA=False):
+    def __init__(self, db, output_path, incpds, inrxns, temp_img_path, FBA=False):
         self.DB = db
         Q = self.DB.cnx.execute("""SELECT DISTINCT compartment FROM compound""")
         hits = Q.fetchall()
         self.compartments = [i[0] for i in hits]
-
         try:
             os.mkdir(output_path+'/solution_figures/')
         except OSError:
             pass
+        self.temp_imgs_path = temp_img_path
+        print ('In Code')
+        print (self.temp_imgs_path)
         self.GRAPHPATH = output_path+'/solution_figures'
         self.output_path = output_path
         self.incpds = incpds
@@ -158,10 +158,10 @@ class GraphDot(object):
             self.IN.setOption("render-image-size", "300,200")
             self.IN.setOption("render-margins", "40, 0, 0, 0")
             cpdname = self.reformat_inchi(cpdname)
-            cpdname = self.alter_name_length(PATH+'/compound_'+cpdname+'_'+rxn+'.png', cpdname)
-            self.IR.renderToFile(mol, PATH+'/compound_'+cpdname+'_'+rxn+'.png')
-            cropped = self.crop_figure(PATH+'/compound_'+cpdname+'_'+rxn+'.png')
-            cropped.save(PATH+'/compound_'+cpdname+'_'+rxn+'_cropped.png', transparent=True)
+            cpdname = self.alter_name_length(self.temp_imgs_path+'/compound_'+cpdname+'_'+rxn+'.png', cpdname)
+            self.IR.renderToFile(mol, self.temp_imgs_path+'/compound_'+cpdname+'_'+rxn+'.png')
+            cropped = self.crop_figure(self.temp_imgs_path+'/compound_'+cpdname+'_'+rxn+'.png')
+            cropped.save(self.temp_imgs_path+'/compound_'+cpdname+'_'+rxn+'_cropped.png', transparent=True)
             return True
         else:
             return False
@@ -184,9 +184,9 @@ class GraphDot(object):
             name = re.sub('_', '-', name)
             namereformat = self.reformat_inchi(name)
             figure_bool = self.get_figure(cpdID, namereformat, rxn, 'synthetic')
-            namereformat = self.alter_name_length(PATH+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
+            namereformat = self.alter_name_length(self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
             if figure_bool:
-                self.outputfile_dot.append('    "{}" [color="{}", image="{}", shape={}, label=""];\n'.format(origname, 'None', PATH+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
+                self.outputfile_dot.append('    "{}" [color="{}", image="{}", shape={}, label=""];\n'.format(origname, 'None', self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
                 print ('WARNING: Could not retrieve figure')
                 self.outputfile_dot.append('    "{}" [fillcolor={}, color="{}", height={}, width={}, fontsize={}, fontname="{}", label="{}", fontcolor={}];\n'.format(origname, 'None', 'None', '.3', '.3', '12', 'times', name, 'blue'))
@@ -202,9 +202,9 @@ class GraphDot(object):
             name = re.sub('_', '-', name)
             namereformat = self.reformat_inchi(name)
             figure_bool = self.get_figure(cpdID, namereformat, rxn, 'internal')
-            namereformat = self.alter_name_length(PATH+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
+            namereformat = self.alter_name_length(self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'.png', namereformat)
             if figure_bool:
-                self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(origname, 'None', PATH+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
+                self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(origname, 'None', self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
                 print ('WARNING: Could not retrieve figure')
                 self.outputfile_dot.append('    "{}" [fillcolor={}, color={}, height={}, width={}, fontsize={}, fontname="{}", label="{}", fontcolor={}];\n'.format(origname, 'None', 'None', '.2', '.2', '10', 'times', name, 'gray33'))
@@ -267,9 +267,9 @@ class GraphDot(object):
                 if prod == self.target:
                     if self.images is True:
                         figure_bool = self.get_figure(prod, prodname, rxn, 'target')
-                        prodnamereformat = self.alter_name_length(PATH+'/compound_'+prodnamereformat+'_'+rxn+'.png', prodnamereformat)
+                        prodnamereformat = self.alter_name_length(self.temp_imgs_path+'/compound_'+prodnamereformat+'_'+rxn+'.png', prodnamereformat)
                         if figure_bool:
-                            self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(prodname, 'None', PATH+'/compound_'+prodnamereformat+'_'+rxn+'_cropped.png', 'None'))
+                            self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(prodname, 'None', self.temp_imgs_path+'/compound_'+prodnamereformat+'_'+rxn+'_cropped.png', 'None'))
                         else:
                             self.outputfile_dot.append('    "{}" [fillcolor={}, color="{}", height={}, width={}, fontsize={}, fontname="{}", label="{}", fontcolor={}];\n'.format(prodname, 'None', 'None', '.4', '.4', '12', 'times', prodname, 'red'))
                     else:

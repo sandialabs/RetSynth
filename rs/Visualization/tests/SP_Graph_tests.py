@@ -56,11 +56,11 @@ class RunVisualizationTests(unittest.TestCase):
         print ("Tests assembly of nodes in a figure for a pathway")
         G.sc_graph('cpdT_c0', 't1', self.ex_info.temp_rxns, True)
         self.assertEqual(len(G.store_rxns)+len(G.nodes), 9)
-        if os.path.isfile(PPATH+'/reaction_figures/SC_graph_cpdT_c0_test1.xml.jpeg') is True:
-            os.remove(PPATH+'/reaction_figures/SC_graph_cpdT_c0_test1.xml.jpeg')
-        if os.path.isfile(PATH+'/reaction_figures/SC_graph_cpdT_c0_test1.xml.jpeg') is True:
-            os.remove(PATH+'/reaction_figures/SC_graph_cpdT_c0_test1.xml.jpeg')
-        shutil.rmtree(PATH+'/reaction_figures')
+        if os.path.isfile(PPATH+'/solution_figures/SC_graph_cpdT_c0_test1.xml.jpeg') is True:
+            os.remove(PPATH+'/solution_figures/SC_graph_cpdT_c0_test1.xml.jpeg')
+        if os.path.isfile(PATH+'/solution_figures/SC_graph_cpdT_c0_test1.xml.jpeg') is True:
+            os.remove(PATH+'/solution_figures/SC_graph_cpdT_c0_test1.xml.jpeg')
+        shutil.rmtree(PATH+'/solution_figures')
 
         for filename in glob.glob(CPATH+"/compound*"):
             os.remove(filename)
