@@ -14,12 +14,16 @@ elif platform == "linux" or platform == "linux2":
     from indigopython130_linux import indigo
     from indigopython130_linux import indigo_inchi
 
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
 
 class TanimotoStructureSimilarity(object):
     """Identifies if compounds are in the database but under a different ID
     based on structure similarity"""
-    def __init__(self, targets, all_compounds, cytosol, extracellular, threshold_score = 1):
+    def __init__(self, targets, all_compounds, cytosol, extracellular, verbose, threshold_score = 1):
         """Initialize"""
+        self.verbose = verbose
         self.targets = []
         self.track_final_cpd = []
         '''Remove duplicated targets'''
@@ -42,11 +46,38 @@ class TanimotoStructureSimilarity(object):
         self.INCHI = indigo_inchi.IndigoInchi(self.IN)
         self.calculate_tanimoto_score()
 
+    def remove_compartment_info_from_cpdID(self, cpd):
+        cpd = re.sub('\_\w{1}0$', '', cpd)
+        cpd = re.sub('CCO__45__MIT__45__IM__45__SPC__45__CCO__45__MIT__45__LUM', '', cpd)
+        cpd = re.sub('CCO__45__CYTOSOL__45__CCO__45__CHLOR__45__STR', '', cpd)
+        cpd = re.sub('_CCO__45__CW__45__BAC__45__POS0', '', cpd)
+        cpd = re.sub('CCI__45__PERI__45__BAC__45__GN', '', cpd)
+        cpd = re.sub('CCO__45__OUT__45__CCO__45__IN', '', cpd)
+        cpd = re.sub('CCO__45__PM__45__BAC__45__NEG', '', cpd)
+        cpd = re.sub('CCO__45__CW__45__BAC__45__POS', '', cpd)
+        cpd = re.sub('CCO__45__RGH__45__ER__45__LUM', '', cpd)
+        cpd = re.sub('_CCO__45__PLASTID__45__STR0', '', cpd)
+        cpd = re.sub('CCO__45__UNKNOWN__45__SPACE', '', cpd)
+        cpd = re.sub('_CCO__45__PEROX__45__MEM0', '', cpd)
+        cpd = re.sub('CCO__45__PLASTID__45__STR', '', cpd)
+        cpd = re.sub('CCO__45__CHROM__45__STR', '', cpd)
+        cpd = re.sub('CCO__45__CHROM__45__STR', '', cpd)
+        cpd = re.sub('CCO__45__GOLGI__45__LUM', '', cpd)
+        cpd = re.sub('CCO__45__PEROX__45__MEM', '', cpd)
+        cpd = re.sub('CCO__45__MIT__45__IMEM', '', cpd)
+        cpd = re.sub('CCO__45__VESICLE', '', cpd)
+        cpd = re.sub('CCO-PEROX-LUM', '', cpd)
+        cpd = re.sub('_CCO__45__IN0', '', cpd)
+        cpd = re.sub('CCO__45__OUT', '', cpd)
+        cpd = re.sub('CCO__45__IN', '', cpd)
+        cpd = re.sub('\_0$', '', cpd)
+        return cpd
+
     def process_targets(self, targets):
         """Reformat targets to remove compartment information"""
         reformat_target = []
         for target in targets:
-            target = re.sub('\_'+self.cytosol, '',target)
+            target = self.remove_compartment_info_from_cpdID(target)
             reformat_target.append(target)
         return(reformat_target)
 
@@ -58,7 +89,7 @@ class TanimotoStructureSimilarity(object):
                 index =  count
          
         if not index: 
-            print ('Could not get target '+tmol)
+            verbose_print(self.verbose, 'Could not get target '+tmol)
             return (None)
         else:
             return index
@@ -85,14 +116,14 @@ class TanimotoStructureSimilarity(object):
                         if max_score_cpd != tmol:
                             new_target = self.extract_db_cpd_ID(max_score_cpd)
                             if new_target not in self.individualtargets and new_target not in self.track_final_cpd:
-                                print ("STATUS: The following compound {} have 100 percent similarity with the original target {} therefore adding them to to targets".format(max_score_cpd, tmol))                
+                                verbose_print(self.verbose, "STATUS: The following compound {} have 100 percent similarity with the original target {} therefore adding them to to targets".format(max_score_cpd, tmol))                
                                 self.fill_final_targets(new_target)
             
             elif tmol in self.cpd_dict.keys():
                 index = self.get_original_target(tmol+'_'+self.cytosol)
                 if index:
                     new_target = self.extract_db_cpd_ID(tmol)
-                    print ("STATUS: Switching target ID from {} to {}".format(tmol+'_'+self.cytosol, new_target))
+                    verbose_print(self.verbose, "STATUS: Switching target ID from {} to {}".format(tmol+'_'+self.cytosol, new_target))
                     self.finaltargets[index][0] = new_target
 
             else:
@@ -101,14 +132,14 @@ class TanimotoStructureSimilarity(object):
                     index = self.get_original_target(tmol+'_'+self.cytosol)
                     if index:
                         del self.finaltargets[index]
-                    print ('STATUS: {} compounds have {} or greater similarity to target compound {}'.format(len(set(max_score_cpds)), float(self.threshold_score)*100, tmol+'_'+self.cytosol))
+                    verbose_print(self.verbose, 'STATUS: {} compounds have {} or greater similarity to target compound {}'.format(len(set(max_score_cpds)), float(self.threshold_score)*100, tmol+'_'+self.cytosol))
                     for max_score_cpd in set(max_score_cpds):
                         new_target = self.extract_db_cpd_ID(max_score_cpd)
                         if new_target not in self.individualtargets and new_target not in self.track_final_cpd:
                             print ('STATUS: Adding compound {} to target list'.format(max_score_cpd))
                             self.fill_final_targets(new_target)
                 else:
-                    print ('STATUS: No compounds in the database that are {} percent similar to target {}'.format(float(self.threshold_score)*100, tmol+'_'+self.cytosol))
+                    verbose_print(self.verbose,'STATUS: No compounds in the database that are {} percent similar to target {}'.format(float(self.threshold_score)*100, tmol+'_'+self.cytosol))
 
     def fill_final_targets(self, new_target):
         for organism in self.organisms:
@@ -122,30 +153,7 @@ class TanimotoStructureSimilarity(object):
         self.cpd_dict = {}
         for cpd in self.all_compounds:
             originalcpd = deepcopy(cpd)
-            cpd = re.sub('\_\w{1}0$', '', cpd)
-            cpd = re.sub('CCO__45__MIT__45__IM__45__SPC__45__CCO__45__MIT__45__LUM', '', cpd)
-            cpd = re.sub('CCO__45__CYTOSOL__45__CCO__45__CHLOR__45__STR', '', cpd)
-            cpd = re.sub('_CCO__45__CW__45__BAC__45__POS0', '', cpd)
-            cpd = re.sub('CCI__45__PERI__45__BAC__45__GN', '', cpd)
-            cpd = re.sub('CCO__45__OUT__45__CCO__45__IN', '', cpd)
-            cpd = re.sub('CCO__45__PM__45__BAC__45__NEG', '', cpd)
-            cpd = re.sub('CCO__45__CW__45__BAC__45__POS', '', cpd)
-            cpd = re.sub('CCO__45__RGH__45__ER__45__LUM', '', cpd)
-            cpd = re.sub('_CCO__45__PLASTID__45__STR0', '', cpd)
-            cpd = re.sub('CCO__45__UNKNOWN__45__SPACE', '', cpd)
-            cpd = re.sub('_CCO__45__PEROX__45__MEM0', '', cpd)
-            cpd = re.sub('CCO__45__PLASTID__45__STR', '', cpd)
-            cpd = re.sub('CCO__45__CHROM__45__STR', '', cpd)
-            cpd = re.sub('CCO__45__CHROM__45__STR', '', cpd)
-            cpd = re.sub('CCO__45__GOLGI__45__LUM', '', cpd)
-            cpd = re.sub('CCO__45__PEROX__45__MEM', '', cpd)
-            cpd = re.sub('CCO__45__MIT__45__IMEM', '', cpd)
-            cpd = re.sub('CCO__45__VESICLE', '', cpd)
-            cpd = re.sub('CCO-PEROX-LUM', '', cpd)
-            cpd = re.sub('_CCO__45__IN0', '', cpd)
-            cpd = re.sub('CCO__45__OUT', '', cpd)
-            cpd = re.sub('CCO__45__IN', '', cpd)
-            cpd = re.sub('\_0$', '', cpd)
+            cpd = self.remove_compartment_info_from_cpdID(cpd)
             db_cpds.append(cpd)
             self.cpd_dict.setdefault(cpd, []).append(originalcpd)
 
@@ -155,7 +163,8 @@ class TanimotoStructureSimilarity(object):
             try:
                 self.individualtargets_p_fp[tmol] = self.INCHI.loadMolecule(tmol).fingerprint('full')
             except indigo.IndigoException:
-                print ('Could not get fingerprint for {}'.format(tmol))        
+                verbose_print(self.verbose, 'Could not get fingerprint for {}'.format(tmol))
+
         self.db_cpds_fp = {}
         db_cpds_set = set(db_cpds)
         print ("STATUS: getting fingerprints for database compounds")        

@@ -9,6 +9,9 @@ from sys import exit
 from cobra import Reaction, Metabolite
 from cobra.flux_analysis.loopless import construct_loopless_model
 
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
 
 class OptimizeTarget(object):
     """
@@ -126,7 +129,7 @@ class OptimizeTarget(object):
         Removes each reaction one at a time and runs FBA to see if there is
         a difference in production of target compound
         '''
-        print ('STATUS: Performing single reaction knockouts ...')
+        verbose_print(self.verbose, 'STATUS: Performing single reaction knockouts ...')
         self.KOsolutions = {}
         self.objrxns_KO = {}
         self.essentialrxns = []
@@ -157,9 +160,10 @@ class OptimizeTarget(object):
                 rxn.upper_bound = org_up
 
     def __init__(self, target_compound_ID, target_organism_ID, model, temp_rxns,
-                 temp_exmets, compounds_dict, inmets, inrxns, db, KO=True, remove=True):
+                 temp_exmets, compounds_dict, inmets, inrxns, db, verbose, KO=True, remove=True):
         '''Initialize class'''
-        print ('STATUS: Running FBA ...')
+        verbose_print(verbose, 'STATUS: Running FBA to optimize target {}...'.format(target_compound_ID))
+        self.verbose = verbose
         self.inmets = inmets
         self.inrxns = inrxns
         self.target_org = target_organism_ID
@@ -184,7 +188,6 @@ class OptimizeTarget(object):
             if KO:
                 self.perform_knockouts()
             if remove:
-                print ('STATUS: Removing modifications')
                 self.remove_modifications()
         else:
             print ('ERROR: No external reactions in solution, likely issue else where in code')

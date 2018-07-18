@@ -5,11 +5,16 @@ __description__ = 'Checks for cycles in answers'
 
 import re
 
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
+
 class CycleCheck(object):
     """Runs check to see if a cycle is present in solution (shortest path)"""
-    def __init__(self, db):
+    def __init__(self, db, verbose):
         '''Initalize class'''
         self.DB = db
+        self.verbose = verbose
 
     def run_cycle_check(self, optimal_pathway, incpds):
         '''
@@ -44,8 +49,8 @@ class CycleCheck(object):
             self.totalvariables = list(set(totalvariables))
             self.totalarcs = totalarcs
         if self.totalvariables:
-            print ('STATUS: optimal pathway has cycle')
+            verbose_print(self.verbose, 'STATUS: optimal pathway has cycle')
             return (True)
         else:
-            print ('STATUS: No cycles were found')
+            verbose_print(self.verbose, 'STATUS: No cycles were found')
             return (False)

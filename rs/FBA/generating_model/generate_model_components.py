@@ -4,10 +4,14 @@ __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Modules for building FBA model from metabolic database'
 
 from cobra import Reaction, Metabolite
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
 
-def load_reactions(model, model_id, rxns, media_constraints, compounds_dict, DB):
+
+def load_reactions(model, model_id, rxns, media_constraints, compounds_dict, DB, verbose):
     '''Inserts necessary reactions in to CobraPy FBA model'''
-    print('STATUS: Getting organism reactions ... ')
+    verbose_print(verbose, 'STATUS: Getting organism reactions ... ')
     for rxn in rxns:
         if rxn == 'biomass':
             rxn = rxn+'_'+model_id
@@ -51,9 +55,10 @@ def load_reactions(model, model_id, rxns, media_constraints, compounds_dict, DB)
             reaction.gene_reaction_rule = DB.get_genes(rxn, model_id)
         model.add_reaction(reaction)
     return model
-def load_compounds(model, metabolites, DB):
+
+def load_compounds(model, metabolites, DB, verbose):
     '''Inserts necessary compounds into CobraPy FBA model'''
-    print ('STATUS: Getting organism compounds ... ')
+    verbose_print(verbose, 'STATUS: Getting organism compounds ... ')
     compounds = {}
     for c, metabolite in enumerate(metabolites):
         compounds[metabolite] = 'cpd'+str(c)

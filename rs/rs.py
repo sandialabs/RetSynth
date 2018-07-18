@@ -38,6 +38,10 @@ from FBA import compareKO_results as crko
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
+
 def parse_arguments():
     '''
     The fundamental design of retrosynth is to take an organism, and a target
@@ -188,6 +192,11 @@ def parse_arguments():
     parser.add_argument('-op', '--output_path', help='Destination for output files',
                         required=False, type=str, default=PATH)
 
+    parser.add_argument('-oxf', '--output_xlsx_format', help='Convert output txt files to xlsx \
+                                                              files (warning: do not do this if \
+                                                              getting pathways for 100s of compounds',
+                        required=False, action="store_true")
+
     parser.add_argument('-evalrxns', '--evaluate_reactions', help='Defines which type of reactions \
                                                                    (bio, chem, or all (default)) \
                                                                    to be evaluated in identifying \
@@ -231,7 +240,7 @@ def parse_arguments():
     parser.add_argument('-toxicity','--predict_toxicity',help='Predict whether non native compounds are \
                                                                toxic to host organism (currently only works with E. Coli Strains)',
                         required=False, action="store_true")
-
+    parser.add_argument('-v', '--verbose', help="Level of output", action="store_true")    
     return parser.parse_args()
 
 
@@ -286,22 +295,49 @@ def check_arguments(args):
         parser.error('Requires an input file of target compounds')
 
 
+def get_new_temp_imgs_folder(count):
+    '''Check if folder to store images is already present if so new temp folder is made'''
+    count+=1
+    try:
+        os.mkdir(PATH+'/temp_imgs_'+str(count))
+        return PATH+'/temp_imgs_'+str(count)
+    except OSError:
+        PATH_NEW = get_new_temp_imgs_folder(count)
+        return PATH_NEW
+def get_compartmentID_from_db(DB, compartment):
+    '''Retrieves specified compartment ID'''
+    compartment = compartment.lower()
+    compartmentID_array = DB.get_compartment(compartment)
+    if compartmentID_array is None or len(compartmentID_array) == 0 or compartmentID_array[0] == '':
+        print ('WARNING: Could not retrieve a compartment ID from the database')
+        if compartment == 'cytosol':
+            compartmentID = 'c0'
+        elif compartment == 'extracellular':
+            compartmentID = 'e0'
+        else:
+            compartmentID = 'c0'
+    else:
+        compartmentID = compartmentID_array[0]
+    return (compartmentID)
+
 def read_in_and_generate_output_files(args, database):
     '''Read in target input file and generate output files'''
     DB = Q.Connector(database)
     R = rt.Readfile(args.targets, DB, args.inchidb)
     if not R.targets:
         raise ValueError('ERROR: No targets, try different compounds')
+    temp_imgs_PATH = get_new_temp_imgs_folder(0)
     OUTPUT = go.Output(DB, args.output_path, args.flux_balance_analysis, args.knockouts)
     if args.inchidb:
-        print ('STATUS: {} percent similarity tanimoto threshold being used'.format(float(args.tanimoto_threshold)*100))
+        verbose_print(args.verbose, 'STATUS: {} tanimoto threshold being used'.format(float(args.tanimoto_threshold)*100))
+        cytosol_compartmentID = get_compartmentID_from_db(DB, 'cytosol')
+        extracell_compartmentID = get_compartmentID_from_db(DB, 'extracellular')
         SIM = ss.TanimotoStructureSimilarity(R.targets, DB.get_all_compounds(),
-                                             DB.get_compartment('cytosol')[0],
-                                             DB.get_compartment('extracellular')[0],
+                                             cytosol_compartmentID, extracell_compartmentID,
                                              args.tanimoto_threshold)
-        return(SIM.finaltargets, R.ignorerxns, OUTPUT)
+        return(SIM.finaltargets, R.ignorerxns, OUTPUT, temp_imgs_PATH)
     else:
-        return(R.targets, R.ignorerxns, OUTPUT)
+        return(R.targets, R.ignorerxns, OUTPUT, temp_imgs_PATH)
     DB.conn.close()
 
 def retrieve_database_info(args):
@@ -378,8 +414,8 @@ def retrieve_database_info(args):
         if args.atlas:
             batlasdb.build_atlas(args.atlas_dump_directory, args.generate_database, args.inchidb,
                                  args.processors, args.atlas_reaction_type)
-        rdc.OverlappingCpdIDs(database)
         database = args.generate_database
+        rdc.OverlappingCpdIDs(database)
 
     elif args.database:
         '''
@@ -476,7 +512,7 @@ def construct_and_run_integerprogram(args, targets, output, database):
     DB = Q.Connector(database)
     IP = ip_pulp.IntergerProgram(DB, args.limit_reactions,
                                  args.limit_cycles, args.k_number_of_paths, args.cycles,
-                                 args.solver_time_limit)
+                                 args.solver_time_limit, output)
     if args.flux_balance_analysis:
         active_metabolism = retrieve_active_FBA_metabolism(targets, DB, args, output)
     else:
@@ -495,10 +531,10 @@ def _specific_target(target_id):
     else:
         return True
 
-def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_metabolism, toxicity_train):
+def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_metabolism, toxicity_train, temp_imgs_PATH):
     '''Retrieve the shortest path for target organism'''
     DB = Q.Connector(database)
-    print (target_info)
+    verbose_print(args.verbose, "STATUS: getting path for {}".format(target_info))
     if args.images == 'False':
         _images = False
     else:
@@ -553,11 +589,11 @@ def retrieve_shortestpath(target_info, IP, LP, database, args, output, active_me
                     output.output_raw_solutions(target_info[0], target_info[2], R.ordered_paths, ex_info.temp_rxns, incpds_active)
                     if args.figures:
                         G = spgd.GraphDot(DB, args.output_path, incpds_active, inrxns,
-                                          opt_fba.fbasol.x_dict)
+                                          temp_imgs_PATH, opt_fba.fbasol.x_dict)
                         G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
 
                 elif args.figures and not args.flux_balance_analysis:
-                    G = spgd.GraphDot(DB, args.output_path, incpds, inrxns)
+                    G = spgd.GraphDot(DB, args.output_path, incpds, inrxns, temp_imgs_PATH)
                     G.sc_graph(target_info[0], target_info[2], ex_info.temp_rxns, _images)
             else:
                 output.output_shortest_paths(target_info, [])
@@ -620,24 +656,24 @@ def main():
     args = parse_arguments()
     check_arguments(args)
     all_db_compounds, all_db_reactions, database = retrieve_database_info(args)
-    targets, ignore_reactions, output = read_in_and_generate_output_files(args, database)
+    targets, ignore_reactions, output, temp_imgs_PATH = read_in_and_generate_output_files(args, database)
     LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
     IP, active_metabolism, toxicity_train = construct_and_run_integerprogram(args, targets, output, database)
 
     def start_processes_new(index, target):
-        print ('STATUS: Inititate new process for target {}'.format(target))
+        verbose_print(args.verbose, 'STATUS: Inititate new process for target {}'.format(target))
         p = Process(target=retrieve_shortestpath, args=(target, IP, LP, database, args, output,
-                                                        active_metabolism, toxicity_train))
+                                                        active_metabolism, toxicity_train, temp_imgs_PATH))
         p.start()
         return (p)
 
     def start_processes(targets, processors):
-        print ('STATUS: Initiating solving of solutions for initial of {} targets'.format(processors))
+        verbose_print(args.verbose, 'STATUS: Initiating solving of solutions for initial of {} targets'.format(processors))
         processes = []
         for i in range(0, int(processors)):
             try:
                 processes.append(Process(target=retrieve_shortestpath, args=(targets[i], IP, LP, database, args, output,
-                                                                             active_metabolism, toxicity_train)))
+                                                                             active_metabolism, toxicity_train, temp_imgs_PATH)))
                 index = i
             except IndexError:  
                 pass
@@ -649,16 +685,34 @@ def main():
             for p in processes:
                 if not p.is_alive():
                     index+=1
-                    processes.remove(p)
-                    p_new = start_processes_new(index, targets[index])
-                    processes.append(p_new)
+                    if index < len(targets)-1:
+                        processes.remove(p)
+                        p_new = start_processes_new(index, targets[index])
+                        processes.append(p_new)
+                    else:
+                        verbose_print(args.verbose, 'STATUS: All targets optimal solutions have been started')
+                        break
         if index == len(targets)-1:
-            print ('STATUS: Solving last set of solutions for targets..waiting until all {} targets are complete'.format(len(processes)))
+            verbose_print(args.verbose, 'STATUS: Solving last set of solutions for targets..waiting until all {} targets are complete'.format(len(processes)))
+            last_target = True
+            while last_target is True:
+                time.sleep(sleep_time)
+                for p in processes:
+                    if not p.is_alive():
+                        verbose_print(args.verbose, 'STATUS: Starting last target')
+                        p_new = start_processes_new(index, targets[index])
+                        last_target = False
+                        break
             for p in processes:
                 p.join()
-    
+        if index >= len(targets)-1:
+            verbose_print(args.verbose, 'STATUS: Waiting for all target solutions')
+            for p in processes:
+                p.join()
+ 
     start_processes(targets, args.processors)
-    output.convert_output_2_xlsx()
+    if args.output_xlsx_format:
+        output.convert_output_2_xlsx()
 
     '''Remove all temporary images'''
     if args.images == 'True':

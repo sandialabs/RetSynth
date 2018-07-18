@@ -11,13 +11,19 @@ import openpyxl
 import shutil
 csv.field_size_limit(sys.maxsize)
 
+def verbose_print(verbose, line):
+    if verbose:
+        print(line)
+
 class Output(object):
     """Opens and fills output files produced by software"""
-    def __init__(self, db, output_path, FBA=False, KO=False, raw_solutions=True):
+    def __init__(self, db, output_path, verbose, FBA=False, KO=False, timer_output=False, raw_solutions=True):
         '''Initialize class: generates new output files for this analysis of rs'''
         self.DB = db
+        self.verbose = verbose
         self.FBA = FBA
         self.KO = KO
+        self.timer_output = timer_output
         self.output_path = output_path
         self.optimal_paths = open(output_path+'/optimal_pathways.txt', 'w')
         self.optimal_paths.close()
@@ -42,6 +48,11 @@ class Output(object):
             self.fluxKO_ty_output.close()
             self.fluxKO_ouptput.close()
 
+        if self.timer_output:
+            self.timer_output_file = open(output_path+'/timer_output.txt', 'w')
+            self.timer_output_file.write('#Functions\tseconds\tminutes\n')
+            self.timer_output_file.close()
+
         if raw_solutions:
             try:
                 os.mkdir(output_path+'/raw_compound_solutions')
@@ -49,6 +60,15 @@ class Output(object):
                 shutil.rmtree(output_path+'/raw_compound_solutions')
                 os.mkdir(output_path+'/raw_compound_solutions')
 
+    def output_timer(self, print_statement):
+        with open(self.output_path+'/timer_output.txt', 'a') as fout:
+            fout.write(print_statement)
+
+    def output_final_targets(self, targets, tan_threshold):
+        with open(self.output_path+'/finallist_targets_{}_threshold.txt'.format(tan_threshold), 'w') as fout:
+            for target in targets:
+                fout.write(target[0]+'\n')
+ 
     def output_open_paths_all_organism_file(self, target_compound_ID):
         '''
         Open file to generate file that summarizes how many reactions would
@@ -61,8 +81,7 @@ class Output(object):
     def output_raw_solutions(self, compound, org_ID, ordered_paths, reactions, incpds):
         cpdname = self.DB.get_compound_name(compound)
         org_name = self.DB.get_organism_name(org_ID)
-        if cpdname == 'None' or cpdname == 'none' or cpdname == '':
-            cpdname = re.sub('/', '_', compound)
+        cpdname = re.sub('/', '_', compound)
 
         def add_info_to_output(reactants, products, fin, protein, incpds):
             '''adding reaction info to output file '''
@@ -122,10 +141,10 @@ class Output(object):
         Outputs information if a target compound is already present in an organism
         '''
         with open(self.output_path+'/optimal_pathways.txt', 'a') as self.optimal_paths:
-            print ('{} in species {} already'.format(target_info[0], target_info[2]))
+            verbose_print(self.verbose, '{} in species {} already'.format(target_info[0], target_info[2]))
             self.optimal_paths.write('{} in species {} already\n'.format(target_info[0], target_info[2]))
 
-    def output_shortest_paths(self, target_info, temp_rxns, tox_excpds=None):
+    def output_shortest_paths(self, target_info, temp_rxns):
         #self.optimal_paths = optimal_paths
         # self.optimal_paths = open(self.output_path+'/optimal_pathways.txt', 'a')
         '''
@@ -136,7 +155,7 @@ class Output(object):
         target_org = target_info[2]
         with open(self.output_path+'/optimal_pathways.txt', 'a') as self.optimal_paths:
             if len(temp_rxns) == 0:
-                print ('No paths could be found to get to target compound {} {} in target organism {}'.format(t,
+                verbose_print(self.verbose, 'No paths could be found to get to target compound {} {} in target organism {}'.format(t,
                                                                                                               self.DB.get_compound_name(t),
                                                                                                               self.DB.get_organism_name(target_org)))
 
@@ -144,16 +163,16 @@ class Output(object):
                                                                                                                                   self.DB.get_compound_name(t),
                                                                                                                                   self.DB.get_organism_name(target_org)))
             else:
-                print ('\nSHORTEST PATH FOR {} {} in target organism {}'.format(t, self.DB.get_compound_name(t),
+                verbose_print(self.verbose, '\nSHORTEST PATH FOR {} {} in target organism {}'.format(t, self.DB.get_compound_name(t),
                                                                                 self.DB.get_organism_name(target_org)))
                 self.optimal_paths.write('\nSHORTEST PATH FOR {} {} in target organism {}\n'.format(t, self.DB.get_compound_name(t),
                                                                                                     self.DB.get_organism_name(target_org)))
                 for count, os_dict in temp_rxns.iteritems():
-                    print ('Solution {}'.format(count))
+                    verbose_print(self.verbose, 'Solution {}'.format(count))
                     self.optimal_paths.write('Solution {}\n'.format(count))
                     for r in os_dict:
                         if r.endswith('_s'):
-                            print ('\t'.join([r, os_dict[r]['name'], os_dict[r]['direction']]))
+                            verbose_print(self.verbose, '\t'.join([r, os_dict[r]['name'], os_dict[r]['direction']]))
                             self.optimal_paths.write('\t'.join([r, os_dict[r]['name'],
                                                                 os_dict[r]['direction'],
                                                                 ','.join(self.DB.get_solvents(r))+':solvents',
@@ -181,49 +200,19 @@ class Output(object):
                             for gene in geneslist:
                                 finalgenelist.append(gene)
                             finalgene = ' '.join(finalgenelist)
-                            print ('\t'.join([r, os_dict[r]['name'], os_dict[r]['direction'], finalprotein, finalgene]))
+                            verbose_print(self.verbose, '\t'.join([r, os_dict[r]['name'], os_dict[r]['direction'], finalprotein, finalgene]))
                             self.optimal_paths.write('\t'.join([r, os_dict[r]['name'],
                                                                 os_dict[r]['direction'], finalprotein, finalgene,
                                                                 str(len(os_dict[r]['organisms']))+
                                                                 ' number of species that contain this reaction',
                                                                 ','.join(os_dict[r]['organisms'])])+'\n')
-
-                        if tox_excpds:
-                            for react in os_dict[r]['reactants']:
-                                try:
-                                    print ('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(react, os_dict[r]['reactants'][react],
-                                                                                                                                                   tox_excpds[react][0], tox_excpds[react][1][0], tox_excpds[react][1][1]))
-                                    self.optimal_paths.write('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(react,
-                                                                                                                                                                       os_dict[r]['reactants'][react]),
-                                                                                                                                                                       tox_excpds[react][0],
-                                                                                                                                                                       tox_excpds[react][1][0],
-                                                                                                                                                                       tox_excpds[react][1][1])
-                                except IndexError:
-                                    print ('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(react, os_dict[r]['reactants'][react],
-                                                                                                                                                   'None', 'None', 'None'))
-                                    self.optimal_paths.write('\t{}\t{} reactants\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(react,
-                                                                                                                                                                       os_dict[r]['reactants'][react],
-                                                                                                                                                                       'None', 'None', 'None'))
-                            for prod in os_dict[r]['products']:
-                                try:
-                                    print ('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(prod, os_dict[r]['products'][prod],
-                                                                                                                                                  tox_excpds[prod][0], tox_excpds[prod][1][0], tox_excpds[prod][1][1]))
-                                    self.optimal_paths.write('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(prod, os_dict[r]['products'][prod],
-                                                                                                                                                                      tox_excpds[prod][0], tox_excpds[prod][1][0],
-                                                                                                                                                                      tox_excpds[prod][1][1]))
-                                except IndexError:
-                                    print ('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}'.format(prod, os_dict[r]['products'][prod],
-                                                                                                                                                  'None', 'None', 'None'))
-                                    self.optimal_paths.write('\t{}\t{} products\ttoxicity = classification-{}, probability-High toxicity {} Low toxicity {}\n'.format(prod, os_dict[r]['products'][prod],
-                                                                                                                                                                      'None', 'None', 'None'))
-                        else:
-                            for react in os_dict[r]['reactants']:
-                                print ('\t{}\t{} reactants'.format(react, os_dict[r]['reactants'][react]))
-                                self.optimal_paths.write('\t{}\t{} reactants\n'.format(react,
-                                                                                       os_dict[r]['reactants'][react]))
-                            for prod in os_dict[r]['products']:
-                                print ('\t{}\t{} products'.format(prod, os_dict[r]['products'][prod]))
-                                self.optimal_paths.write('\t{}\t{} products\n'.format(prod, os_dict[r]['products'][prod]))
+                        for react in os_dict[r]['reactants']:
+                            verbose_print(self.verbose, '\t{}\t{} reactants'.format(react, os_dict[r]['reactants'][react]))
+                            self.optimal_paths.write('\t{}\t{} reactants\n'.format(react,
+                                                                                    os_dict[r]['reactants'][react]))
+                        for prod in os_dict[r]['products']:
+                            verbose_print(self.verbose, '\t{}\t{} products'.format(prod, os_dict[r]['products'][prod]))
+                            self.optimal_paths.write('\t{}\t{} products\n'.format(prod, os_dict[r]['products'][prod]))
 
     def output_activemetabolism(self, am):
         '''
@@ -247,12 +236,20 @@ class Output(object):
         else:
             target = target_info[0]
         with open(self.output_path+'/flux_individualfluxes_output.txt', 'a') as self.flux_individual_output:
-            print ('FBA Solutions for {}'.format(target))
-            print ('{}\t{} objective function solutions for wild-type and mutant'.format(round(org_fbasolution.f, 2),
+            verbose_print(self.verbose, 'FBA Solutions for {}'.format(target))
+            verbose_print(self.verbose, '{}\t{} objective function solutions for wild-type and mutant'.format(round(org_fbasolution.f, 2),
                                                                                          round(optimized_fba.fbasol.f, 2)))
+            verbose_print(self.verbose, 'Individual fluxes in the objective function (sink reactions are the target)')
+            for reaction in optimized_fba.objective_dict:
+                verbose_print(self.verbose,'\t{} {}'.format(round(optimized_fba.fbasol.x_dict[reaction.id]), reaction.id))
+
             self.flux_individual_output.write('FBA Solutions for {}'.format(target)+'\n')
             self.flux_individual_output.write('{}\t{} objective function solutions for wild-type and mutant\n'.format(round(org_fbasolution.f, 2),
                                                                                                                       round(optimized_fba.fbasol.f, 2)))
+            self.flux_individual_output.write('Individual fluxes in the objective function (sink reactions are the target)\n')
+            for reaction in optimized_fba.objective_dict:
+                self.flux_individual_output.write('\t{} {}\n'.format(round(optimized_fba.fbasol.x_dict[reaction.id]), reaction.id))
+
             for x, value in optimized_fba.fbasol.x_dict.iteritems():
                 self.flux_individual_output.write('{}\t{}\n'.format(x, value))
 
@@ -268,8 +265,8 @@ class Output(object):
             for r, value in comparisonresults.externalrxnfluxes.iteritems():
                 self.flux_ouptput.write('\t{}\t{}\n'.format(r, value))
             if comparisonresults.maxpath == 'No added path':
-                print ('{} - compound could be produced in target organism'.format(comparisonresults.maxpath))
-                print ('\t {} production of target compound'.format(comparisonresults.maxflux))
+                verbose_print(self.verbose, '{} - compound could be produced in target organism'.format(comparisonresults.maxpath))
+                verbose_print(self.verbose, '\t {} production of target compound'.format(comparisonresults.maxflux))
                 self.flux_ouptput.write('\t {} - compound could be produced in target organism\n'.format(comparisonresults.maxpath))
                 self.flux_ouptput.write('\t {} production of target compound\n'.format(comparisonresults.maxflux))
             else:
@@ -277,8 +274,8 @@ class Output(object):
                 self.flux_ouptput.write('\tPath {}\t{}\n\tTotal flux through path: {}\n'.format(comparisonresults.maxpath,
                                                                                                 temp[comparisonresults.maxpath].keys(),
                                                                                                 comparisonresults.maxflux))
-                print ('External pathway with most flux:')
-                print ('\tPath {}\t{}\n\tTotal flux through path: {}'.format(comparisonresults.maxpath,
+                verbose_print(self.verbose, 'External pathway with most flux:')
+                verbose_print(self.verbose,'\tPath {}\t{}\n\tTotal flux through path: {}'.format(comparisonresults.maxpath,
                                                                              temp[comparisonresults.maxpath].keys(),
                                                                              comparisonresults.maxflux))
 
@@ -312,7 +309,6 @@ class Output(object):
         try:
             glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
         except KeyError:
-            print ('No transport reaction glucose rxn')
             glucose = False
         if glucose:
             try:
@@ -322,21 +318,30 @@ class Output(object):
         else:
             wt_ty = 'NA'
 
+        knockouts = []
+        model_rxns = self.DB.get_reactions_in_model(target_info[2])
+        model_rxns = sorted(model_rxns)
+        for rxn in model_rxns:
+            try:
+                knockouts.append(format(comparisonKOresults.objective_function_ko[rxn], "10.3f"))
+            except KeyError:
+                knockouts.append('NA')
+
         with open(self.output_path+'/fluxKO_theoreticalyields_output.txt') as self.fluxKO_ty_output:
             line = self.fluxKO_ty_output.readline()
 
         with open(self.output_path+'/fluxKO_theoreticalyields_output.txt', 'a') as self.fluxKO_ty_output:
             if line.startswith('#'):
-                self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
+                self.ko_ty = '\t'.join(knockouts)
                 self.fluxKO_ty_output.write(target+'-'+self.DB.get_compound_name(target)+'\t'+target_info[2]+'-'+self.DB.get_organism_name(target_info[2])+'\t'+str(wt_ty)+'\t'+self.ko_ty+'\n')
             else:
-                self.fluxKO_ty_output.write('#Target ID\tOrganism ID\twild type theoretical yield\t'+'\t'.join(comparisonKOresults.objective_function_ko.keys())+'\n')
-                self.ko_ty = '\t'.join(format(x, "10.3f") for x in comparisonKOresults.objective_function_ko.values())
+                self.fluxKO_ty_output.write('#Target ID\tOrganism ID\twild type theoretical yield\t'+'\t'.join(model_rxns)+'\n')
+                self.ko_ty = '\t'.join(knockouts)
                 self.fluxKO_ty_output.write(target+'-'+self.DB.get_compound_name(target)+'\t'+target_info[2]+'-'+self.DB.get_organism_name(target_info[2])+'\t'+str(wt_ty)+'\t'+self.ko_ty+'\n')                
 
         with open(self.output_path+'/fluxKO_increased_theoreticalyields_output.txt', 'a') as self.fluxKO_in_ty_output:
             if wt_ty != 'NA':
-                count=0
+                count = 0
                 for rko, value in comparisonKOresults.objective_function_ko.iteritems():
                     if rko.startswith('EX'):
                         pass
@@ -378,8 +383,9 @@ class Output(object):
         ##########CHECK FOR GLUCOSE IMPORT REACTION (CURRENTLY KBASE RXN))###########
         try:
             glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
+            glucoseimport = round(glucoseimport, 2)
         except KeyError:
-            print ('No transport reaction glucose rxn')
+            glucoseimport = 'NA'
             glucose = False
         ##########CHECK FOR BIOMASS REACTION (CURRENTLY KBASE RXN))###########
         try:
@@ -399,12 +405,11 @@ class Output(object):
             self.theoyield.write('{}-{}\t{}-{}\tGlucose Flux: {}\tTarget Production: {}\tTheoretical Yield: {} mol {} /mol glucose\tBiomass: {}\n'.format(target_compound_ID,
                                                                                                                                                           self.DB.get_compound_name(target_compound_ID),                                                                                                                                                         target_organism_ID,
                                                                                                                                                           self.DB.get_organism_name(target_organism_ID),
-                                                                                                                                                          round(glucoseimport, 2),
-                                                                                                                                                          round(objectivesol, 2),
+                                                                                                                                                          glucoseimport, round(objectivesol, 2),
                                                                                                                                                           wt_ty, target_compound_ID, biomassrxn))
     def convert_output_2_xlsx(self):
         '''converts txt files to output files'''
-        print ('STATUS: Converting output text files to xlsx format')
+        verbose_print(self.verbose, 'STATUS: Converting output text files to xlsx format')
         def convert_output_txt_files_2_xlsx(input_file, output_file):
             wb = openpyxl.Workbook()
             ws = wb.worksheets[0]

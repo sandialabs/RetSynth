@@ -66,8 +66,6 @@ class GraphDot(object):
         except OSError:
             pass
         self.temp_imgs_path = temp_img_path
-        print ('In Code')
-        print (self.temp_imgs_path)
         self.GRAPHPATH = output_path+'/solution_figures'
         self.output_path = output_path
         self.incpds = incpds
@@ -168,12 +166,10 @@ class GraphDot(object):
 
     def reformat_inchi(self, inchi):
         '''Reformates inchi string'''
-        if inchi.startswith('InChI'):
-            return re.sub('/', '_', inchi)
-        else:
-            inchi = re.sub('-', '_', inchi)
-            inchi = re.sub(' ', '_', inchi)            
-            return inchi
+        inchi = re.sub('/', '_', inchi)
+        inchi = re.sub('-', '_', inchi)
+        inchi = re.sub(' ', '_', inchi)
+        return inchi
 
     def synthetic_compound_attr(self, cpdID, name, rxn):
         '''
@@ -188,7 +184,6 @@ class GraphDot(object):
             if figure_bool:
                 self.outputfile_dot.append('    "{}" [color="{}", image="{}", shape={}, label=""];\n'.format(origname, 'None', self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
-                print ('WARNING: Could not retrieve figure')
                 self.outputfile_dot.append('    "{}" [fillcolor={}, color="{}", height={}, width={}, fontsize={}, fontname="{}", label="{}", fontcolor={}];\n'.format(origname, 'None', 'None', '.3', '.3', '12', 'times', name, 'blue'))
         else:
             self.outputfile_dot.append('    "{}" [fillcolor={}, height={}, width={}, fontsize={}, fontname="{}", xlabel="{}", label=""];\n'.format(origname, 'blue', '.3', '.3', '12', 'times', name))
@@ -206,7 +201,6 @@ class GraphDot(object):
             if figure_bool:
                 self.outputfile_dot.append('    "{}" [color={}, image="{}", shape={}, label=""];\n'.format(origname, 'None', self.temp_imgs_path+'/compound_'+namereformat+'_'+rxn+'_cropped.png', 'None'))
             else:
-                print ('WARNING: Could not retrieve figure')
                 self.outputfile_dot.append('    "{}" [fillcolor={}, color={}, height={}, width={}, fontsize={}, fontname="{}", label="{}", fontcolor={}];\n'.format(origname, 'None', 'None', '.2', '.2', '10', 'times', name, 'gray33'))
         else:
             self.outputfile_dot.append('    "{}" [fillcolor={}, height={}, width={}, fontsize={}, fontname="{}", xlabel="{}", label=""];\n'.format(origname, 'gray', '.2', '.2', '10', 'times', name))

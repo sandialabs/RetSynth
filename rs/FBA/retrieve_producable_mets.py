@@ -3,24 +3,30 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'get metabolites that can be produced'
 
+import os
 from cobra import Model, Reaction
 from tqdm import tqdm
 from FBA.generating_model import generate_model_components as gmc
+PATH = os.path.dirname(os.path.abspath(__file__))
 
-def RetrieveActiveRxnsCompounds(target_organism_ID, inmets, inrxns, DB, output_queue, media=None):
+def RetrieveActiveRxnsCompounds(target_organism_ID, inmets, inrxns, DB, output_queue, verbose, media=None):
     """Identifies active compounds in an organism"""
     media_constraints = {}
     active_metabolism = {}
     if media:
         media_constraints = gmc.load_media(media_constraints, media)
+    else:
+        print ('STATUS: loading glucose media')
+        media_constraints = gmc.load_media(media_constraints, PATH+'/KBaseMedia_Carbon-D-Glucose_MediaCompounds.tsv')
+
     inmets = list(set(inmets))
     removecpds = []
     removerxns = {}
     finalremoverxns = []
     model = Model(target_organism_ID)
-    model, compound_dict = gmc.load_compounds(model, inmets, DB)
+    model, compound_dict = gmc.load_compounds(model, inmets, DB, verbose)
     model = gmc.load_reactions(model, target_organism_ID, inrxns,
-                               media_constraints, compound_dict, DB)
+                               media_constraints, compound_dict, DB, verbose)
 
     print ('STATUS: Determine what compounds in network are active (can be produced)')
     for cpd in tqdm(inmets):
