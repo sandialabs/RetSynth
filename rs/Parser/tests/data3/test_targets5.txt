@@ -1,0 +1,2 @@
+#name	organismid
+cpdA_c0	t1,t3
