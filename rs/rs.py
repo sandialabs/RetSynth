@@ -347,8 +347,8 @@ def check_arguments(args):
     if args.database and (not args.generate_database_constraints and not args.database_constraints):
         print ('WARNING: User specified specific database but not constraint file therefore default constraint file will be used but may not match user specified database')
  
-    if args.metacyc and (not args.metacyc_addition and not args.translation_file):
-        parser.error('--metacyc requires use of parameters metacyc_addition and translation_file')        
+    if args.metacyc and not args.metacyc_addition:
+        parser.error('--metacyc requires use of parameters metacyc_addition')        
 
     if args.atlas and not args.atlas_dump_directory:
         parser.error('--atlas requires use of --atlas_dump_directory')
