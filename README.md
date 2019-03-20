@@ -9,7 +9,7 @@ The overaching goal of RetSynth is to streamline the arduous and complex step of
 See documentation at http://sandialabs.github.io/RetSynth/
 
 ## Build
-To download source code please follow the instructions below.  The difficult part of ensuring that RetSynth can run is installing the non-python dependencies which include (THESE NEED TO BE INSTALLED FIRST PRIOR TO PYTHON LIBRARIES BELOW):
+To download RetSynth please follow the instructions below.  The difficult part of ensuring that RetSynth can run is installing the non-python dependencies which include (THESE NEED TO BE INSTALLED FIRST PRIOR TO PYTHON LIBRARIES BELOW):
 	
     GNU/GLPK (v4.64) 	 Download from the website http://ftp.gnu.org/gnu/glpk/
 	    
