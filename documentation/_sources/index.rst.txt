@@ -9,6 +9,12 @@ Welcome to RetSynth's documentation!
 RetSynth is a python tool which identfies enzyme/reaction pairs, using integer linear programming that are required in a user specified microbial organisms to produce a target chemical compound. 
 
 .. note::
+   RetSynth works on operating systems:
+      Windows
+
+      Mac
+
+      Linux
    Required Non-python Dependencies:
       `GLPK <http://ftp.gnu.org/gnu/glpk/>`_ (v4.64 preferred)
       
