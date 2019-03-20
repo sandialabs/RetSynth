@@ -9,9 +9,7 @@ The overaching goal of RetSynth is to streamline the arduous and complex step of
 See documentation at http://sandialabs.github.io/RetSynth/
 
 ## Build
-If the user wants to use RetSynth with a Graphical user interface please switch the branch to the RetSynth version (windows or mac) and download it.
-
-Else if the user wants to use the source code which has more options and allows the user more control over the pathways they find and the metabolic repositories they can use to construct their RetSynth database they please follow the instructions below.  The difficult part of ensuring that RetSynth can run is installing the non-python dependencies which include (THESE NEED TO BE INSTALLED FIRST PRIOR TO PYTHON LIBRARIES BELOW):
+To download source code please follow the instructions below.  The difficult part of ensuring that RetSynth can run is installing the non-python dependencies which include (THESE NEED TO BE INSTALLED FIRST PRIOR TO PYTHON LIBRARIES BELOW):
 	
     GNU/GLPK (v4.64) 	 Download from the website http://ftp.gnu.org/gnu/glpk/
 	    
