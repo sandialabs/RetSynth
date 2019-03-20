@@ -11,6 +11,13 @@ Database.initialize_database
     :undoc-members:
     :show-inheritance:
 
+Database.query
+^^^^^^^^^^^^^^
+.. automodule:: Database.query
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Database.build_ATLAS_db
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_ATLAS_db
@@ -21,6 +28,20 @@ Database.build_ATLAS_db
 Database.build_kbase_db
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_kbase_db
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Database.build_modelseed
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_modelseed
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Database.build_user_rxns_db
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_user_rxns_db
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,13 +60,6 @@ Database.build_metacyc_db
     :undoc-members:
     :show-inheritance:
 
-Database.build_MINE_db
-^^^^^^^^^^^^^^^^^^^^^^
-.. automodule:: Database.build_MINE_db
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Database.build_SPRESI_db
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_SPRESI_db
@@ -53,16 +67,16 @@ Database.build_SPRESI_db
     :undoc-members:
     :show-inheritance:
 
-Database.query
-^^^^^^^^^^^^^^
-.. automodule:: Database.query
+Database.build_MINE_db
+^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_MINE_db
     :members:
     :undoc-members:
     :show-inheritance:
 
-Database.translate_kbase_genes
+Database.remove_duplicate_cpds
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. automodule:: Database.translate_kbase_genes
+.. automodule:: Database.remove_duplicate_cpds
     :members:
     :undoc-members:
     :show-inheritance:

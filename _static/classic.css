@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- classic theme.
  *
- * :copyright: Copyright 2007-2017 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2019 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -55,7 +55,7 @@ div.footer a {
 }
 
 div.related {
-    background-color: black;
+    background-color: #133f52;
     line-height: 30px;
     color: #ffffff;
 }

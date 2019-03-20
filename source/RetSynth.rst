@@ -7,15 +7,11 @@ Subpackages
 .. toctree::
 
     Database
-    Database.tests
     FBA
-    FBA.tests
     Parser
-    Parser.tests
     ShortestPath
-    ShortestPath.tests
-    Visualization
-    Visualization.tests
+    Visualization_graphviz
+    Visualization_chemdraw
 
 RetSynth modules
 ------------------
@@ -25,17 +21,7 @@ RetSynth modules
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: Database.tests
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 .. automodule:: FBA
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: FBA.tests
     :members:
     :undoc-members:
     :show-inheritance:
@@ -45,32 +31,17 @@ RetSynth modules
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: Parser.tests
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 .. automodule:: ShortestPath
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: ShortestPath.tests
+.. automodule:: Visualization_chemdraw
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: tests
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: Visualization
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: Visualization.tests
+.. automodule:: Visualization_graphviz
     :members:
     :undoc-members:
     :show-inheritance:

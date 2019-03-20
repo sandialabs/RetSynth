@@ -9,17 +9,26 @@ Welcome to RetSynth's documentation!
 RetSynth is a python tool which identfies enzyme/reaction pairs, using integer linear programming that are required in a user specified microbial organisms to produce a target chemical compound. 
 
 .. note::
-   Required Dependencies:
-      Python packages: PULP (preferred, install by ``pip install pulp``) or PyGLPK (install by ``pip install glpk``) and `CobraPy <http://cobrapy.readthedocs.io/en/latest/>`_
+   RetSynth works on operating systems:
+      Windows
 
-      PyGLPK on works with `GLPK <http://ftp.gnu.org/gnu/glpk/>`_ versions 4.39 and below. If higher versions of `GLPK <http://ftp.gnu.org/gnu/glpk/>`_ are used PULP should be utilized instead.
+      Mac
+
+      Linux
+   Required Non-python Dependencies:
+      `GLPK <http://ftp.gnu.org/gnu/glpk/>`_ (v4.64 preferred)
       
-      External software: `libsbml <https://pypi.python.org/pypi/python-libsbml-experimental/5.10.0>`_ and `GLPK <http://ftp.gnu.org/gnu/glpk/>`_
-
-   Optional Dependencies (necessary for Visualization module):
-      Python packages: `PyGraphViz <https://pypi.python.org/pypi/pygraphviz>`_
-
-      External software: `GraphViz <http://www.graphviz.org/>`_
+      `GraphViz <http://www.graphviz.org/>`_ (only if ``--figures_graphviz`` option is being used, See Visualization_graphviz option below)
+   Python Dependencies:
+      `PULP <https://pypi.org/project/PuLP/>`_ 
+      
+      `CobraPy <http://cobrapy.readthedocs.io/en/latest/>`_
+      
+      `libsbml <https://pypi.python.org/pypi/python-libsbml-experimental/5.10.0>`_
+      
+      `PyGraphViz <https://pypi.python.org/pypi/pygraphviz>`_ (only if ``--figures_graphviz`` option is being used,  See Visualization_graphviz option below)
+      
+      `bs4 <https://pypi.org/project/bs4/>`_
 
 Purpose
 =======
@@ -28,7 +37,7 @@ In the process of bioengineering a microbial organism, identifying reactions/enz
 
 By assembling a database of genome-wide metabolic networks for a plethora of microbial organisms and framing this information into an integer linear program, we can identify the optimal number of enzyme/reaction pairs that need to be added into an organism for optimal synthesis of a compound.  Specifically the goal is to identify the minimal number of reactions/enzymes as this is beneficial for metabolic engineering because less genetic manipulation would be required.  Using flux balance analysis FBA RetSynth can predict production yields of a compound in a select microbial organism.
 
-The overaching goal of RetSynth is to streamline an arduous and complex step of bioengineering a microbial organism, which will enable scientists to inexpensively expedite the production of important target compounds.  
+The overarching goal of RetSynth is to streamline an arduous and complex step of bioengineering a microbial organism, which will enable scientists to inexpensively expedite the production of important target compounds.  
 
 RetSynth Workflow
 ===================
@@ -39,24 +48,38 @@ RetSynth Workflow
 In order for RetSynth to identify potential reactions/enzymes to add to an organism for synthesis of a target compound a repository/database of genome-wide metabolic information for numerous microbial organisms must be available to the software.  RetSynth builds an `SQLite <https://docs.python.org/2/library/sqlite3.html/>`_ database. 
 RetSynth can compile a metabolic database which can include metabolic information from the following Repositories:
 
-1. `KBase <https://kbase.us/>`_
+1. `PATRIC <https://www.patricbrc.org/>`_
 
-2. `MetaCyc <https://metacyc.org/>`_
+2. `KBase <https://kbase.us/>`_
 
-3. `KEGG <http://www.genome.jp/kegg/kegg1.html>`_
+3. `MetaCyc <https://metacyc.org/>`_
 
-4. `Metabolic In Silico Network Expansion Database <http://minedatabase.mcs.anl.gov/#/home>`_
+4. `KEGG <http://www.genome.jp/kegg/kegg1.html>`_
 
-5. `ATLAS of BioChemistry <http://lcsb-databases.epfl.ch/atlas/>`_
+5. `Metabolic In Silico Network Expansion Database <http://minedatabase.mcs.anl.gov/#/home>`_
 
-6. `SPRESI <https://www.spresi.com/>`_
+6. `ATLAS of BioChemistry <http://lcsb-databases.epfl.ch/atlas/>`_
+
+7. `SPRESI <https://www.spresi.com/>`_
 
 
 .. note::
    
-   Raw SPRESI data has to be purchased and for RetSynth currently has to in the format of `Rxnfiles <http://www.daylight.com/meetings/mug05/Kappler/ctfile.pdf>`_
+   The SPRESI database has to be purchased by the user and for RetSynth to integrate SPRESI data into its database it currently has to be in the `Rxnfiles <http://www.daylight.com/meetings/mug05/Kappler/ctfile.pdf>`_ (.rdf) format.
 
-To build a database the user must identify the type of data with which the database is to be constructed (``--kbase``, ``--metacyc``, ``--kegg``, ``--atlas``, ``--mine`` and/or ``--SPRESI``) and the directory which contains the raw database information ``-k_dir or --kbase_dump_directory`` for kbase data (xml files), ``-a_dir or --atlas_dump_directory`` for atlas data (csv files), ``-m_dir or --mine_dump_directory`` for mine data (msp files), ``s_dir or --spresi_dump_directory`` for spresi data (rdf files) and ``-mc or --metacyc_addition (which is the xml file for the metacyc database) and -tf or --translation_file (which is a translation file to use to translate kbase IDs universal IDs)`` for metatcyc. The ``--kegg`` option does not require a directory specification as RetSynth connects directly to the kegg database.  If the user is constructing a database using multiple repositories it is suggested that the ``--inchidb`` option is specified.  This converts all compound IDs to their inchi values and therefore elimiates duplicate entries of metabolites and reactions from the different metabolic repositories.  Additionally, the user must designate a database name with the option ``-gdb or --generate_database``. In the event that a database has already been built and the user wants to use that database instead of building a new one, the database can be accessed by utilizing the option ``-db or --database`` with the name of the database.
+To build a database the user must identify the type of data (metabolic repository) with which the database is to be constructed (``--kbase``, ``--patric``, ``--metacyc``, ``--kegg``, ``--atlas``, ``--mine`` and/or ``--SPRESI``). Furthermore the directory which contains the raw metabolic repository information must be specified:
+
+``-k_dir or --kbase_dump_directory`` for kbase data (xml files), 
+
+``-a_dir or --atlas_dump_directory`` for atlas data (csv files), 
+
+``-m_dir or --mine_dump_directory`` for mine data (msp files),
+
+``s_dir or --spresi_dump_directory`` for spresi data (rdf files) and 
+
+``-mc or --metacyc_addition`` (which is the xml file for the metacyc reactions repository) for metatcyc. 
+
+The ``--kegg`` option does not require a directory specification as RetSynth connects directly to the kegg database.  Additionally the ``--patric`` option connects directly to the patric server using the `mackinac <https://dx.doi.org/doi:10.1093/bioinformatics/btx185>`_ python library which was integrated into RetSynth. In order to use patric the user must input a patric username ``--patric_username`` and patric password ``--patric_password``.  Note the user can select which patric models are integrated into the RetSynth database by utilizing the ``--patricfile`` option (See scripts link below for more info on how to use this paramter).  If the user is constructing a database using multiple repositories it is suggested that the ``--inchidb`` option is specified although this option drastically increases the time required to build the database.  This converts all compound IDs to their inchi values and therefore elimiates duplicate entries of metabolites and reactions from the different metabolic repositories.  If this option is not selected KEGG compound IDs will be used. Additionally, the user must designate a database name with the option ``-gdb or --generate_database``. In the event that a database has already been built and the user wants to use that database instead of building a new one, the database can be accessed by utilizing the option ``-db or --database`` with the name of the database.
 
 2. Generating Stoichiometric Matrix for Reactions and Compounds in the Metabolic Database
 -----------------------------------------------------------------------------------------
@@ -67,7 +90,7 @@ Because the .constraints file does not have to be recreated if the user wants to
 
 .. note::
    
-   Each constructed database requires its own .constraints file.  
+   Each constructed database requires its own .constraints file.  Additionally if a database has both chemical and biological reactions in it and the user only wants say biological reactions it is good to generate a new constraints file (i.e. constraintfile_bio.constraints) with the ``-gdbc`` option.
 
 3. Target Compounds (input file)
 --------------------------------
@@ -142,7 +165,7 @@ RetSynth, using the FBA tool `CobraPy <http://cobrapy.readthedocs.io/en/latest/>
 
 .. note::
    
-   Currently FBA can only be run on organisms added from `KBase <https://kbase.us/>`_.
+   Currently FBA can only be run on organisms added from `KBase <https://kbase.us/>`_ or `PATRIC <https://www.patricbrc.org/>`_.
 
 To run FBA the ``-fba or --flux_balance_analysis`` option must be specified.  Using the option ``-media or --media_for_FBA`` will specify that the organism's metabolism will be simulated on a user specified media.  Currently these media files can also be obtained from  `KBase <https://kbase.us/>`_.  Finally, the user can perform knockouts, ``-ko or --knockouts`` of each reaction in the organism, which will help in the understanding of which enzymes, reactions and metabolic pathways are important for synthesis of the target compound.
 
@@ -178,10 +201,23 @@ Additionaly, theoretical_yield.txt file is generated which gives the percent the
 
 If the ``-ko`` parameter is used, essentialrxns_output.txt file is generated which lists all the reactions, which when knocked out prevent production of a target compound. 
 
+Visualization_chemdraw
+----------------------
+This module generates figures of the pathways needed to synthesize the target compound in chemdraw (cdxml) format.  To use this module the user must specify the optin ``figures_chemdraw``.  Additionally, if chemical reactions have been added to the database and the user wants all chemical reaction information to be shown in the figure (i.e solvent, catalyst, pressure...) then the user must specify ``--show_chemical_rxn_info`` option. 
 
-Visualization
--------------
-This module, which requires `GraphViz <http://www.graphviz.org/>`_ , generates graphs of the reactions that are required to synthesize the compound in a desired organism.  To use this module the user must specify the option ``--figures`` .  Additionaly if the user wants the chemical structures to be used in the figures instead of round nodes option ``--images`` must be specified. 
+.. image:: but-2-one.png
+
+Gray compounds indicate the compound is native to the target organism
+
+Black square nodes show reactions that need to be added to target organism
+   
+Blue compounds indicate that the compound is not native to the target organism
+   
+Red compound indicates the target compound
+
+Visualization_graphviz
+----------------------
+This module, which requires `GraphViz <http://www.graphviz.org/>`_ , generates graphs of the reactions that are required to synthesize the compound in a desired organism.  To use this module the user must specify the option ``--figures_graphviz`` .  Additionaly if the user wants the chemical structures to be used in the figures instead of round nodes option ``--images`` must be specified. 
 Example Figure:
 
 .. image:: SC_graph_1_propanol_Escherichia_coli_DH1.xml.png
