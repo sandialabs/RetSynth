@@ -27,35 +27,35 @@ class Compare(object):
         Determines if flux differences between simulations is greater than 2.5 fold
         '''
         name = self.DB.get_reaction_name(rxn)
-        if rxn in self.wtresults.x_dict:
-            if self.wtresults.x_dict[rxn] != 0 and self.exresults.x_dict[rxn] != 0:
-                upperfold = self.wtresults.x_dict[rxn] * self.fold_threshold
-                changefold = abs(upperfold - self.wtresults.x_dict[rxn])
-                if self.wtresults.x_dict[rxn] < 0:
-                    lowerfold = self.wtresults.x_dict[rxn] + changefold
-                elif self.wtresults.x_dict[rxn] > 0:
-                    lowerfold = self.wtresults.x_dict[rxn] - changefold
+        if rxn in self.wtresults.fluxes:
+            if self.wtresults.fluxes[rxn] != 0 and self.exresults.fluxes[rxn] != 0:
+                upperfold = self.wtresults.fluxes[rxn] * self.fold_threshold
+                changefold = abs(upperfold - self.wtresults.fluxes[rxn])
+                if self.wtresults.fluxes[rxn] < 0:
+                    lowerfold = self.wtresults.fluxes[rxn] + changefold
+                elif self.wtresults.fluxes[rxn] > 0:
+                    lowerfold = self.wtresults.fluxes[rxn] - changefold
                 if upperfold < 0:
-                    if (self.exresults.x_dict[rxn] <= upperfold
-                            or self.exresults.x_dict[rxn] >= lowerfold):
-                        self.fluxchange[rxn] = '\t'.join([name, str(self.wtresults.x_dict[rxn]),
-                                                          str(self.exresults.x_dict[rxn])])
-                    if (self.exresults.x_dict[rxn] <= lowerfold or
-                            self.exresults.x_dict[rxn] >= upperfold):
-                        self.fluxchange[rxn] = '\t'.join([name, str(self.wtresults.x_dict[rxn]),
-                                                          str(self.exresults.x_dict[rxn])])
-            elif self.wtresults.x_dict[rxn] == 0 and self.exresults.x_dict[rxn] != 0:
-                if self.exresults.x_dict[rxn] <= -1 or self.exresults.x_dict[rxn] >= 1:
-                    self.fluxchange[rxn] = '\t'.join([str(self.wtresults.x_dict[rxn]),
-                                                      str(self.exresults.x_dict[rxn])])
-        elif rxn not in self.wtresults.x_dict:
-            self.externalrxnfluxes[rxn] = name+'\t'+str(self.exresults.x_dict[rxn])
+                    if (self.exresults.fluxes[rxn] <= upperfold
+                            or self.exresults.fluxes[rxn] >= lowerfold):
+                        self.fluxchange[rxn] = '\t'.join([name, str(self.wtresults.fluxes[rxn]),
+                                                          str(self.exresults.fluxes[rxn])])
+                    if (self.exresults.fluxes[rxn] <= lowerfold or
+                            self.exresults.fluxes[rxn] >= upperfold):
+                        self.fluxchange[rxn] = '\t'.join([name, str(self.wtresults.fluxes[rxn]),
+                                                          str(self.exresults.fluxes[rxn])])
+            elif self.wtresults.fluxes[rxn] == 0 and self.exresults.fluxes[rxn] != 0:
+                if self.exresults.fluxes[rxn] <= -1 or self.exresults.fluxes[rxn] >= 1:
+                    self.fluxchange[rxn] = '\t'.join([str(self.wtresults.fluxes[rxn]),
+                                                      str(self.exresults.fluxes[rxn])])
+        elif rxn not in self.wtresults.fluxes:
+            self.externalrxnfluxes[rxn] = name+'\t'+str(self.exresults.fluxes[rxn])
 
     def get_flux_differences(self):
         '''
         Gets reactions for the flux difference is greater than 2.5 fold
         '''
-        for rxn in self.exresults.x_dict.index:
+        for rxn in self.exresults.fluxes.index:
             self.analyze_fluxes(rxn)
 
     def external_pathanalyze_fluxes(self):
@@ -68,7 +68,8 @@ class Compare(object):
                 flux = 0
                 for r in path:
                     if r not in self.externalrxnfluxes.keys():
-                        print ('WARNING: {} reaction is internal to target organism'.format(r))
+                        # print ('WARNING: {} reaction is internal to target organism'.format(r))
+                        pass
                     elif r in self.externalrxnfluxes and len(self.externalrxnfluxes) != 0:
                         values = self.externalrxnfluxes[r].split('\t')
                         flux += abs(float(values[1]))
@@ -77,4 +78,4 @@ class Compare(object):
             self.maxpath = pathwayflux.keys()[pathwayflux.values().index(self.maxflux)]
         else:
             self.maxpath = 'No added path'
-            self.maxflux = self.exresults.x_dict['Sink_'+self.target]
+            self.maxflux = self.exresults.fluxes['Sink_'+self.target]

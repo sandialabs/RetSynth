@@ -1,6 +1,5 @@
-glpk==0.3
 pulp==1.6.8
-cobra==0.6.2
+cobra==0.14.1
 pygraphviz==1.3.1
-beautifulsoup==4-4.4.1-3
+bs4
 python-libsbml-experimental==5.10.0

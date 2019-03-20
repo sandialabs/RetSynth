@@ -3,6 +3,12 @@ Parser module
 
 Submodules
 -----------
+Parser.compute_tanimoto
+^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Parser.compute_tanimoto
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Parser.generate_output
 ^^^^^^^^^^^^^^^^^^^^^^

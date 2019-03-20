@@ -1,2 +1,0 @@
-compounds	concentrations	minflux	maxflux
-cpdT	0.001	-100	100

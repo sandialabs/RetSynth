@@ -28,12 +28,10 @@ class Output(object):
         self.optimal_paths = open(output_path+'/optimal_pathways.txt', 'w')
         self.optimal_paths.close()
         if self.FBA:
-            self.activemetabolism = open(output_path+'/active_metabolism.txt', 'w')
             self.flux_ouptput = open(output_path+'/flux_output.txt', 'w')
             self.flux_individual_output = open(output_path+'/flux_individualfluxes_output.txt', 'w')
             self.theoyield = open(output_path+'/theoretical_yield.txt', 'w')
 
-            self.activemetabolism.close()
             self.flux_ouptput.close()
             self.flux_individual_output.close()
             self.theoyield.close()
@@ -78,21 +76,17 @@ class Output(object):
         self.all_organisms = open(self.output_path+'/'+file_name, 'w')
         self.all_organisms.close()
 
-    def output_raw_solutions(self, compound, org_ID, ordered_paths, reactions, incpds):
-        cpdname = self.DB.get_compound_name(compound)
-        org_name = self.DB.get_organism_name(org_ID)
-        cpdname = re.sub('/', '_', compound)
-
-        def add_info_to_output(reactants, products, fin, protein, incpds):
+    def output_raw_solutions(self, compound, org_ID, ordered_paths, reactions, externalrxnscount, incpds):
+        def add_info_to_output(reactants, products, fin, protein, incpds, externalcount):
             '''adding reaction info to output file '''
             for react in reactants:
                 type_cpd = 'Ext'
                 if react in incpds:
                     type_cpd = 'Int'
                 if protein != 'None':
-                    line = ', '.join([react, protein, str(len(os_dict)), str(count_pathway), type_cpd])
+                    line = '\t'.join([react, protein, str(len(os_dict)), str(count_pathway), type_cpd, str(externalcount)])
                 else:
-                    line = ', '.join([react, rxn, str(len(os_dict)), str(count_pathway), type_cpd])
+                    line = '\t'.join([react, rxn, str(len(os_dict)), str(count_pathway), type_cpd, str(externalcount)])
                 fin.write(line+'\n')
 
             for prod in products:
@@ -100,9 +94,9 @@ class Output(object):
                 if prod in incpds:
                     type_cpd = 'Int'
                 if protein != 'None':
-                    line = ', '.join([protein, prod, str(len(os_dict)), str(count_pathway), type_cpd])
+                    line = '\t'.join([protein, prod, str(len(os_dict)), str(count_pathway), type_cpd, str(externalcount)])
                 else:
-                    line = ', '.join([rxn, prod, str(len(os_dict)), str(count_pathway),  type_cpd])
+                    line = '\t'.join([rxn, prod, str(len(os_dict)), str(count_pathway),  type_cpd, str(externalcount)])
                 fin.write(line+'\n')
         
         def alter_name_length(path_to_figure, cpdname):
@@ -112,18 +106,28 @@ class Output(object):
                 cpdname = cpdname[:-remove_variable]
             return cpdname
 
-        cpdname = alter_name_length(self.output_path+'/raw_compound_solutions/compound_'+cpdname+'_'+org_name+'_outputfile.txt', cpdname)
-        with open(self.output_path+'/raw_compound_solutions/compound_'+cpdname+'_'+org_name+'_outputfile.txt', 'w') as fin:
+        cpdname = self.DB.get_compound_name(compound)
+        org_name = self.DB.get_organism_name(org_ID)
+        if cpdname == 'None':
+            cpdname = re.sub('/', '_', compound)
+        else:
+            match = re.search('/', cpdname)
+            if match:
+                cpdname = re.sub('/', '_', cpdname)
+        cpdname = alter_name_length(self.output_path+'/raw_compound_solutions/compound_'+str(cpdname)+'_'+str(org_name)+'_outputfile.txt', cpdname)
+        with open(self.output_path+'/raw_compound_solutions/compound_'+str(cpdname)+'_'+str(org_name)+'_outputfile.txt', 'w') as fin:
+
             for count_pathway, os_dict in reactions.iteritems():
-                for counter in reversed(ordered_paths[count_pathway].keys()):
-                    rxn = ordered_paths[count_pathway][counter]
+                for rxn in ordered_paths[count_pathway].list_nodes():
                     org = os_dict[rxn]['organisms'][0]
                     protein = self.DB.get_proteins(rxn, org)
                     if os_dict[rxn]['direction'] == 'forward':
-                        add_info_to_output(os_dict[rxn]['reactants'], os_dict[rxn]['products'], fin, protein, incpds)
+                        add_info_to_output(os_dict[rxn]['reactants'], os_dict[rxn]['products'],
+                                           fin, protein, incpds, externalrxnscount[count_pathway])
 
                     else:
-                        add_info_to_output(os_dict[rxn]['products'], os_dict[rxn]['reactants'], fin, protein, incpds)
+                        add_info_to_output(os_dict[rxn]['products'], os_dict[rxn]['reactants'],
+                                           fin, protein, incpds, externalrxnscount[count_pathway])
 
     def output_paths_all_organisms(self, target_compound_ID, pathlength, orgs, org_names):
         '''
@@ -214,17 +218,6 @@ class Output(object):
                             verbose_print(self.verbose, '\t{}\t{} products'.format(prod, os_dict[r]['products'][prod]))
                             self.optimal_paths.write('\t{}\t{} products\n'.format(prod, os_dict[r]['products'][prod]))
 
-    def output_activemetabolism(self, am):
-        '''
-        Outputs metabolites that are actively produced in a specific compund
-        '''
-        with open(self.output_path+'/active_metabolism.txt', 'a') as self.activemetabolism:
-            for key, values in am.iteritems():
-                self.activemetabolism.write('Active compounds in {}\n'.format(key))
-                for cpd in values[0]:
-                    self.activemetabolism.write('{}\t{}\n'.format(cpd, self.DB.get_compound_name(cpd)))
-
-
     def output_FBA(self, target_info, org_fbasolution, optimized_fba, comparisonresults, temp):
         '''
         Outputs reactions and corresponding fluxes for fluxes that change significantly
@@ -237,26 +230,26 @@ class Output(object):
             target = target_info[0]
         with open(self.output_path+'/flux_individualfluxes_output.txt', 'a') as self.flux_individual_output:
             verbose_print(self.verbose, 'FBA Solutions for {}'.format(target))
-            verbose_print(self.verbose, '{}\t{} objective function solutions for wild-type and mutant'.format(round(org_fbasolution.f, 2),
-                                                                                         round(optimized_fba.fbasol.f, 2)))
+            verbose_print(self.verbose, '{}\t{} objective function solutions for wild-type and mutant'.format(round(org_fbasolution.objective_value, 2),
+                                                                                         round(optimized_fba.fbasol.objective_value, 2)))
             verbose_print(self.verbose, 'Individual fluxes in the objective function (sink reactions are the target)')
             for reaction in optimized_fba.objective_dict:
-                verbose_print(self.verbose,'\t{} {}'.format(round(optimized_fba.fbasol.x_dict[reaction.id]), reaction.id))
+                verbose_print(self.verbose,'\t{} {}'.format(round(optimized_fba.fbasol.fluxes[reaction.id]), reaction.id))
 
             self.flux_individual_output.write('FBA Solutions for {}'.format(target)+'\n')
-            self.flux_individual_output.write('{}\t{} objective function solutions for wild-type and mutant\n'.format(round(org_fbasolution.f, 2),
-                                                                                                                      round(optimized_fba.fbasol.f, 2)))
+            self.flux_individual_output.write('{}\t{} objective function solutions for wild-type and mutant\n'.format(round(org_fbasolution.objective_value, 2),
+                                                                                                                      round(optimized_fba.fbasol.objective_value, 2)))
             self.flux_individual_output.write('Individual fluxes in the objective function (sink reactions are the target)\n')
             for reaction in optimized_fba.objective_dict:
-                self.flux_individual_output.write('\t{} {}\n'.format(round(optimized_fba.fbasol.x_dict[reaction.id]), reaction.id))
+                self.flux_individual_output.write('\t{} {}\n'.format(round(optimized_fba.fbasol.fluxes[reaction.id]), reaction.id))
 
-            for x, value in optimized_fba.fbasol.x_dict.iteritems():
+            for x, value in optimized_fba.fbasol.fluxes.iteritems():
                 self.flux_individual_output.write('{}\t{}\n'.format(x, value))
 
         with open(self.output_path+'/flux_output.txt', 'a') as self.flux_ouptput:
             self.flux_ouptput.write('FBA Solutions for {}\n'.format(target))
-            self.flux_ouptput.write('{}\t{} objective function solutions for wild-type and mutant\n'.format(round(org_fbasolution.f, 2),
-                                                                                                            round(optimized_fba.fbasol.f, 2)))
+            self.flux_ouptput.write('{}\t{} objective function solutions for wild-type and mutant\n'.format(round(org_fbasolution.objective_value, 2),
+                                                                                                            round(optimized_fba.fbasol.objective_value, 2)))
             self.flux_ouptput.write('\nFluxes that differ by 1.5 fold for reactions between wildtype and mutant:\n')
             self.flux_ouptput.write('\t\t\twildtype flux\tmutantflux\n')
             for x, fluxvalue in comparisonresults.fluxchange.iteritems():
@@ -304,10 +297,10 @@ class Output(object):
                                                                          temp[comparisonKOresults.maxpath[r]].keys()))
                     self.fluxKO_ouptput.write('\t\t'+'Total flux through path: {}\n'.format(comparisonKOresults.maxflux[r]))
 
-        objectivesol = fbasolution.x_dict['Sink_'+compound_dict[target]]
+        objectivesol = fbasolution.fluxes['Sink_'+compound_dict[target]]
         glucose = True
         try:
-            glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
+            glucoseimport = fbasolution.fluxes['EX_cpd00027_e0']
         except KeyError:
             glucose = False
         if glucose:
@@ -378,18 +371,18 @@ class Output(object):
         '''
         Generates output file with theoretical yields
         '''
-        objectivesol = fbasolution.x_dict['Sink_'+compounds_dict[target_compound_ID]]
+        objectivesol = fbasolution.fluxes['Sink_'+compounds_dict[target_compound_ID]]
         glucose = True
         ##########CHECK FOR GLUCOSE IMPORT REACTION (CURRENTLY KBASE RXN))###########
         try:
-            glucoseimport = fbasolution.x_dict['EX_cpd00027_e0']
+            glucoseimport = fbasolution.fluxes['EX_cpd00027_e0']
             glucoseimport = round(glucoseimport, 2)
         except KeyError:
             glucoseimport = 'NA'
             glucose = False
         ##########CHECK FOR BIOMASS REACTION (CURRENTLY KBASE RXN))###########
         try:
-            biomassrxn = fbasolution.x_dict['biomass0_'+target_organism_ID]
+            biomassrxn = fbasolution.fluxes['biomass0_'+target_organism_ID]
         except KeyError:
             biomassrxn = 'NA'
         ##########CALCULATE WT THEORETICAL YIELD###########
@@ -422,7 +415,6 @@ class Output(object):
 
         convert_output_txt_files_2_xlsx(self.output_path+'/optimal_pathways.txt', self.output_path+'/optimal_pathways.xlsx')
         if self.FBA:
-            convert_output_txt_files_2_xlsx(self.output_path+'/active_metabolism.txt', self.output_path+'/active_metabolism.xlsx')
             convert_output_txt_files_2_xlsx(self.output_path+'/flux_individualfluxes_output.txt', self.output_path+'/flux_individualfluxes_output.xlsx')
             convert_output_txt_files_2_xlsx(self.output_path+'/flux_output.txt', self.output_path+'/flux_output.xlsx')
             convert_output_txt_files_2_xlsx(self.output_path+'/theoretical_yield.txt', self.output_path+'/theoretical_yield.xlsx')

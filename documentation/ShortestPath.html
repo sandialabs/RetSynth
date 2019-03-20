@@ -6,13 +6,16 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>ShortestPath module &#8212; RetSynth 1 documentation</title>
+    <title>ShortestPath module &#8212; RetSynth 2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -25,7 +28,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -42,15 +45,9 @@
 <span id="shortestpath-constraints"></span><h3>ShortestPath.constraints<a class="headerlink" href="#module-ShortestPath.constraints" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="ShortestPath.constraints.ConstructInitialLP">
-<em class="property">class </em><code class="descclassname">ShortestPath.constraints.</code><code class="descname">ConstructInitialLP</code><span class="sig-paren">(</span><em>allrxns</em>, <em>allcpds</em>, <em>db</em>, <em>ignorerxns</em>, <em>gdbc</em>, <em>reverse_constraints=False</em>, <em>specified_pysolver=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ShortestPath.constraints.</code><code class="descname">ConstructInitialLP</code><span class="sig-paren">(</span><em>allrxns</em>, <em>allcpds</em>, <em>db</em>, <em>ignorerxns</em>, <em>gdbc</em>, <em>reverse_constraints=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Constructs A matrix and indidvidual reaction constraints</p>
-<dl class="method">
-<dt id="ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_glpk">
-<code class="descname">existing_A_matrix_glpk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_glpk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads existing matrix into glpk integer linear problem</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_pulp">
 <code class="descname">existing_A_matrix_pulp</code><span class="sig-paren">(</span><em>pulp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_pulp" title="Permalink to this definition">¶</a></dt>
@@ -70,21 +67,9 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="ShortestPath.constraints.ConstructInitialLP.load_glpk_row_constraints">
-<code class="descname">load_glpk_row_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.load_glpk_row_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads constraints in to glpk integer linear problem</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="ShortestPath.constraints.ConstructInitialLP.load_pulp_row_constraints">
 <code class="descname">load_pulp_row_constraints</code><span class="sig-paren">(</span><em>pulp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.load_pulp_row_constraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads constraints in to pulp integer linear problem</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.constraints.ConstructInitialLP.reaction_constraints_glpk">
-<code class="descname">reaction_constraints_glpk</code><span class="sig-paren">(</span><em>variable_name</em>, <em>rxn_name</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_glpk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set reaction constraints (glpk)</p>
 </dd></dl>
 
 <dl class="method">
@@ -99,13 +84,6 @@
 <dd><p>Retrieve stoichometry for each compound</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="ShortestPath.constraints.ConstructInitialLP.set_reaction_constraints">
-<code class="descname">set_reaction_constraints</code><span class="sig-paren">(</span><em>name</em>, <em>rxnname</em>, <em>solver=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.set_reaction_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines what solver (pulp or pyglpk) should be used to
-set reaction constraints</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="function">
@@ -115,27 +93,11 @@ set reaction constraints</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ShortestPath.cycle">
-<span id="shortestpath-cycle"></span><h3>ShortestPath.cycle<a class="headerlink" href="#module-ShortestPath.cycle" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
-<dt id="ShortestPath.cycle.CycleCheck">
-<em class="property">class </em><code class="descclassname">ShortestPath.cycle.</code><code class="descname">CycleCheck</code><span class="sig-paren">(</span><em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.cycle.CycleCheck" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Runs check to see if a cycle is present in solution (shortest path)</p>
-<dl class="method">
-<dt id="ShortestPath.cycle.CycleCheck.run_cycle_check">
-<code class="descname">run_cycle_check</code><span class="sig-paren">(</span><em>optimal_pathway</em>, <em>incpds</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.cycle.CycleCheck.run_cycle_check" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run cycle check</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-ShortestPath.extractinfo">
 <span id="shortestpath-extractinfo"></span><h3>ShortestPath.extractinfo<a class="headerlink" href="#module-ShortestPath.extractinfo" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="ShortestPath.extractinfo.Extract_Information">
-<em class="property">class </em><code class="descclassname">ShortestPath.extractinfo.</code><code class="descname">Extract_Information</code><span class="sig-paren">(</span><em>optimal_pathways</em>, <em>incpds</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.extractinfo.Extract_Information" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ShortestPath.extractinfo.</code><code class="descname">Extract_Information</code><span class="sig-paren">(</span><em>optimal_pathways</em>, <em>incpds</em>, <em>inrxns</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.extractinfo.Extract_Information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Retrieves names of compounds, reactions and organisms for
 reactions and compounds that need to be added
@@ -155,99 +117,11 @@ to produce a target compound</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-ShortestPath.integerprogram_glpk">
-<span id="shortestpath-integerprogram-glpk"></span><h3>ShortestPath.integerprogram_glpk<a class="headerlink" href="#module-ShortestPath.integerprogram_glpk" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram">
-<em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_glpk.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Sets final constraints and solved integer linear program</p>
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints">
-<code class="descname">cycle_constraints</code><span class="sig-paren">(</span><em>lp</em>, <em>solution</em>, <em>solution_internal</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check solution for cycles and implement new constraints
-and resolve if cycle is identified</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints_internal">
-<code class="descname">cycle_constraints_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.cycle_constraints_internal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check solution for cycles and implement new constraints
-and resolve if cycle is identified for solutions with internal reactions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.fill_allsolutions">
-<code class="descname">fill_allsolutions</code><span class="sig-paren">(</span><em>solution</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.fill_allsolutions" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.identify_internal_rxns">
-<code class="descname">identify_internal_rxns</code><span class="sig-paren">(</span><em>op</em>, <em>op_internal</em>, <em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.identify_internal_rxns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identify the internal reactions necessary to get target compound</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.ip_calculate">
-<code class="descname">ip_calculate</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.ip_calculate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run glpk solver</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.k_number_paths">
-<code class="descname">k_number_paths</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.k_number_paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘retrieve the next shortest path</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution">
-<code class="descname">multiple_optimal_solution</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Identify multiple solutions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution_internal">
-<code class="descname">multiple_optimal_solution_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>obj</em>, <em>originalsolution</em>, <em>op</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.multiple_optimal_solution_internal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.run_glpk">
-<code class="descname">run_glpk</code><span class="sig-paren">(</span><em>LP</em>, <em>incpds</em>, <em>inrxns</em>, <em>target_compound_ID</em>, <em>multiplesolutions</em>, <em>eliminatedrxns=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.run_glpk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Final set up and solve integer linear program</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function">
-<code class="descname">set_objective_function</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set objective function</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function_internal">
-<code class="descname">set_objective_function_internal</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_objective_function_internal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set objective function</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_row_bounds">
-<code class="descname">set_row_bounds</code><span class="sig-paren">(</span><em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_row_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set row bounds</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="ShortestPath.integerprogram_glpk.IntergerProgram.set_weight">
-<code class="descname">set_weight</code><span class="sig-paren">(</span><em>number_rxn_steps</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_glpk.IntergerProgram.set_weight" title="Permalink to this definition">¶</a></dt>
-<dd><p>retrieve weight to disfavor rxns in path</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-ShortestPath.integerprogram_pulp">
 <span id="shortestpath-integerprogram-pulp"></span><h3>ShortestPath.integerprogram_pulp<a class="headerlink" href="#module-ShortestPath.integerprogram_pulp" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram">
-<em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em>, <em>time_limit</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">IntergerProgram</code><span class="sig-paren">(</span><em>db</em>, <em>limit_reactions</em>, <em>limit_cycle</em>, <em>k_paths</em>, <em>cycle</em>, <em>verbose</em>, <em>time_limit</em>, <em>OUTPUT</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Sets final constraints and solved integer linear program</p>
 <dl class="method">
@@ -259,7 +133,7 @@ if cycle is identified</p>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal">
-<code class="descname">cycle_constraints_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>initialcheck=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cycle_constraints_internal</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em>, <em>solution</em>, <em>obj</em>, <em>cycle_count</em>, <em>length_external</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check solution for cycles and implement new constraints and resolve
 if cycle is identified</p>
 </dd></dl>
@@ -270,8 +144,28 @@ if cycle is identified</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.filling_optimal_solution_arrays">
+<code class="descname">filling_optimal_solution_arrays</code><span class="sig-paren">(</span><em>solution</em>, <em>solution_internal</em>, <em>op</em>, <em>op_internal</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.filling_optimal_solution_arrays" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.identify_internal_rxns">
 <code class="descname">identify_internal_rxns</code><span class="sig-paren">(</span><em>variables</em>, <em>op</em>, <em>op_internal</em>, <em>lp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.identify_internal_rxns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.initiate_cycle_check">
+<code class="descname">initiate_cycle_check</code><span class="sig-paren">(</span><em>solution</em>, <em>solution_internal</em>, <em>lp</em>, <em>variables</em>, <em>obj</em>, <em>cycle_check_count</em>, <em>initialcheck_value=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.initiate_cycle_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.initiate_internal_cycle_check">
+<code class="descname">initiate_internal_cycle_check</code><span class="sig-paren">(</span><em>solution</em>, <em>lp</em>, <em>variables</em>, <em>obj</em>, <em>cycle_check_count</em>, <em>length_external</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.initiate_internal_cycle_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.initiate_multiple_solutions">
+<code class="descname">initiate_multiple_solutions</code><span class="sig-paren">(</span><em>solution</em>, <em>lp</em>, <em>variables</em>, <em>obj</em>, <em>op</em>, <em>op_internal</em>, <em>count_k_paths</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.initiate_multiple_solutions" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -299,10 +193,21 @@ if cycle is identified</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.run_cycle_check">
+<code class="descname">run_cycle_check</code><span class="sig-paren">(</span><em>solution</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.run_cycle_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run cycle check</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.run_glpk">
 <code class="descname">run_glpk</code><span class="sig-paren">(</span><em>LP</em>, <em>incpds</em>, <em>inrxns</em>, <em>target_compound_ID</em>, <em>multiplesolutions=True</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.run_glpk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final set up and solve integer linear program</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_lp_problem">
+<code class="descname">set_lp_problem</code><span class="sig-paren">(</span><em>lp</em>, <em>variables</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.IntergerProgram.set_lp_problem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function">
@@ -330,24 +235,10 @@ if cycle is identified</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-ShortestPath.search_sp_metclusters">
-<span id="shortestpath-search-sp-metclusters"></span><h3>ShortestPath.search_sp_metclusters<a class="headerlink" href="#module-ShortestPath.search_sp_metclusters" title="Permalink to this headline">¶</a></h3>
-<dl class="class">
-<dt id="ShortestPath.search_sp_metclusters.SearchMetabolicClusters">
-<em class="property">class </em><code class="descclassname">ShortestPath.search_sp_metclusters.</code><code class="descname">SearchMetabolicClusters</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>LP</em>, <em>IP</em>, <em>OUTPUT</em>, <em>db</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.search_sp_metclusters.SearchMetabolicClusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Species with the same metabolism are grouped into a defined cluster in the database,
-this goes through all defined clusters and determines the number of
-reactions that need to be added to each cluster to produce a target compound</p>
-<dl class="method">
-<dt id="ShortestPath.search_sp_metclusters.SearchMetabolicClusters.get_sp_4_clusters">
-<code class="descname">get_sp_4_clusters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.search_sp_metclusters.SearchMetabolicClusters.get_sp_4_clusters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Goes through each metabolic cluster and identifies number of reactions that need to be
-added to produce a target compound</p>
-</dd></dl>
-
-</dd></dl>
+<dl class="function">
+<dt id="ShortestPath.integerprogram_pulp.verbose_print">
+<code class="descclassname">ShortestPath.integerprogram_pulp.</code><code class="descname">verbose_print</code><span class="sig-paren">(</span><em>verbose</em>, <em>line</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.integerprogram_pulp.verbose_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 </div>
@@ -359,16 +250,13 @@ added to produce a target compound</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">ShortestPath module</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a><ul>
 <li><a class="reference internal" href="#module-ShortestPath.constraints">ShortestPath.constraints</a></li>
-<li><a class="reference internal" href="#module-ShortestPath.cycle">ShortestPath.cycle</a></li>
 <li><a class="reference internal" href="#module-ShortestPath.extractinfo">ShortestPath.extractinfo</a></li>
-<li><a class="reference internal" href="#module-ShortestPath.integerprogram_glpk">ShortestPath.integerprogram_glpk</a></li>
 <li><a class="reference internal" href="#module-ShortestPath.integerprogram_pulp">ShortestPath.integerprogram_pulp</a></li>
-<li><a class="reference internal" href="#module-ShortestPath.search_sp_metclusters">ShortestPath.search_sp_metclusters</a></li>
 </ul>
 </li>
 </ul>
@@ -407,12 +295,12 @@ added to produce a target compound</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Sandia National Laboratories.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+        &#169; Copyright 2019, Leanne Whitmore, Bernard Nguyen, Corey Hudson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

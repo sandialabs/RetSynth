@@ -32,6 +32,20 @@ Database.build_kbase_db
     :undoc-members:
     :show-inheritance:
 
+Database.build_modelseed
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_modelseed
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Database.build_user_rxns_db
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule:: Database.build_user_rxns_db
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Database.build_KEGG_db
 ^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.build_KEGG_db
@@ -63,13 +77,6 @@ Database.build_MINE_db
 Database.remove_duplicate_cpds
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. automodule:: Database.remove_duplicate_cpds
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-Database.translate_kbase_genes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. automodule:: Database.translate_kbase_genes
     :members:
     :undoc-members:
     :show-inheritance:

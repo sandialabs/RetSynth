@@ -3,6 +3,7 @@ __author__ = 'Leanne Whitmore'
 __email__ = 'lwhitmo@sandia.gov'
 __description__ = 'Compare flux balance analysis \
                    results from wildtype to results with added reactions'
+from tqdm import tqdm
 
 class CompareKO(object):
     """
@@ -25,6 +26,7 @@ class CompareKO(object):
             for r in path:
                 if r not in self.ex_rxns:
                     self.ex_rxns.append(r)
+        print ('STATUS: Calculating flux differences')
         self.get_flux_differences()
         self.external_pathanalyze_fluxes()
 
@@ -33,51 +35,51 @@ class CompareKO(object):
         Determines if flux differences between simulations is greater than 2.5 fold
         '''
         name = self.DB.get_reaction_name(r)
-        if r in self.wtresults.x_dict:
+        if r in self.wtresults.fluxes:
             if r in self.ex_rxns:
-                if self.wtresults.x_dict[r] != 0 and self.exresults[rko].x_dict[r] != 0:
-                    if self.exresults[rko].x_dict[r] >= self.wtresults.x_dict[r]:
-                        self.fluxchange[rko][r] = '\t'.join([name, str(self.wtresults.x_dict[r]),
-                                                             str(self.exresults[rko].x_dict[r])])
-                elif self.wtresults.x_dict[r] == 0 and self.exresults[rko].x_dict[r] != 0:
-                    if self.exresults[rko].x_dict[r] <= -1 or self.exresults[rko].x_dict[r] >= 1:
-                        self.fluxchange[rko][r] = '\t'.join([name, str(self.wtresults.x_dict[r]),
-                                                             str(self.exresults[rko].x_dict[r])])
+                if self.wtresults.fluxes[r] != 0 and self.exresults[rko].fluxes[r] != 0:
+                    if self.exresults[rko].fluxes[r] >= self.wtresults.fluxes[r]:
+                        self.fluxchange[rko][r] = '\t'.join([name, str(self.wtresults.fluxes[r]),
+                                                             str(self.exresults[rko].fluxes[r])])
+                elif self.wtresults.fluxes[r] == 0 and self.exresults[rko].fluxes[r] != 0:
+                    if self.exresults[rko].fluxes[r] <= -1 or self.exresults[rko].fluxes[r] >= 1:
+                        self.fluxchange[rko][r] = '\t'.join([name, str(self.wtresults.fluxes[r]),
+                                                             str(self.exresults[rko].fluxes[r])])
             else:
-                if self.wtresults.x_dict[r] != 0 and self.exresults[rko].x_dict[r] != 0:
-                    upperfold = self.wtresults.x_dict[r]*self.fold_threshold
-                    changefold = upperfold-self.wtresults.x_dict[r]
+                if self.wtresults.fluxes[r] != 0 and self.exresults[rko].fluxes[r] != 0:
+                    upperfold = self.wtresults.fluxes[r]*self.fold_threshold
+                    changefold = upperfold-self.wtresults.fluxes[r]
                     changefold = abs(changefold)
-                    if self.wtresults.x_dict[r] < 0:
-                        lowerfold = self.wtresults.x_dict[r]+changefold
-                    elif self.wtresults.x_dict[r] > 0:
-                        lowerfold = self.wtresults.x_dict[r]-changefold
+                    if self.wtresults.fluxes[r] < 0:
+                        lowerfold = self.wtresults.fluxes[r]+changefold
+                    elif self.wtresults.fluxes[r] > 0:
+                        lowerfold = self.wtresults.fluxes[r]-changefold
                     if upperfold < 0:
-                        if (self.exresults[rko].x_dict[r] <= upperfold or
-                                self.exresults[rko].x_dict[r] >= lowerfold):
+                        if (self.exresults[rko].fluxes[r] <= upperfold or
+                                self.exresults[rko].fluxes[r] >= lowerfold):
                             self.fluxchange[rko][r] = '\t'.join([name,
-                                                                 str(self.wtresults.x_dict[r]),
-                                                                 str(self.exresults[rko].x_dict[r])
+                                                                 str(self.wtresults.fluxes[r]),
+                                                                 str(self.exresults[rko].fluxes[r])
                                                                 ])
                     else:
-                        if (self.exresults[rko].x_dict[r] <= lowerfold or
-                                self.exresults[rko].x_dict[r] >= upperfold):
+                        if (self.exresults[rko].fluxes[r] <= lowerfold or
+                                self.exresults[rko].fluxes[r] >= upperfold):
                             self.fluxchange[rko][r] = '\t'.join([name,
-                                                                 str(self.wtresults.x_dict[r]),
-                                                                 str(self.exresults[rko].x_dict[r])
+                                                                 str(self.wtresults.fluxes[r]),
+                                                                 str(self.exresults[rko].fluxes[r])
                                                                 ])
-                elif self.wtresults.x_dict[r] == 0 and self.exresults[rko].x_dict[r] != 0:
-                    if self.exresults[rko].x_dict[r] <= -1 or self.exresults[rko].x_dict[r] >= 1:
-                        self.fluxchange[rko][r] = '\t'.join([str(self.wtresults.x_dict[r]),
-                                                             str(self.exresults[rko].x_dict[r])])
+                elif self.wtresults.fluxes[r] == 0 and self.exresults[rko].fluxes[r] != 0:
+                    if self.exresults[rko].fluxes[r] <= -1 or self.exresults[rko].fluxes[r] >= 1:
+                        self.fluxchange[rko][r] = '\t'.join([str(self.wtresults.fluxes[r]),
+                                                             str(self.exresults[rko].fluxes[r])])
 
     def get_flux_differences(self):
         '''
         Gets reactions for the flux difference is greater than 2.5 fold
         '''
-        for rko in self.exresults.keys():
+        for rko in tqdm(self.exresults.keys()):
             self.fluxchange[rko] = {}
-            for r in self.exresults[rko].x_dict.keys():
+            for r in self.exresults[rko].fluxes.keys():
                 self.analyze_fluxes(r, rko)
 
     def external_pathanalyze_fluxes(self):
@@ -110,14 +112,14 @@ class CompareKO(object):
                 self.maxpath[rko] = pathwayflux[rko].keys()[pathwayflux[rko].values().index(self.maxflux[rko])]
             else:
                 self.maxpath[rko] = 'No added path'
-                self.maxflux[rko] = self.exresults[rko].x_dict['Sink_'+self.target]
+                self.maxflux[rko] = self.exresults[rko].fluxes['Sink_'+self.target]
             glucose = True
             try:
-                glucoseimport = self.exresults[rko].x_dict['EX_cpd00027_e0']
+                glucoseimport = self.exresults[rko].fluxes['EX_cpd00027_e0']
             except KeyError:
                 glucose = False
             if glucose:
-                objectivesol = self.exresults[rko].x_dict['Sink_'+self.compounds_dict[self.target]]
+                objectivesol = self.exresults[rko].fluxes['Sink_'+self.compounds_dict[self.target]]
                 glucoseimport = round(glucoseimport, 2)
                 try:
                     ty = abs(round(round(objectivesol, 2)/round(glucoseimport,2), 2))

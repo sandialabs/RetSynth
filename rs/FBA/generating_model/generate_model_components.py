@@ -70,10 +70,14 @@ def load_compounds(model, metabolites, DB, verbose):
 def load_media(media_constraints, media_file):
     '''Loads specified media'''
     filename = open(media_file)
-    line = filename.readline()
-    if line.startswith('compounds'):
-        pass
+    header = filename.readline()
+    header = header.lower()
+    if header.startswith('compounds'):
+        header_array = header.strip('\n').split('\t')
+        minflux_index = header_array.index('minflux')
+        maxflux_index = header_array.index('maxflux')
     for line in filename:
         larray = line.strip('\n').split('\t')
-        media_constraints['EX_'+larray[0]+'_e0'] = [larray[2], larray[3]]
+        media_constraints['EX_'+larray[0]+'_e0'] = [larray[minflux_index], larray[maxflux_index]]
+    filename.close()
     return media_constraints

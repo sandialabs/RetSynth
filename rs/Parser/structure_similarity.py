@@ -13,7 +13,9 @@ if platform == 'darwin':
 elif platform == "linux" or platform == "linux2":
     from indigopython130_linux import indigo
     from indigopython130_linux import indigo_inchi
-
+elif platform == "win32" or platform == "win64":
+    from indigopython130_win import indigo
+    from indigopython130_win import indigo_inchi
 def verbose_print(verbose, line):
     if verbose:
         print(line)
@@ -41,7 +43,7 @@ class TanimotoStructureSimilarity(object):
         self.all_compounds = all_compounds
         self.cytosol = cytosol
         self.extracellular = extracellular
-        self.threshold_score = threshold_score
+        self.threshold_score = float(threshold_score)
         self.IN = indigo.Indigo()
         self.INCHI = indigo_inchi.IndigoInchi(self.IN)
         self.calculate_tanimoto_score()
@@ -95,11 +97,15 @@ class TanimotoStructureSimilarity(object):
             return index
 
     def get_tanimoto_score(self, tmol, threshold):
+        print ('ENTERING')
         temp = {}
+        print (threshold)
         for db_cpd in self.db_cpds_fp:
             score = self.IN.similarity(self.individualtargets_p_fp[tmol], self.db_cpds_fp[db_cpd], 'tanimoto')
             temp[db_cpd] = score
-        max_score_cpds = [temp.keys()[temp.values().index(i)] for i in temp.values() if float(i) >= float(threshold)]
+        # print (temp)
+        max_score_cpds = [i for i, v in temp.iteritems() if float(v) >= float(threshold)]
+        print (max_score_cpds)
         return (max_score_cpds)
 
     def calculate_tanimoto_score(self):
@@ -109,8 +115,9 @@ class TanimotoStructureSimilarity(object):
         self.individualtargets_p = self.process_targets(set(self.individualtargets))
         self.retrieve_fingerprints()
         for count ,tmol in enumerate(self.individualtargets_p_fp.keys()):
+            print (tmol)
             if tmol+'_'+self.cytosol in self.all_compounds:
-                max_score_cpds = self.get_tanimoto_score(tmol, 1)
+                max_score_cpds = self.get_tanimoto_score(tmol, self.threshold_score)
                 if max_score_cpds:
                     for max_score_cpd in set(max_score_cpds):
                         if max_score_cpd != tmol:

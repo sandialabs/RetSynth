@@ -13,11 +13,11 @@ def RetrieveActiveRxnsCompounds(target_organism_ID, inmets, inrxns, DB, output_q
     """Identifies active compounds in an organism"""
     media_constraints = {}
     active_metabolism = {}
-    if media:
-        media_constraints = gmc.load_media(media_constraints, media)
-    else:
-        print ('STATUS: loading glucose media')
-        media_constraints = gmc.load_media(media_constraints, PATH+'/KBaseMedia_Carbon-D-Glucose_MediaCompounds.tsv')
+    if media != 'Complete' and media:
+        media_constraints = gmc.load_media(media_constraints, PATH+'/media/{}.tsv'.format(media))
+    elif media == 'Complete' or not media:
+        pass
+        # media_constraints = gmc.load_media(media_constraints)
 
     inmets = list(set(inmets))
     removecpds = []
@@ -36,13 +36,14 @@ def RetrieveActiveRxnsCompounds(target_organism_ID, inmets, inrxns, DB, output_q
         model.objective = objective_dict
         solution = model.optimize()
         removerxns, removecpds = parse_solution(solution, cpd, removerxns, removecpds)
+        model.remove_reactions('Sink_'+compound_dict[cpd])
 
-    for rxn in removerxns:
-        if len(removecpds) == len(removerxns[rxn]):
-            finalremoverxns.append(rxn)
+    # for rxn in removerxns:
+    #     if len(removecpds) == len(removerxns[rxn]):
+    #         finalremoverxns.append(rxn)
 
-    inmets = list(set(inmets)-set(removecpds))
-    inrxns = list(set(inrxns)-set(finalremoverxns))
+    # inmets = list(set(inmets)-set(removecpds))
+    # inrxns = list(set(inrxns)-set(finalremoverxns))
     active_metabolism[target_organism_ID] = []
     active_metabolism[target_organism_ID].append(inmets)
     active_metabolism[target_organism_ID].append(inrxns)
@@ -55,11 +56,14 @@ def parse_solution(solution, cpd, removerxns, removecpds):
     '''
     Determines if compound can be produced
     '''
+    # if cpd == 'C00341_c0':
+    #     print (cpd)
+    #     print (solution.f) 
     if round(solution.f, 2) == 0:
         removecpds.append(cpd)
-        for rxn in solution.x_dict.keys():
-            if round(solution.x_dict[rxn], 2) == 0:
-                removerxns.setdefault(rxn, []).append(cpd)
+        # for rxn in solution.x_dict.keys():
+        #     if round(solution.x_dict[rxn], 2) == 0:
+        #         removerxns.setdefault(rxn, []).append(cpd)
     return (removerxns, removecpds)
 
 def add_sink_reaction(sink_cpd, compound_dict, model):

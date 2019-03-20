@@ -5,6 +5,7 @@ __description__ = 'builds tables MINE database from msp files'
 import os
 import re
 import glob
+import sqlite3
 from sys import platform
 from tqdm import tqdm
 if platform == 'darwin':
@@ -13,8 +14,9 @@ if platform == 'darwin':
 elif platform == "linux" or platform == "linux2":
     from indigopython130_linux import indigo
     from indigopython130_linux import indigo_inchi
-elif platform == "win32" or platform == 'win64':
-    raise ImportError('Cannot translate RDF file on windows machine')
+elif platform == "win32" or platform == "win64":
+    from indigopython130_win import indigo
+    from indigopython130_win import indigo_inchi
 from Database import query as Q
 
 class BuildMINEdb(object):
@@ -48,8 +50,16 @@ class BuildMINEdb(object):
                         mol = self.IN.loadMolecule(tparray[1])
                         if mol:
                             inchi = self.INCHI.getInchi(mol)
+                            # fp = mol.fingerprint('full')
+                            # buffer = fp.toBuffer()
+                            # buffer_array = [str(i) for i in buffer]
+                            # buffer_string = ','.join(buffer_array)
+                            cf = mol.grossFormula()
+                            cf = re.sub(' ', '', cf)                           
                             if inchi:
                                 self.compound_dict[compoundid]['INCHI'] = inchi
+                                # self.compound_dict[compoundid]['FP'] = buffer_string
+                                self.compound_dict[compoundid]['CF'] = cf
                         else:
                             pass
                     except indigo.IndigoException:
@@ -127,7 +137,7 @@ class BuildMINEdb(object):
                 self.compound_dict_temp[compound]['SMILES'] = 'None'
                 self.compound_dict_temp[compound]['Inchikey'] = 'None'
                 self.compound_dict_temp[compound]['MINE_id'] = 'None'
-                self.compound_dict_temp[compound]['ENZYME'] = set()
+                self.compound_dict_temp[compound]['ENZYME'] = {}
                 self.reaction_dict[rxn][typecpd].append(compound)
         else:
             try:
@@ -139,7 +149,7 @@ class BuildMINEdb(object):
                 self.compound_dict_temp[compound]['SMILES'] = 'None'
                 self.compound_dict_temp[compound]['Inchikey'] = 'None'
                 self.compound_dict_temp[compound]['MINE_id'] = 'None'
-                self.compound_dict_temp[compound]['ENZYME'] = set()
+                self.compound_dict_temp[compound]['ENZYME'] = {}
                 self.reaction_dict[rxn][typecpd].append(compound)
     
     def generate_reactions(self):
@@ -177,20 +187,22 @@ class BuildMINEdb(object):
         compound = []
         model_compound = []
         print ('STATUS: Load into database')
-        DB = Q.Connector(self.database)
-        DB.cnx.execute("PRAGMA synchronous = OFF")
-        DB.cnx.execute("PRAGMA journal_mode = OFF")
+        cnx = sqlite3.connect(self.database)
+        # conn.text_factory = str
+        # cnx = conn.cursor()        
+        cnx.execute("PRAGMA synchronous = OFF")
+        cnx.execute("PRAGMA journal_mode = OFF")
+        cnx.commit()
         cytosol = '_c0'
-        QC = DB.cnx.execute("""SELECT ID from model where ID=?""", ('MINE',))
+        QC = cnx.execute("""SELECT ID from model where ID=?""", ('MINE',))
         results = QC.fetchall()
         if not results:
-            DB.cnx.execute("INSERT INTO model VALUES (?,?)", ('MINE', 'MINE_database'))
-            DB.conn.commit()
-            QC = DB.cnx.execute('''SELECT DISTINCT cluster_num FROM cluster''')
+            cnx.execute("INSERT INTO model VALUES (?,?)", ('MINE', 'MINE_database'))
+            QC = cnx.execute('''SELECT DISTINCT cluster_num FROM cluster''')
             hits = QC.fetchall()
             uniq_clusters = [i[0] for i in hits]
-            DB.cnx.execute("INSERT INTO cluster VALUES (?,?)", (len(uniq_clusters)+1, 'MINE'))
-            DB.conn.commit()
+            cnx.execute("INSERT INTO cluster VALUES (?,?)", (len(uniq_clusters)+1, 'MINE'))
+            cnx.commit()
 
         for reaction in self.reaction_dict:
             for reactant in self.reaction_dict[reaction]['reactants']:
@@ -203,14 +215,15 @@ class BuildMINEdb(object):
                                      self.reaction_dict[reaction]['ENZYME']))
             reaction_gene.append((reaction+cytosol, 'MINE', 'None'))
             model_reaction.append((reaction+cytosol, 'MINE', 'false'))
-        DB.cnx.executemany("INSERT INTO reaction_reversibility VALUES (?,?)", reaction_reversibility)
-        DB.cnx.executemany("INSERT INTO reaction VALUES (?,?,?,?)", reactions)
-        DB.cnx.executemany("INSERT INTO reaction_protein VALUES (?,?,?)", reaction_protein)
-        DB.cnx.executemany("INSERT INTO reaction_gene VALUES (?,?,?)", reaction_gene)
-        DB.cnx.executemany("INSERT INTO model_reaction VALUES (?,?,?)", model_reaction)
-        DB.cnx.executemany("INSERT INTO reaction_compound VALUES (?,?,?,?,?)", reaction_compound)
+        cnx.executemany("INSERT INTO reaction_reversibility VALUES (?,?)", reaction_reversibility)
+        cnx.executemany("INSERT INTO reaction VALUES (?,?,?,?)", reactions)
+        cnx.executemany("INSERT INTO reaction_protein VALUES (?,?,?)", reaction_protein)
+        cnx.executemany("INSERT INTO reaction_gene VALUES (?,?,?)", reaction_gene)
+        cnx.executemany("INSERT INTO model_reaction VALUES (?,?,?)", model_reaction)
+        cnx.executemany("INSERT INTO reaction_compound VALUES (?,?,?,?,?)", reaction_compound)
 
-        DB.conn.commit()
+        cnx.commit()
+        DB = Q.Connector(self.database)
         original_cpds_in_db = DB.get_all_compounds()
 
         temp_inchi = set()
@@ -225,19 +238,23 @@ class BuildMINEdb(object):
                         model_compound.append((self.compound_dict[cpd]['INCHI']+cytosol, 'MINE'))
                         try:
                             compound.append((self.compound_dict[cpd]['INCHI']+cytosol,
-                                             self.compound_dict[cpd]['Name'], 'c0', 'None'))
+                                             self.compound_dict[cpd]['Name'], 'c0', 'None',
+                                             self.compound_dict[cpd].get('CF', 'None'),
+                                             'None'))
                         except KeyError:
                             compound.append((self.compound_dict[cpd]['INCHI']+cytosol,
-                                             'None', 'c0', 'None'))
+                                             'None', 'c0', 'None',
+                                              self.compound_dict[cpd].get('CF', 'None'), 
+                                              'None'))
                         temp_inchi.add(cpd_inchi)
             except KeyError:
                 model_compound.append((cpd+cytosol, 'MINE'))
                 try:
-                    compound.append((cpd+cytosol, self.compound_dict[cpd]['Name'], 'c0', 'None'))
+                    compound.append((cpd+cytosol, self.compound_dict[cpd]['Name'], 'c0', 'None', 'None', 'None'))
                 except KeyError:
-                    compound.append((cpd+cytosol, 'None', 'c0', 'None'))
+                    compound.append((cpd+cytosol, 'None', 'c0', 'None', 'None', 'None'))
         if self.inchidb:
-            DB.cnx.executemany("INSERT INTO original_db_cpdIDs VALUES (?,?)", original_cpds)
-        DB.cnx.executemany("INSERT INTO model_compound VALUES (?,?)", model_compound)
-        DB.cnx.executemany("""INSERT INTO compound VALUES (?,?,?,?)""", compound)
-        DB.conn.commit()
+            cnx.executemany("INSERT INTO original_db_cpdIDs VALUES (?,?)", original_cpds)
+        cnx.executemany("INSERT INTO model_compound VALUES (?,?)", model_compound)
+        cnx.executemany("""INSERT INTO compound VALUES (?,?,?,?,?,?)""", compound)
+        cnx.commit()

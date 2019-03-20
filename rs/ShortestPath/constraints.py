@@ -134,7 +134,6 @@ class ConstructInitialLP(object):
                 self.reaction_constraints_pulp(rxn + self.reverse_constraints[count], str(rxn), pulp)
 
         self.allrxnsrev_index = {key: index for index, key in enumerate(self.allrxnsrev)}
-
     def initial_A_matrix(self, solver=False):
         ''' Generates an matrix of compound constraints'''
         print('STATUS: Generating A matrix...')
@@ -156,6 +155,7 @@ class ConstructInitialLP(object):
         for count, stoich in enumerate(tqdm(self.A)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
         self.variables = self.lp.variables()
+
     def existing_A_matrix_pulp(self, pulp):
         '''Loads existing matrix into pulp integer linear problem'''
         print ('STATUS: Generating compound constraints from preloaded file (pulp) ...')

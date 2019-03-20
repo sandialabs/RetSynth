@@ -17,13 +17,14 @@ elif platform == "linux" or platform == "linux2":
     from indigopython130_linux import indigo
     from indigopython130_linux import indigo_inchi
 elif platform == "win32" or platform == 'win64':
-    raise ImportError('Cannot translate RDF file on windows machine')
+    from indigopython130_win import indigo
+    from indigopython130_win import indigo_inchi
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 def RDF_Reader(file_directory, DBpath, rxntype, compartment, processors,
                temp_option=False, pressure_option=False, yield_option=False,
-               time_option=False, catalyst_option=False, solvent_option=False):
+               time_option=False, catalyst_option=True, solvent_option=True):
     '''
     Adds data from RDF files into database (specifically works with spresi formated rdf files)
     '''
@@ -55,7 +56,7 @@ def open_file(args):
     filenumber = args[1]
     options = args[2]
     RDF_dict = {}
-    print ('STATUS: Loading/Parsing in RDF file ...'.format(file_name))
+    print ('STATUS: Loading/Parsing in RDF file {} ...'.format(file_name))
     output_file = open(PATH+'/temp/output_'+str(filenumber)+'.txt', 'w')
     open_file = open(file_name)
     for count, line in enumerate(open_file):
@@ -406,7 +407,7 @@ def parse_file(output_file, RDF_dict, filenumber, file_name, options):
         if options[5] is True and len(solvents) == 0:
             break
 
-        mol_smiles = generate_mol_file(mol, filenumber)
+        mol_smiles = generate_mol_file(mol, filenumber, substrates=True)
         catalysts_smiles = generate_mol_file(catalysts, filenumber)
         solvents_smiles = generate_mol_file(solvents, filenumber)
 
@@ -422,7 +423,8 @@ def parse_file(output_file, RDF_dict, filenumber, file_name, options):
             r = i+1
             try:
                 if mol_smiles[r] is not False:
-                    reactants.append(str(mol_smiles[r])+'_'+compartment+'|---|'+'None')
+                    tmp_array=mol_smiles[r].split('|--|')
+                    reactants.append(str(tmp_array[0])+'_'+compartment+'|---|'+'None'+'|---|'+tmp_array[1])
                 else:
                     compound_error = True
             except KeyError:
@@ -433,7 +435,8 @@ def parse_file(output_file, RDF_dict, filenumber, file_name, options):
             p = i+1
             try:
                 if mol_smiles[p] is not False:
-                    products.append(str(mol_smiles[p])+'_'+compartment+'|---|'+'None')
+                    tmp_array=mol_smiles[p].split('|--|')
+                    products.append(str(tmp_array[0])+'_'+compartment+'|---|'+'None'+'|---|'+tmp_array[1])
                 else:
                     compound_error = True
             except KeyError:
@@ -482,7 +485,7 @@ def parse_file(output_file, RDF_dict, filenumber, file_name, options):
             if key_error is True:
                 print ('{} skipped because of file issue'.format(key))
 
-def generate_mol_file(compounds, filenumber):
+def generate_mol_file(compounds, filenumber, substrates=False):
     '''
     Generates mole file and then reads it in using the indigo API to get the smile
     '''
@@ -498,11 +501,30 @@ def generate_mol_file(compounds, filenumber):
             mol = IN.loadMoleculeFromFile(PATH+'/mol_output_'+str(filenumber)+'.mol')
             try:
                 inchi_value = INCHI.getInchi(mol)
-                compound_dict[key] = inchi_value
+                if substrates:
+                    mol = INCHI.loadMolecule(inchi_value)
+                    # fp = mol.fingerprint('full')
+                    # buffer = fp.toBuffer()
+                    # buffer_array = [str(i) for i in buffer]
+                    # buffer_string = ','.join(buffer_array)
+                    cf = mol.grossFormula()
+                    cf = re.sub(' ', '', cf)
+                    compound_dict[key] = inchi_value+'|--|'+cf
+                else:
+                    compound_dict[key] = inchi_value
             except indigo.IndigoException:
                 try:
                     smile = mol.smiles()
-                    compound_dict[key] = smile
+                    if substrates:
+                        # fp = mol.fingerprint('full')
+                        # buffer = fp.toBuffer()
+                        # buffer_array = [str(i) for i in buffer]
+                        # buffer_string = ','.join(buffer_array)
+                        cf = mol.grossFormula()
+                        cf = re.sub(' ', '', cf)
+                        compound_dict[key] = smile+'|--|'+cf
+                    else:       
+                        compound_dict[key] = smile
                 except indigo.IndigoException:
                     compound_dict[key] = False
             os.remove(PATH+'/mol_output_'+str(filenumber)+'.mol')
@@ -629,11 +651,11 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment, elimina
                         modelcompounds.append((compound[0], 'SR1'))
                         cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
                                     (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 0, 1, 0))
-                        if len(compound) == 2:
-                            allcompounds.append((compound[0], compound[1], compartment,  'None'))
+                        if len(compound) > 2:
+                            allcompounds.append((compound[0], compound[1], compartment,  'None', compound[2], 'None'))
                         elif len(compound) < 2:
                             print ('WARNING: Issue with name and ID {} {} reactant'.format(compound, eliminate_duplicates[larray[1]+larray[2]]['id']))
-                            allcompounds.append((compound[0], 'None', compartment,  'None'))
+                            allcompounds.append((compound[0], 'None', compartment,  'None',  compound[2], 'None'))
                     conn.commit()
                 if larray[2] != '':
                     for product in products:
@@ -641,11 +663,11 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment, elimina
                         modelcompounds.append((compound[0], 'SR1'))
                         cnx.execute("INSERT INTO reaction_compound VALUES (?,?,?,?,?)",
                                     (eliminate_duplicates[larray[1]+larray[2]]['id'], compound[0], 1, 1, 0))
-                        if len(compound) == 2:
-                            allcompounds.append((compound[0], compound[1], compartment,  'None'))
+                        if len(compound) > 2:
+                            allcompounds.append((compound[0], compound[1], compartment,  'None',  compound[2], 'None'))
                         elif len(compound) < 2:
                             print ('WARNING: Issue with name and ID {} {} product'.format(compound, eliminate_duplicates[larray[1]+larray[2]]['id']))
-                            allcompounds.append((compound[0], 'None', compartment, 'None'))
+                            allcompounds.append((compound[0], 'None', compartment, 'None',  compound[2], 'None'))
                     conn.commit()
             
             test_info_cat_solv = larray[3]+larray[4]
@@ -691,6 +713,6 @@ def add_individual_file_info(text_file, cnx, conn, rxntype, compartment, elimina
     allcompounds = list(set(allcompounds))
     modelcompounds = list(set(modelcompounds))
     cnx.executemany("INSERT INTO model_compound VALUES (?,?)", modelcompounds)
-    cnx.executemany("INSERT INTO compound VALUES (?,?,?,?)", allcompounds)
+    cnx.executemany("INSERT INTO compound VALUES (?,?,?,?,?,?)", allcompounds)
     conn.commit()
     return(eliminate_duplicates, identification)

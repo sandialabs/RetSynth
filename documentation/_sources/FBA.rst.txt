@@ -38,3 +38,10 @@ FBA.retrieve_producable_mets
     :members:
     :undoc-members:
     :show-inheritance:
+
+FBA.generating_model.generate_model_components
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. automodule::FBA.generating_model.generate_model_components
+    :members:
+    :undoc-members:
+    :show-inheritance:

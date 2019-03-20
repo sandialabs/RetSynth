@@ -1,3 +1,0 @@
-cpd00001	C00001|C01328
-cpdA	cpd00002
-cpdAtt	cpd00003

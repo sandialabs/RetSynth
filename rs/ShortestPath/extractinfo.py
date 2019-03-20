@@ -13,20 +13,22 @@ class Extract_Information(object):
     reactions and compounds that need to be added
     to produce a target compound
     """
-    def __init__(self, optimal_pathways, incpds, db):
+    def __init__(self, optimal_pathways, incpds, inrxns, db):
         '''Initalize class'''
         self.temp_rxns = {}
         self.temp_exmets = {}
+        self.temp_external = {}
+        self.inrxns = inrxns
         self.DB = db
         self.incpds = incpds
         for count, path in enumerate(optimal_pathways):
             count += 1
             if path:
-                os_dict, excpds = self.extractinfo(path)
+                os_dict, excpds, count_external = self.extractinfo(path)
                 if os_dict is not None:
                     self.temp_rxns[count] = os_dict
                     self.temp_exmets[count] = excpds
-
+                    self.temp_external[count] = count_external
     def get_info(self, rxn, path_dict, excpds, Direction=False):
         '''
         Gets information for reactions, compounds and organisms
@@ -69,10 +71,13 @@ class Extract_Information(object):
         path_dict = {}
         excpds = []
         count = 0
+        count_external = 0
         for rxn in path:
             rxn = deepcopy(rxn)
             if re.search('_R$', rxn) is not None:
                 rxn = re.sub('_R$', '', rxn)
+                if rxn not in self.inrxns:
+                    count_external+=1
                 if rxn not in path_dict.keys():
                     path_dict[rxn] = {}
                     path_dict[rxn]['direction'] = 'reverse'
@@ -82,6 +87,8 @@ class Extract_Information(object):
             else:
                 if re.search('_F$', rxn) is not None:
                     rxn = re.sub('_F$', '', rxn)
+                if rxn not in self.inrxns:
+                    count_external+=1
                 if rxn not in path_dict.keys():
                     path_dict[rxn] = {}
                     path_dict[rxn]['direction'] = 'forward'
@@ -90,7 +97,7 @@ class Extract_Information(object):
                     count += 1
         excpds = list(set(excpds))
         if count == 0:
-            return(path_dict, excpds)
+            return(path_dict, excpds, count_external)
         else:
             print ('WARNING: Solution may have reversible reactions')
-            return(path_dict, excpds)
+            return(path_dict, excpds, count_external)

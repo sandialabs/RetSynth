@@ -50,14 +50,16 @@ class Readfile(object):
         self.targets = []
         self.ignorerxns = []
         compartmentID = self.DB.get_compartment(self.compartment)
-        compartmentID = compartmentID[0]
-        if not compartmentID:
+        if not compartmentID or len(compartmentID) == 0:
             print ('WARNING: No compartment info going to default c0')
-            compartmentID = 'c0'        
+            compartmentID = 'c0'
+        else:
+            compartmentID = compartmentID[0]        
         for count, values in self.input.iteritems():
             temp = []
             if 'compoundid' in values:
-                if values['compoundid'].endswith(compartmentID):
+                match = re.search('\_\w{1}0$', values['compoundid'])
+                if match:
                     temp.extend((values['compoundid'], ''))
                 else:
                     temp.extend((values['compoundid']+'_'+compartmentID, ''))                    
@@ -143,7 +145,7 @@ class Readfile(object):
         Get all model information out of the database
         '''
         self.organisms = {}
-        modelIDs = self.DB.get_all_models()
+        modelIDs = self.DB.get_all_fba_models()
         self.modelfilename_dict = {}
         self.modelID_dict = {}
         for file_name in modelIDs:

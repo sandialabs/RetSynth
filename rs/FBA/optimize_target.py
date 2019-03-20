@@ -7,7 +7,8 @@ __description__ = 'Insert reactions necessary for producing target \
 from copy import deepcopy
 from sys import exit
 from cobra import Reaction, Metabolite
-from cobra.flux_analysis.loopless import construct_loopless_model
+from tqdm import tqdm
+#from cobra.flux_analysis.loopless import construct_loopless_model
 
 def verbose_print(verbose, line):
     if verbose:
@@ -96,6 +97,12 @@ class OptimizeTarget(object):
         reaction.add_metabolites(met_dict_sink)
         self.model.add_reaction(reaction)
 
+    def set_objective_function(self, biomass_rxn):
+        biomass = self.model.reactions.get_by_id(biomass_rxn)
+        sink = self.model.reactions.get_by_id('Sink_'+self.compounds_dict[self.target_compound])
+        self.objective_dict = {biomass:1, sink:1}
+        self.model.objective = self.objective_dict
+ 
     def run_fba(self):
         '''
         Runs FBA on CobraPy FBA model with added reactions and compounds
@@ -103,15 +110,21 @@ class OptimizeTarget(object):
         '''
 
         try:
-            biomass = self.model.reactions.get_by_id('biomass0_'+self.target_org)
-            sink = self.model.reactions.get_by_id('Sink_'+self.compounds_dict[self.target_compound])
-            self.objective_dict = {biomass:1, sink:1}
-            self.model.objective = self.objective_dict
+            self.set_objective_function('biomass0_'+self.target_org)
         except KeyError:
-            print ('WARNING: No biomass rxn')
-            sink = self.model.reactions.get_by_id('Sink_'+self.compounds_dict[self.target_compound])
-            self.objective_dict = {sink:1}
-            self.model.objective = self.objective_dict
+            try:
+                self.set_objective_function('bio10')
+            except KeyError:
+                try:
+                    self.set_objective_function('bio10_'+self.target_org)
+                except KeyError:
+                    try:
+                        self.set_objective_function('bio1')
+                    except KeyError:
+                        print ('WARNING: No biomass rxn')
+                        sink = self.model.reactions.get_by_id('Sink_'+self.compounds_dict[self.target_compound])
+                        self.objective_dict = {sink:1}
+                        self.model.objective = self.objective_dict
         # self.fbasol=construct_loopless_model(self.model).optimize()
         self.fbasol = self.model.optimize()
 
@@ -129,12 +142,12 @@ class OptimizeTarget(object):
         Removes each reaction one at a time and runs FBA to see if there is
         a difference in production of target compound
         '''
-        verbose_print(self.verbose, 'STATUS: Performing single reaction knockouts ...')
         self.KOsolutions = {}
         self.objrxns_KO = {}
         self.essentialrxns = []
         self.KOfbasol = self.model.optimize()
-        for rxn in self.model.reactions:
+        print ("STATUS: Performing knockouts")
+        for rxn in tqdm(self.model.reactions):
             if rxn.id == 'Sink_'+self.target_compound or rxn.id == 'biomass0_'+self.target_org:
                 pass
             else:
@@ -145,16 +158,16 @@ class OptimizeTarget(object):
                 self.KOfbasol = self.model.optimize()
                 count = 0
                 for rxn_obj in self.objective_dict:
-                    if (self.fbasol.x_dict[rxn_obj.id] < self.KOfbasol.x_dict[rxn_obj.id] or
-                            self.fbasol.x_dict[rxn_obj.id] > self.KOfbasol.x_dict[rxn_obj.id]):
+                    if (self.fbasol.fluxes[rxn_obj.id] < self.KOfbasol.fluxes[rxn_obj.id] or
+                            self.fbasol.fluxes[rxn_obj.id] > self.KOfbasol.fluxes[rxn_obj.id]):
                         count += 1
                         self.objrxns_KO[rxn.id] = {}
-                        self.objrxns_KO[rxn.id][rxn_obj.id] = '\t'.join([str(self.fbasol.x_dict[rxn_obj.id]),
-                                                                         str(self.KOfbasol.x_dict[rxn_obj.id])])
+                        self.objrxns_KO[rxn.id][rxn_obj.id] = '\t'.join([str(self.fbasol.fluxes[rxn_obj.id]),
+                                                                         str(self.KOfbasol.fluxes[rxn_obj.id])])
                 if count != 0:
                     self.KOsolutions[rxn.id] = self.KOfbasol
-                if (round(self.fbasol.x_dict['Sink_'+self.compounds_dict[self.target_compound]], 2) >
-                        round(self.KOfbasol.x_dict['Sink_'+self.compounds_dict[self.target_compound]], 2)):
+                if (round(self.fbasol.fluxes['Sink_'+self.compounds_dict[self.target_compound]], 2) >
+                        round(self.KOfbasol.fluxes['Sink_'+self.compounds_dict[self.target_compound]], 2)):
                     self.essentialrxns.append(rxn.id)
                 rxn.lower_bound = org_lb
                 rxn.upper_bound = org_up

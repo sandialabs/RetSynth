@@ -1,2 +1,0 @@
-#name	organism
-cpdA_c0	test1

@@ -17,13 +17,12 @@ class Createdb(object):
         Creates tables and indicies in SQLite Database
         '''
         try:
-            self.database.execute('''CREATE table model
-                                            (ID text,file_name text)''')
-            self.database.execute('''CREATE table compound
-                                            (ID text, name text,compartment text, kegg_id)''')
+            self.database.execute('''CREATE table model (ID text, file_name text)''')
+            self.database.execute('''CREATE table fba_models (ID text, file_name text)''')
+            self.database.execute('''CREATE table compound (ID text, name text,compartment text,
+                                     kegg_id, chemicalformula text, casnumber text)''')
             self.database.execute('''CREATE table compartments (ID text, name text)''')
-            self.database.execute('''CREATE table model_compound
-                                            (cpd_ID text, model_ID text)''')
+            self.database.execute('''CREATE table model_compound (cpd_ID text, model_ID text)''')
             self.database.execute('''CREATE table reaction
                                             (ID text, name text, kegg_id, type text)''')
             self.database.execute('''CREATE table model_reaction
@@ -58,8 +57,8 @@ class Createdb(object):
                                             model_compound(model_ID)''')
             self.database.execute('''CREATE INDEX modelcompound_ind2 ON
                                             model_compound(cpd_ID)''')
-            self.database.execute('''CREATE INDEX model_ind ON
-                                            model(ID)''')
+            self.database.execute('''CREATE INDEX model_ind ON model(ID)''')
+            self.database.execute('''CREATE INDEX fba_models_ind ON fba_models(ID)''')
             self.database.execute('''CREATE INDEX reaction_ind ON
                                             reaction(ID)''')
             self.database.execute('''CREATE INDEX compound_ind ON
@@ -83,6 +82,7 @@ class Createdb(object):
             self.database.execute('''REINDEX modelcompound_ind1''')
             self.database.execute('''REINDEX modelcompound_ind2''')
             self.database.execute('''REINDEX model_ind''')
+            self.database.execute('''REINDEX fba_models_ind''')
             self.database.execute('''REINDEX reaction_ind''')
             self.database.execute('''REINDEX compound_ind''')
             self.database.execute('''REINDEX reactiongene_ind''')

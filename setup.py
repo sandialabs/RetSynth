@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-setup(name="RetroSynthesis",
+setup(name="RetSynth",
       version="1.0.0",
       description="A retrosynthetic tool that can identify enzyme/reaction pairs that when added \
        to a desired organism would produce a target chemical compound",
@@ -12,7 +12,7 @@ setup(name="RetroSynthesis",
                  "osx"
                  ],
       license="BSD 3 clause",
-      url="https://github.com/sandialabs/BioRetroSynth",
+      url="https://github.com/sandialabs/RetSynth",
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: Developers, AI Researchers, Bioinformaticists, bioengineers',
 		   'Topic :: integer linear programming :: flux balance analysis',

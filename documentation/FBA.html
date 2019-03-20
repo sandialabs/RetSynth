@@ -6,13 +6,16 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>FBA module &#8212; RetSynth 1 documentation</title>
+    <title>FBA module &#8212; RetSynth 2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -25,7 +28,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -42,7 +45,7 @@
 <span id="fba-build-model"></span><h3>FBA.build_model<a class="headerlink" href="#module-FBA.build_model" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="FBA.build_model.BuildModel">
-<em class="property">class </em><code class="descclassname">FBA.build_model.</code><code class="descname">BuildModel</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">FBA.build_model.</code><code class="descname">BuildModel</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>verbose</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Constructs a CobraPy FBA metabolic model for aspecific organism and runs FBA on new model</p>
 <dl class="method">
@@ -57,14 +60,24 @@
 <dd><p>Runs FBA on model</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="FBA.build_model.BuildModel.set_objective_function">
+<code class="descname">set_objective_function</code><span class="sig-paren">(</span><em>biomass_rxn</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.BuildModel.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
+
+<dl class="function">
+<dt id="FBA.build_model.verbose_print">
+<code class="descclassname">FBA.build_model.</code><code class="descname">verbose_print</code><span class="sig-paren">(</span><em>verbose</em>, <em>line</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.build_model.verbose_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-FBA.optimize_target">
 <span id="fba-optimize-target"></span><h3>FBA.optimize_target<a class="headerlink" href="#module-FBA.optimize_target" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="FBA.optimize_target.OptimizeTarget">
-<em class="property">class </em><code class="descclassname">FBA.optimize_target.</code><code class="descname">OptimizeTarget</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>target_organism_ID</em>, <em>model</em>, <em>temp_rxns</em>, <em>temp_exmets</em>, <em>compounds_dict</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>KO=True</em>, <em>remove=True</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">FBA.optimize_target.</code><code class="descname">OptimizeTarget</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>target_organism_ID</em>, <em>model</em>, <em>temp_rxns</em>, <em>temp_exmets</em>, <em>compounds_dict</em>, <em>inmets</em>, <em>inrxns</em>, <em>db</em>, <em>verbose</em>, <em>KO=True</em>, <em>remove=True</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Adds compounds and reactions needed to produce target compound
 into previously constructed CobraPy FBA model and runs FBA</p>
@@ -105,7 +118,17 @@ a difference in production of target compound</p>
 optimizing production of target compound and (maybe) biomass</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="FBA.optimize_target.OptimizeTarget.set_objective_function">
+<code class="descname">set_objective_function</code><span class="sig-paren">(</span><em>biomass_rxn</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.OptimizeTarget.set_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
+
+<dl class="function">
+<dt id="FBA.optimize_target.verbose_print">
+<code class="descclassname">FBA.optimize_target.</code><code class="descname">verbose_print</code><span class="sig-paren">(</span><em>verbose</em>, <em>line</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.optimize_target.verbose_print" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-FBA.compare_results">
@@ -141,7 +164,7 @@ with the reactions and compounds</p>
 <span id="fba-compareko-results"></span><h3>FBA.compareKO_results<a class="headerlink" href="#module-FBA.compareKO_results" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="FBA.compareKO_results.CompareKO">
-<em class="property">class </em><code class="descclassname">FBA.compareKO_results.</code><code class="descname">CompareKO</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>wtresults</em>, <em>exresults</em>, <em>ex_paths</em>, <em>DB</em>, <em>fold_threshold=1.5</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">FBA.compareKO_results.</code><code class="descname">CompareKO</code><span class="sig-paren">(</span><em>target_compound_ID</em>, <em>compounds_dict</em>, <em>wtresults</em>, <em>exresults</em>, <em>ex_paths</em>, <em>DB</em>, <em>fold_threshold=1.5</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.compareKO_results.CompareKO" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Compares flux values between simulation with added reactions simulations
 for each reaction knockout</p>
@@ -170,7 +193,7 @@ for each reaction knockout</p>
 <span id="fba-retrieve-producable-mets"></span><h3>FBA.retrieve_producable_mets<a class="headerlink" href="#module-FBA.retrieve_producable_mets" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="FBA.retrieve_producable_mets.RetrieveActiveRxnsCompounds">
-<code class="descclassname">FBA.retrieve_producable_mets.</code><code class="descname">RetrieveActiveRxnsCompounds</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>DB</em>, <em>output_queue</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.retrieve_producable_mets.RetrieveActiveRxnsCompounds" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">FBA.retrieve_producable_mets.</code><code class="descname">RetrieveActiveRxnsCompounds</code><span class="sig-paren">(</span><em>target_organism_ID</em>, <em>inmets</em>, <em>inrxns</em>, <em>DB</em>, <em>output_queue</em>, <em>verbose</em>, <em>media=None</em><span class="sig-paren">)</span><a class="headerlink" href="#FBA.retrieve_producable_mets.RetrieveActiveRxnsCompounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies active compounds in an organism</p>
 </dd></dl>
 
@@ -188,6 +211,9 @@ used to determine if compound can be produced or not on a provided media</p>
 </dd></dl>
 
 </div>
+<div class="section" id="fba-generating-model-generate-model-components">
+<h3>FBA.generating_model.generate_model_components<a class="headerlink" href="#fba-generating-model-generate-model-components" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 </div>
 
@@ -197,7 +223,7 @@ used to determine if compound can be produced or not on a provided media</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">FBA module</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a><ul>
@@ -206,6 +232,7 @@ used to determine if compound can be produced or not on a provided media</p>
 <li><a class="reference internal" href="#module-FBA.compare_results">FBA.compare_results</a></li>
 <li><a class="reference internal" href="#module-FBA.compareKO_results">FBA.compareKO_results</a></li>
 <li><a class="reference internal" href="#module-FBA.retrieve_producable_mets">FBA.retrieve_producable_mets</a></li>
+<li><a class="reference internal" href="#fba-generating-model-generate-model-components">FBA.generating_model.generate_model_components</a></li>
 </ul>
 </li>
 </ul>
@@ -244,12 +271,12 @@ used to determine if compound can be produced or not on a provided media</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">RetSynth 2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2018, Sandia National Laboratories.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.
+        &#169; Copyright 2019, Leanne Whitmore, Bernard Nguyen, Corey Hudson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>
