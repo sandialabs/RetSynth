@@ -23,6 +23,18 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
+### Accessing GUI
+-------------
+
+RetSynth is also distributed as a Windows and Linux/MacOSX GUI - these are separate branches on GitHub.
+
+Accessing Windows Version:
+* https://github.com/sandialabs/RetSynth/tree/RetSynthGUIwindows
+
+Accessing MacOSX and Linux Versions:
+* https://github.com/sandialabs/RetSynth/tree/RetSynthGUImac_linux
+
+
 ### Dependencies
 -------------
 RetSynth is currently only tested to work under Python 2.6 and 2.7.
