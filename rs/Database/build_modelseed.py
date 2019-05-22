@@ -163,7 +163,7 @@ class BuildModelSeed(object):
                  media='Compelete', newdb=True,
                  tokentype='patric', sbml_output=False,
                  processors=4, verbose=False, 
-                 patricfile=PATH+'/PATRIC_genome_complete_07152018.csv',
+                 patricfile=PATH+'/data/PATRIC_genome_complete_07152018.csv',
                  previously_built_patric_models=False):
         '''initialize'''
         self.username = username
