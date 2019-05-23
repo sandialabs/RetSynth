@@ -20,31 +20,18 @@ def unzip_necessary_files_and_libraries():
 
         zipref = zipfile.ZipFile(foldername+'.zip', 'r')
         zipref.extractall('.')
-     
-  if os.path.isdir('./ConstructedDatabases') is False:
 
-      zipref = zipfile.ZipFile('./ConstructedDatabases.zip', 'r')
-      zipref.extractall('.')
+  unzip_folder('./ConstructedDatabases') 
 
   if platform == 'darwin':
-
-      if os.path.isdir('./indigopython130_mac') is False:
-          zipref = zipfile.ZipFile('./indigopython130_mac.zip', 'r')
-          zipref.extractall('.')
+      unzip_folder('./indigopython130_mac')
 
   elif platform == "linux" or platform == "linux2":
-
-      if os.path.isdir('./indigopython130_linux') is False:
-
-          zipref = zipfile.ZipFile('./indigopython130_linux.zip', 'r')
-          zipref.extractall('.')
+      unzip_folder('./indigopython130_linux')
 
   elif platform == "win32" or platform == "win64":
+      unzip_folder('./indigopython130_win')
 
-      if os.path.isdir('./indigopython130_win') is False:
-
-          zipref = zipfile.ZipFile('./indigopython130_win.zip', 'r')
-          zipref.extractall('.')
 unzip_necessary_files_and_libraries()
 
 
