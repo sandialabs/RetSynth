@@ -2,7 +2,6 @@ from __future__ import print_function
 __author__ = 'Leanne Whitmore and Corey Hudson'
 __email__ = 'lwhitmo@sandia.gov and cmhudso@sandia.gov'
 __description__ = 'Main code to RetSynth (RS)'
-
 from multiprocessing import Process, Queue
 import argparse
 import cPickle
@@ -11,6 +10,34 @@ import re
 import glob
 import time
 import shutil
+import zipfile
+from sys import platform
+
+def unzip_necessary_files_and_libraries():
+  '''Unzip Default Databases and indigo libraries'''
+  if os.path.isdir('./ConstructedDatabases') is False:
+
+      zipref = zipfile.ZipFile('./ConstructedDatabases.zip', 'r')
+      zipref.extractall('.')
+
+  if platform == 'darwin':
+
+      if os.path.isdir('./indigopython130_mac') is False:
+          zipref = zipfile.ZipFile('./indigopython130_mac.zip', 'r')
+          zipref.extractall('.')
+
+  elif platform == "linux" or platform == "linux2":
+      if os.path.isdir('./indigopython130_linux') is False:
+          zipref = zipfile.ZipFile('./indigopython130_linux.zip', 'r')
+          zipref.extractall('.')
+
+  elif platform == "win32" or platform == "win64":
+      if os.path.isdir('./indigopython130_win') is False:
+          zipref = zipfile.ZipFile('./indigopython130_win.zip', 'r')
+          zipref.extractall('.')
+unzip_necessary_files_and_libraries()
+
+
 from timeit import default_timer as timer
 from Parser import read_startcompounds as rtsc
 from Parser import read_targets as rt
@@ -38,6 +65,7 @@ from FBA import retrieve_producable_mets as rpm
 from FBA import compareKO_results as crko
 
 PATH = os.path.dirname(os.path.abspath(__file__))
+
 
 def verbose_print(verbose, line):
     if verbose:
