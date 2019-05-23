@@ -15,6 +15,12 @@ from sys import platform
 
 def unzip_necessary_files_and_libraries():
   '''Unzip Default Databases and indigo libraries'''
+  def unzip_folder(foldername):
+      if os.path.isdir(foldername) is False:
+
+        zipref = zipfile.ZipFile(foldername+'.zip', 'r')
+        zipref.extractall('.')
+     
   if os.path.isdir('./ConstructedDatabases') is False:
 
       zipref = zipfile.ZipFile('./ConstructedDatabases.zip', 'r')
@@ -27,12 +33,16 @@ def unzip_necessary_files_and_libraries():
           zipref.extractall('.')
 
   elif platform == "linux" or platform == "linux2":
+
       if os.path.isdir('./indigopython130_linux') is False:
+
           zipref = zipfile.ZipFile('./indigopython130_linux.zip', 'r')
           zipref.extractall('.')
 
   elif platform == "win32" or platform == "win64":
+
       if os.path.isdir('./indigopython130_win') is False:
+
           zipref = zipfile.ZipFile('./indigopython130_win.zip', 'r')
           zipref.extractall('.')
 unzip_necessary_files_and_libraries()
