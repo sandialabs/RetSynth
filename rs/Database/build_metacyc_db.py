@@ -12,6 +12,7 @@ import pubchempy
 from tqdm import tqdm
 from Database import query as Q
 from bs4 import BeautifulSoup, SoupStrainer
+import lxml
 from Pubchem import pubchem_inchi_translator as pit
 from sys import platform
 if platform == 'darwin':
@@ -511,7 +512,7 @@ class MetaCyc(object):
                 pass
         except sqlite3.OperationalError:
             pass
-        if not INCHI_CHECK:
+        if not INCHI_CHECK and kegg_id != 'None':
             try:
                 QC = self.cnx.execute("""SELECT ID from compound where kegg_id=?""", (kegg_id,))
                 try:
@@ -538,7 +539,7 @@ class MetaCyc(object):
                                                              is_prod, stoic,
                                                              temp_all_rxn_compound)
             else:
-                print ('WARNING: compound not in dictionary')
+                print ('WARNING: compound {} not in dictionary'.format(compound_ID))
                 temp_all_rxn_compound = self.fill_temp_array(compound_ID, is_prod,
                                                              stoic, temp_all_rxn_compound)
         return(temp_compartment, temp_all_rxn_compound)

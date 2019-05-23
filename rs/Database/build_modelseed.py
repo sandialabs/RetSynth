@@ -292,7 +292,10 @@ class BuildModelSeed(object):
         
         print ('STATUS: getting patric modeling information from genomes')
         models_in_ws = mackinac.list_patric_models()
-        models_in_ws_id = [m['id'] for m in models_in_ws]
+        if models_in_ws is not None:
+            models_in_ws_id = [m['id'] for m in models_in_ws]
+        else:
+            models_in_ws_id = []
         new_patric_models = []
         count_models = 0
         self.complete_genomes_new_name = []
