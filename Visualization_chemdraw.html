@@ -45,7 +45,7 @@
 <span id="visualization-chemdraw-cdxml-editor"></span><h3>Visualization_chemdraw.cdxml_editor<a class="headerlink" href="#module-Visualization_chemdraw.cdxml_editor" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="Visualization_chemdraw.cdxml_editor.CDXML_Editor">
-<em class="property">class </em><code class="descclassname">Visualization_chemdraw.cdxml_editor.</code><code class="descname">CDXML_Editor</code><span class="sig-paren">(</span><em>cdxml_files_path=None</em>, <em>output_path=None</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.cdxml_editor.CDXML_Editor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">Visualization_chemdraw.cdxml_editor.</code><code class="descname">CDXML_Editor</code><span class="sig-paren">(</span><em>cdxml_files_path=None</em>, <em>output_path=None</em>, <em>BP=None</em>, <em>BP_predicted=None</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.cdxml_editor.CDXML_Editor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="Visualization_chemdraw.cdxml_editor.CDXML_Editor.add_color">
@@ -95,6 +95,11 @@
 <dl class="method">
 <dt id="Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_FBA">
 <code class="descname">set_FBA</code><span class="sig-paren">(</span><em>color_index</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_FBA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_output_label">
+<code class="descname">set_output_label</code><span class="sig-paren">(</span><em>text_string</em>, <em>output</em>, <em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_output_label" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -310,7 +315,7 @@
 
 <dl class="method">
 <dt id="Visualization_chemdraw.reaction_files.ReactionFiles.generate_cdxml_files">
-<code class="descname">generate_cdxml_files</code><span class="sig-paren">(</span><em>fba_fluxes=None</em>, <em>show_rxn_info=True</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.reaction_files.ReactionFiles.generate_cdxml_files" title="Permalink to this definition">¶</a></dt>
+<code class="descname">generate_cdxml_files</code><span class="sig-paren">(</span><em>RP=None</em>, <em>fba_fluxes=None</em>, <em>show_rxn_info=True</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.reaction_files.ReactionFiles.generate_cdxml_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce cdxml files for each pathway</p>
 </dd></dl>
 
@@ -328,10 +333,9 @@ if not set up new output folder</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="Visualization_chemdraw.reaction_files.ReactionFiles.get_smiles_from_name">
-<code class="descname">get_smiles_from_name</code><span class="sig-paren">(</span><em>cpd_name</em>, <em>smiles_cpds</em><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.reaction_files.ReactionFiles.get_smiles_from_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get smiles for a compound from its’ name</p>
-</dd></dl>
+<dt id="Visualization_chemdraw.reaction_files.ReactionFiles.get_target_name">
+<code class="descname">get_target_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Visualization_chemdraw.reaction_files.ReactionFiles.get_target_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="Visualization_chemdraw.reaction_files.ReactionFiles.order_of_paths">

@@ -226,6 +226,8 @@
 </li>
       <li><a href="Visualization_graphviz.html#Visualization_graphviz.SP_Graph_dot.GraphDot.crop_figure">crop_figure() (Visualization_graphviz.SP_Graph_dot.GraphDot method)</a>
 </li>
+      <li><a href="Database.html#Database.query.Connector.custom_query">custom_query() (Database.query.Connector method)</a>
+</li>
       <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints">cycle_constraints() (ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
 </li>
       <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.cycle_constraints_internal">cycle_constraints_internal() (ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
@@ -273,8 +275,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.cdxml_elements.ELEMENT">ELEMENT (class in Visualization_chemdraw.cdxml_elements)</a>
-</li>
-      <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_pulp">existing_A_matrix_pulp() (ShortestPath.constraints.ConstructInitialLP method)</a>
 </li>
       <li><a href="FBA.html#FBA.compare_results.Compare.external_pathanalyze_fluxes">external_pathanalyze_fluxes() (FBA.compare_results.Compare method)</a>
 
@@ -392,6 +392,8 @@
 </li>
       <li><a href="Database.html#Database.build_modelseed.generate_sbml_output_folder">generate_sbml_output_folder() (in module Database.build_modelseed)</a>
 </li>
+      <li><a href="Database.html#Database.query.Connector.get_all_compound_keggIDs">get_all_compound_keggIDs() (Database.query.Connector method)</a>
+</li>
       <li><a href="Database.html#Database.query.Connector.get_all_compounds">get_all_compounds() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_all_cpd_chemicalformulas">get_all_cpd_chemicalformulas() (Database.query.Connector method)</a>
@@ -401,8 +403,6 @@
       <li><a href="Database.html#Database.query.Connector.get_all_cpd_with_search">get_all_cpd_with_search() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_all_fba_models">get_all_fba_models() (Database.query.Connector method)</a>
-</li>
-      <li><a href="Database.html#Database.query.Connector.get_all_kegg_cpd_ID">get_all_kegg_cpd_ID() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_all_keggIDs">get_all_keggIDs() (Database.query.Connector method)</a>
 </li>
@@ -534,12 +534,8 @@
 </li>
       <li><a href="Visualization_graphviz.html#Visualization_graphviz.reaction_files.ReactionFiles.get_SMILES">get_SMILES() (Visualization_graphviz.reaction_files.ReactionFiles method)</a>
 </li>
-      <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.reaction_files.ReactionFiles.get_smiles_from_name">get_smiles_from_name() (Visualization_chemdraw.reaction_files.ReactionFiles method)</a>
-
-      <ul>
-        <li><a href="Visualization_graphviz.html#Visualization_graphviz.reaction_files.ReactionFiles.get_smiles_from_name">(Visualization_graphviz.reaction_files.ReactionFiles method)</a>
+      <li><a href="Visualization_graphviz.html#Visualization_graphviz.reaction_files.ReactionFiles.get_smiles_from_name">get_smiles_from_name() (Visualization_graphviz.reaction_files.ReactionFiles method)</a>
 </li>
-      </ul></li>
       <li><a href="Database.html#Database.query.Connector.get_solvents">get_solvents() (Database.query.Connector method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_stoichiometry">get_stoichiometry() (Database.query.Connector method)</a>
@@ -547,6 +543,8 @@
       <li><a href="Database.html#Database.build_user_rxns_db.AddUserRxns2DB.get_stoichometry">get_stoichometry() (Database.build_user_rxns_db.AddUserRxns2DB method)</a>
 </li>
       <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.get_tanimoto_score">get_tanimoto_score() (Parser.structure_similarity.TanimotoStructureSimilarity method)</a>
+</li>
+      <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.reaction_files.ReactionFiles.get_target_name">get_target_name() (Visualization_chemdraw.reaction_files.ReactionFiles method)</a>
 </li>
       <li><a href="Database.html#Database.query.Connector.get_temperature">get_temperature() (Database.query.Connector method)</a>
 </li>
@@ -631,6 +629,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.load_pulp_row_constraints">load_pulp_row_constraints() (ShortestPath.constraints.ConstructInitialLP method)</a>
+</li>
+      <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.load_reaction_variables">load_reaction_variables() (ShortestPath.constraints.ConstructInitialLP method)</a>
 </li>
       <li><a href="ShortestPath.html#ShortestPath.constraints.load_stoichometry_for_met">load_stoichometry_for_met() (in module ShortestPath.constraints)</a>
 </li>
@@ -778,6 +778,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Database.html#Database.build_SPRESI_db.RDF_Reader">RDF_Reader() (in module Database.build_SPRESI_db)</a>
 </li>
+      <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_ignore_reactions">reaction_constraints_ignore_reactions() (ShortestPath.constraints.ConstructInitialLP method)</a>
+</li>
+      <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_include_reactions">reaction_constraints_include_reactions() (ShortestPath.constraints.ConstructInitialLP method)</a>
+</li>
       <li><a href="ShortestPath.html#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_pulp">reaction_constraints_pulp() (ShortestPath.constraints.ConstructInitialLP method)</a>
 </li>
       <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.reaction_files.ReactionFiles">ReactionFiles (class in Visualization_chemdraw.reaction_files)</a>
@@ -798,14 +802,14 @@
 </li>
       <li><a href="Database.html#Database.build_metacyc_db.MetaCyc.retrieve_compartment_4_compartment">retrieve_compartment_4_compartment() (Database.build_metacyc_db.MetaCyc method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Database.html#Database.build_kbase_db.retrieve_exact_inchi_values">retrieve_exact_inchi_values() (in module Database.build_kbase_db)</a>
 
       <ul>
         <li><a href="Database.html#Database.build_modelseed.retrieve_exact_inchi_values">(in module Database.build_modelseed)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Parser.html#Parser.structure_similarity.TanimotoStructureSimilarity.retrieve_fingerprints">retrieve_fingerprints() (Parser.structure_similarity.TanimotoStructureSimilarity method)</a>
 </li>
       <li><a href="Database.html#Database.build_kbase_db.retrieve_metabolic_clusters">retrieve_metabolic_clusters() (in module Database.build_kbase_db)</a>
@@ -866,9 +870,11 @@
         <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function">(ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
 </li>
       </ul></li>
+      <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function_internal">set_objective_function_internal() (ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="ShortestPath.html#ShortestPath.integerprogram_pulp.IntergerProgram.set_objective_function_internal">set_objective_function_internal() (ShortestPath.integerprogram_pulp.IntergerProgram method)</a>
+      <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_output_label">set_output_label() (Visualization_chemdraw.cdxml_editor.CDXML_Editor method)</a>
 </li>
       <li><a href="Visualization_chemdraw.html#Visualization_chemdraw.cdxml_editor.CDXML_Editor.set_products">set_products() (Visualization_chemdraw.cdxml_editor.CDXML_Editor method)</a>
 </li>

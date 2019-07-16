@@ -70,6 +70,18 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="Database.query.Connector.custom_query">
+<code class="descname">custom_query</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.custom_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a custom query and returns the results</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.query.Connector.get_all_compound_keggIDs">
+<code class="descname">get_all_compound_keggIDs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_compound_keggIDs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves all compound Kegg IDs</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="Database.query.Connector.get_all_compounds">
 <code class="descname">get_all_compounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_compounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves all compounds in the database</p>
@@ -102,12 +114,6 @@
 <dl class="method">
 <dt id="Database.query.Connector.get_all_keggIDs">
 <code class="descname">get_all_keggIDs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_keggIDs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves reactions based on type</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="Database.query.Connector.get_all_kegg_cpd_ID">
-<code class="descname">get_all_kegg_cpd_ID</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_all_kegg_cpd_ID" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves reactions based on type</p>
 </dd></dl>
 
@@ -181,13 +187,13 @@ of a given metabolic network (model ID)</p>
 <dl class="method">
 <dt id="Database.query.Connector.get_kegg_cpd_ID">
 <code class="descname">get_kegg_cpd_ID</code><span class="sig-paren">(</span><em>ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_kegg_cpd_ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves reactions based on type</p>
+<dd><p>Retrieves kegg ID for a compound based on main ID</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="Database.query.Connector.get_kegg_reaction_ID">
 <code class="descname">get_kegg_reaction_ID</code><span class="sig-paren">(</span><em>ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_kegg_reaction_ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves reactions based on type</p>
+<dd><p>Retrieves kegg ID for a reaction based on main ID</p>
 </dd></dl>
 
 <dl class="method">
@@ -264,8 +270,8 @@ of a given metabolic network (model ID)</p>
 
 <dl class="method">
 <dt id="Database.query.Connector.get_reaction_type">
-<code class="descname">get_reaction_type</code><span class="sig-paren">(</span><em>reaction_ID</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reaction_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves reaction type based on ID</p>
+<code class="descname">get_reaction_type</code><span class="sig-paren">(</span><em>rxn</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.query.Connector.get_reaction_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves reaction on type</p>
 </dd></dl>
 
 <dl class="method">
@@ -534,7 +540,7 @@ in a specified metabolic model (model ID)</p>
 <span id="database-build-modelseed"></span><h3>Database.build_modelseed<a class="headerlink" href="#module-Database.build_modelseed" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="Database.build_modelseed.BuildModelSeed">
-<em class="property">class </em><code class="descclassname">Database.build_modelseed.</code><code class="descname">BuildModelSeed</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>rxntype</em>, <em>inchidb</em>, <em>DBpath</em>, <em>output_folder</em>, <em>media='Compelete'</em>, <em>newdb=True</em>, <em>tokentype='patric'</em>, <em>sbml_output=False</em>, <em>processors=4</em>, <em>verbose=False</em>, <em>patricfile='/Users/lwhitmo/software/RetSynth_lt/rs/Database/PATRIC_genome_complete_07152018.csv'</em>, <em>previously_built_patric_models=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_modelseed.BuildModelSeed" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">Database.build_modelseed.</code><code class="descname">BuildModelSeed</code><span class="sig-paren">(</span><em>username</em>, <em>password</em>, <em>rxntype</em>, <em>inchidb</em>, <em>DBpath</em>, <em>output_folder</em>, <em>media='Complete'</em>, <em>newdb=True</em>, <em>tokentype='patric'</em>, <em>sbml_output=False</em>, <em>processors=4</em>, <em>verbose=False</em>, <em>patricfile='/Users/lwhitmo/software/RetSynth_lt/rs/Database/data/PATRIC_genome_complete_07152018.csv'</em>, <em>previously_built_patric_models=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.build_modelseed.BuildModelSeed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="Database.build_modelseed.BuildModelSeed.get_model_from_patric">

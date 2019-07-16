@@ -112,12 +112,13 @@ RetSynth can compile a metabolic database which can include metabolic informatio
 <li>The target compound ID, pubchem ID, inchi value or name (required)</li>
 <li>The desired organism ID or organism name (optional, however, if not specified the software proceeds to identify the number of reactions that need to be added to each organism in the database to produce the target)</li>
 <li>Reaction IDs that the user does not want the software to identify as a potential method of producing the target (optional)</li>
+<li>Reaction IDs that the user wants the software to include in the pathway to production of the target (optional)</li>
 </ol>
 </dd>
 </dl>
 <p>Example input file 1:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#compoundid   organismID    ignore reactions</span>
-<span class="n">cpdT</span> <span class="n">organism_name</span>  <span class="n">rxn10</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#compoundid   organismID    ignore reactions    include reactions</span>
+<span class="n">cpdT</span> <span class="n">organism_name</span>  <span class="n">rxn10</span>    <span class="n">rxn1</span>
 </pre></div>
 </div>
 <p>Example input file 2:</p>

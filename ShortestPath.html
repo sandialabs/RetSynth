@@ -45,15 +45,9 @@
 <span id="shortestpath-constraints"></span><h3>ShortestPath.constraints<a class="headerlink" href="#module-ShortestPath.constraints" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="ShortestPath.constraints.ConstructInitialLP">
-<em class="property">class </em><code class="descclassname">ShortestPath.constraints.</code><code class="descname">ConstructInitialLP</code><span class="sig-paren">(</span><em>allrxns</em>, <em>allcpds</em>, <em>db</em>, <em>ignorerxns</em>, <em>gdbc</em>, <em>reverse_constraints=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">ShortestPath.constraints.</code><code class="descname">ConstructInitialLP</code><span class="sig-paren">(</span><em>allrxns</em>, <em>allcpds</em>, <em>db</em>, <em>ignorerxns</em>, <em>includerxns</em>, <em>forward_direction=True</em>, <em>reverse_direction=False</em>, <em>lp=None</em>, <em>variables=None</em>, <em>allrxnsrev_dict_rev=None</em>, <em>allrxnsrev_dict=None</em>, <em>allrxnsrev=None</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Constructs A matrix and indidvidual reaction constraints</p>
-<dl class="method">
-<dt id="ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_pulp">
-<code class="descname">existing_A_matrix_pulp</code><span class="sig-paren">(</span><em>pulp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.existing_A_matrix_pulp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads existing matrix into pulp integer linear problem</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="ShortestPath.constraints.ConstructInitialLP.initial_A_matrix">
 <code class="descname">initial_A_matrix</code><span class="sig-paren">(</span><em>solver=False</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.initial_A_matrix" title="Permalink to this definition">¶</a></dt>
@@ -71,6 +65,21 @@
 <code class="descname">load_pulp_row_constraints</code><span class="sig-paren">(</span><em>pulp</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.load_pulp_row_constraints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads constraints in to pulp integer linear problem</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.constraints.ConstructInitialLP.load_reaction_variables">
+<code class="descname">load_reaction_variables</code><span class="sig-paren">(</span><em>rxn_rev</em>, <em>rxn</em>, <em>rxn_id</em><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.load_reaction_variables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.constraints.ConstructInitialLP.reaction_constraints_ignore_reactions">
+<code class="descname">reaction_constraints_ignore_reactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_ignore_reactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ShortestPath.constraints.ConstructInitialLP.reaction_constraints_include_reactions">
+<code class="descname">reaction_constraints_include_reactions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ShortestPath.constraints.ConstructInitialLP.reaction_constraints_include_reactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="ShortestPath.constraints.ConstructInitialLP.reaction_constraints_pulp">

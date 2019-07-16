@@ -98,11 +98,12 @@ RetSynth also requires a list of compounds and the organism they are desired to 
    1) The target compound ID, pubchem ID, inchi value or name (required)
    2) The desired organism ID or organism name (optional, however, if not specified the software proceeds to identify the number of reactions that need to be added to each organism in the database to produce the target)
    3) Reaction IDs that the user does not want the software to identify as a potential method of producing the target (optional)
+   4) Reaction IDs that the user wants the software to include in the pathway to production of the target (optional)
   
 Example input file 1::
 
-   #compoundid   organismID    ignore reactions
-   cpdT organism_name  rxn10
+   #compoundid   organismID    ignore reactions    include reactions
+   cpdT organism_name  rxn10    rxn1
 
 Example input file 2::
 
