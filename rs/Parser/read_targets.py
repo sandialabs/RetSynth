@@ -49,13 +49,14 @@ class Readfile(object):
         '''
         self.targets = []
         self.ignorerxns = []
+        self.includerxns = []
         compartmentID = self.DB.get_compartment(self.compartment)
         if not compartmentID or len(compartmentID) == 0:
             print ('WARNING: No compartment info going to default c0')
             compartmentID = 'c0'
         else:
             compartmentID = compartmentID[0]        
-        for count, values in self.input.iteritems():
+        for count, values in self.input.items():
             temp = []
             if 'compoundid' in values:
                 match = re.search('\_\w{1}0$', values['compoundid'])
@@ -116,7 +117,7 @@ class Readfile(object):
                                 if strains:
                                     print ('WARNING: Found {} strains of {}, if more than 5 recommend specifying strain in organisms name'.format(len(strains), org))
                                     for orgID in strains:
-                                    	temp2 = deepcopy(temp)
+                                        temp2 = deepcopy(temp)
                                         temp2.extend((orgID, org))
                                         self.targets.append(temp2)
                                 else:
@@ -129,11 +130,17 @@ class Readfile(object):
                     print ('WARNING: No organism was given or found')
                     temp.extend(('', ''))
                     self.targets.append(temp)
+
                 if 'ignore reactions' in values.keys():
                     multiplereactions = values['ignore reactions'].split(',')
                     self.ignorerxns = self.ignorerxns+multiplereactions
+
+                if 'include reactions' in values.keys():
+                    multiplereactions = values['ignore reactions'].split(',')
+                    self.includerxns = self.includerxns+multiplereactions
+
     def strain_check(self,new_org_format):
-    	'''Extract all strains for a specified organism'''
+        '''Extract all strains for a specified organism'''
         strains = []
         for key in self.modelfilename_dict:
             if key.startswith(new_org_format.upper()):

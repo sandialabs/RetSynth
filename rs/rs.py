@@ -447,15 +447,14 @@ def read_in_and_generate_output_files(args, database):
         verbose_print(args.verbose, 'STATUS: {} tanimoto threshold being used'.format(float(args.tanimoto_threshold)*100))
         cytosol_compartmentID = get_compartmentID_from_db(DB, 'cytosol')
         extracell_compartmentID = get_compartmentID_from_db(DB, 'extracellular')
-        print (args.tanimoto_threshold)
         SIM = ss.TanimotoStructureSimilarity(R.targets, DB.get_all_compounds(),
                                              cytosol_compartmentID, extracell_compartmentID,
                                              args.verbose, args.tanimoto_threshold)
         OUTPUT.output_final_targets(SIM.finaltargets, args.tanimoto_threshold)
-        return(SIM.finaltargets, R.ignorerxns, OUTPUT, temp_imgs_PATH)
+        return(SIM.finaltargets, R.ignorerxns, R.includerxns, OUTPUT, temp_imgs_PATH)
 
     else:
-        return(R.targets, R.ignorerxns, OUTPUT, temp_imgs_PATH)
+        return(R.targets, R.ignorerxns, R.includerxns, OUTPUT, temp_imgs_PATH)
 
 def retrieve_database_info(args):
     '''
@@ -627,7 +626,7 @@ def retrieve_database_info(args):
         allrxns = DB.get_reactions_based_on_type('chem')
     return(allcpds, allrxns, database)
 
-def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
+def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, include_rxns, database):
     '''
     Generates database constraints or uses previously generated
     database constraints (.constraints) file
@@ -635,7 +634,7 @@ def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
     DB = Q.Connector(database)
     if args.generate_database_constraints:
         LP = co.ConstructInitialLP(allrxns, allcpds, DB,
-                                   ignore_reactions, True,
+                                   ignore_reactions, include_rxns,  True,
                                    reverse_constraints=False)
         with open(args.generate_database_constraints, 'wb') as fout1:
             cPickle.dump(LP.A, fout1)
@@ -646,7 +645,7 @@ def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
             A = cPickle.load(fin1)
             allcompounds4matrix = cPickle.load(fin1)
         LP = co.ConstructInitialLP(allrxns, allcompounds4matrix, DB,
-                                   ignore_reactions, A,
+                                   ignore_reactions, include_rxns, A,
                                    reverse_constraints=False)
     else:
         def load_preconstructed_constraint_files(media, db, args):
@@ -673,7 +672,7 @@ def retrieve_constraints(args, allrxns, allcpds, ignore_reactions, database):
             A, allcompounds4matrix = load_preconstructed_constraint_files(args.media_for_FBA, 'CP', args)
         if A and allcompounds4matrix:
             LP = co.ConstructInitialLP(allrxns, allcompounds4matrix, DB,
-                                       ignore_reactions, A,
+                                       ignore_reactions, include_rxns, A,
                                        reverse_constraints=False)
         else: 
             print ('ERROR: No identified pre constraint file...stopping run')
@@ -804,8 +803,8 @@ def main():
     args = parse_arguments()
     check_arguments(args)
     all_db_compounds, all_db_reactions, database = retrieve_database_info(args)
-    targets, ignore_reactions, output, temp_imgs_PATH = read_in_and_generate_output_files(args, database)
-    LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, database)
+    targets, ignore_reactions, include_rxns, output, temp_imgs_PATH = read_in_and_generate_output_files(args, database)
+    LP = retrieve_constraints(args, all_db_reactions, all_db_compounds, ignore_reactions, include_rxns, database)
     IP = construct_and_run_integerprogram(args, targets, output, database)
 
 

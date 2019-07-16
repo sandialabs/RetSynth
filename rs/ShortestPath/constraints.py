@@ -40,31 +40,53 @@ def load_stoichometry_for_met(reactantrxns, productsrxns, allrxnsrev,
 
 class ConstructInitialLP(object):
     """Constructs A matrix and indidvidual reaction constraints"""
-    def __init__(self, allrxns, allcpds, db, ignorerxns, gdbc, reverse_constraints=False):
+    def __init__(self, allrxns, allcpds, db, ignorerxns, includerxns, forward_direction=True, reverse_direction=False,
+                 lp=None, variables=None, allrxnsrev_dict_rev=None,
+                 allrxnsrev_dict=None, allrxnsrev=None):
         '''Initalize class'''
+
         self.allrxns = allrxns
         self.allcpds = deepcopy(allcpds)
-        self.gdbc = gdbc
         self.DB = db
-        self.reverse_constraints = reverse_constraints
         self.ignorerxns = ignorerxns
-        self.A = []
-        self.allcpds_new = []
-        self.allrxnsrev = []
-        self.allrxnsrev_dict = {}
-        self.allrxnsrev_dict_rev = {}
-        self.allrxnsrevset = set()
-        self.allrxnsrev_names = set()
-        self.allrxnsrev_index = {}
-        self.variables = []
-        self.rxnnames = []
-        self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
-        self.initial_reaction_constraints()
-        if self.gdbc is True:
+        self.includerxns = includerxns
+        self.forward_direction = forward_direction
+        self.reverse_direction = reverse_direction
+        # self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
+
+        if lp is  None:
+            self.A = []
+            self.allcpds_new = []
+            self.allrxnsrev = []
+            self.allrxnsrev_dict = {}
+            self.allrxnsrev_dict_rev = {}
+            self.allrxnsrev_names = set()
+            self.allrxnsrev_index = {}
+            self.variables = []
+            self.variables_load = []
+            self.lp = pulp.LpProblem('ShortestPath', pulp.LpMinimize)
             self.allcpds = list(set(self.allcpds)) #ensures no compounds have duplicate entries
+            
+            self.initial_reaction_constraints()
             self.initial_A_matrix(pulp)
+           
+            if self.ignorerxns:
+                self.reaction_constraints_ignore_reactions()
+
+            if self.includerxns:
+                self.reaction_constraints_include_reactions()
+
+
         else:
-            self.existing_A_matrix_pulp(pulp)
+            print ('STATUS: Building pre-stored variables...')
+            self.lp = lp
+            self.variables = self.lp.variables()
+            self.allrxnsrev_dict_rev = allrxnsrev_dict_rev
+            self.allrxnsrev_dict = allrxnsrev_dict
+            self.allrxnsrev = allrxnsrev
+
+            if self.ignorerxns:
+                self.reaction_constraints_ignore_reactions()
 
     def retrieve_stoichiometry(self, met):
         '''Retrieve stoichometry for each compound'''
@@ -84,56 +106,6 @@ class ConstructInitialLP(object):
                                            self.allrxnsrevset)
         return stoich
 
-    def reaction_constraints_pulp(self, variable_name, rxn_name, pulp):
-        '''Set reaction constraints (pulp)'''
-        if rxn_name.startswith('EX_') or rxn_name in self.ignorerxns:
-            variable = pulp.LpVariable(variable_name, cat=pulp.LpInteger,
-                                       lowBound=0, upBound=0)
-        else:
-            variable = pulp.LpVariable(variable_name, cat=pulp.LpInteger,
-                                       lowBound=0, upBound=1)
-        self.variables.append(variable)
-
-    def initial_reaction_constraints(self):
-        '''Sets up column (individual reaction) constraints'''
-        count = 0
-        print ('STATUS: Generating reaction constraints ...')
-        if self.reverse_constraints is False:
-            for rxn in tqdm(self.allrxns):
-                if self.DB.is_reversible_all(rxn) == 'true':
-                    count += 1
-                    self.rxnnames.append('R' + str(count))
-                    self.allrxnsrev.append(str(rxn) + '_F')
-                    self.allrxnsrevset.add(str(rxn) + '_F')
-                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
-                    self.allrxnsrev_dict['R' + str(count)] = str(rxn) + '_F'
-                    self.allrxnsrev_dict_rev[str(rxn) + '_F'] = 'R' + str(count)
-
-                    count += 1
-                    self.rxnnames.append('R' + str(count))
-                    self.allrxnsrev.append(str(rxn) + '_R')
-                    self.allrxnsrevset.add(str(rxn) + '_R')
-                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
-                    self.allrxnsrev_dict['R' + str(count)] = str(rxn) + '_R'
-                    self.allrxnsrev_dict_rev[str(rxn) + '_R'] = 'R' + str(count)
-
-                else:
-                    count += 1
-                    self.rxnnames.append('R' + str(count))
-                    self.allrxnsrev.append(str(rxn))
-                    self.allrxnsrevset.add(str(rxn))
-                    self.reaction_constraints_pulp('R' + str(count), str(rxn), pulp)
-                    self.allrxnsrev_dict['R' + str(count)] = str(rxn)
-                    self.allrxnsrev_dict_rev[str(rxn)] = 'R' + str(count)
-
-        else:
-            for count, rxn in enumerate(self.allrxns):
-                self.rxnnames.append('R' + str(count))
-                self.allrxnsrev.append(str(rxn))
-                self.allrxnsrevset.add(str(rxn))
-                self.reaction_constraints_pulp(rxn + self.reverse_constraints[count], str(rxn), pulp)
-
-        self.allrxnsrev_index = {key: index for index, key in enumerate(self.allrxnsrev)}
     def initial_A_matrix(self, solver=False):
         ''' Generates an matrix of compound constraints'''
         print('STATUS: Generating A matrix...')
@@ -151,14 +123,97 @@ class ConstructInitialLP(object):
 
     def load_pulp_row_constraints(self, pulp):
         '''Loads constraints in to pulp integer linear problem'''
+
         print ('STATUS: Loading database A matrix (pulp)... ')
         for count, stoich in enumerate(tqdm(self.A)):
             self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
         self.variables = self.lp.variables()
 
-    def existing_A_matrix_pulp(self, pulp):
-        '''Loads existing matrix into pulp integer linear problem'''
-        print ('STATUS: Generating compound constraints from preloaded file (pulp) ...')
-        for count, stoich in enumerate(tqdm(self.gdbc)):
-            self.lp += pulp.LpConstraint(pulp.lpSum(stoich[j]*self.variables[j] for j in stoich.keys()), name='c' + str(count) + ' constraint', sense=1, rhs=0)
-        self.variables = self.lp.variables()
+    ###GENERATE REACTION VARIABLE CONSTRAINTS
+    def reaction_constraints_pulp(self, variable_name, rxn_name, pulp):
+        '''Set reaction constraints (pulp)'''
+        if rxn_name.startswith('EX_'):
+            variable = pulp.LpVariable(variable_name, cat=pulp.LpInteger,
+                                       lowBound=0, upBound=0)
+        else:
+            variable = pulp.LpVariable(variable_name, cat=pulp.LpInteger,
+                                       lowBound=0, upBound=1)
+        self.variables_load.append(variable)
+
+    def _update_reaction_constraints_for_ingorerxns(self, reaction_id):
+        tmp = [k for k in self.variables if k.name==reaction_id]
+        variable = tmp[0]
+        variable.upBound = 0 
+        variable.lowBound = 0
+
+    def _update_reaction_constraints_for_includerxns(self, reaction_id):
+        tmp = [k for k in self.variables if k.name==reaction_id]
+        variable = tmp[0]
+        variable.upBound = 1 
+        variable.lowBound = 1
+ 
+ 
+    def reaction_constraints_ignore_reactions(self):
+        for reaction in self.ignorerxns:
+            try:
+                reaction_id = self.allrxnsrev_dict_rev[reaction]
+                self._update_reaction_constraints_for_ingorerxns(reaction_id) 
+            except KeyError:
+                try:
+                    reaction_id_forward = self.allrxnsrev_dict_rev[reaction+'_F']
+                    reaction_id_reverse = self.allrxnsrev_dict_rev[reaction+'_R']
+                    self._update_reaction_constraints_for_ingorerxns(reaction_id_forward) 
+                    self._update_reaction_constraints_for_ingorerxns(reaction_id_reverse) 
+
+                except:
+                    print ('WARNING: {} is not in reaction list'.format(reaction))
+
+
+    def reaction_constraints_include_reactions(self):
+        for reaction in self.includerxns:
+            try:
+                reaction_id = self.allrxnsrev_dict_rev[reaction]
+                self._update_reaction_constraints_for_ingorerxns(reaction_id) 
+            except KeyError:
+                try:
+                    reaction_id_forward = self.allrxnsrev_dict_rev[reaction+'_F']
+                    reaction_id_reverse = self.allrxnsrev_dict_rev[reaction+'_R']
+
+                    if self.forward_direction:
+                        self._update_reaction_constraints_for_includerxns(reaction_id_forward)
+
+                    elif self.reverse_direction:
+                        self._update_reaction_constraints_for_includerxns(reaction_id_reverse)
+                    
+                    elif self.reverse_direction and self.forward_direction:
+                        print ('WARNING: cannot have both directions of a reaction be apart of a pathway as this would create a cycle...continuing to solve without forcing the specified reaction to be apart of pathway')
+
+                except:
+                    print ('WARNING: {} is not in reaction list'.format(reaction))
+
+
+    def load_reaction_variables(self, rxn_rev, rxn, rxn_id):
+        self.allrxnsrev.append(rxn_rev)
+        self.reaction_constraints_pulp(rxn_id, str(rxn), pulp)
+        self.allrxnsrev_dict[rxn_id] = rxn_rev
+        self.allrxnsrev_dict_rev[rxn_rev] = rxn_id
+
+    def initial_reaction_constraints(self):
+        '''Sets up column (individual reaction) constraints'''
+        count = 0
+        print ('STATUS: Generating reaction constraints ...')
+        for rxn in tqdm(self.allrxns):
+            if self.DB.is_reversible_all(rxn) == 'true':
+                count += 1
+                self.load_reaction_variables(str(rxn) + '_F', str(rxn), 'R' + str(count))
+
+                count += 1
+                self.load_reaction_variables(str(rxn) + '_R', str(rxn), 'R' + str(count))
+
+            else:
+                count += 1
+                self.load_reaction_variables(str(rxn), str(rxn), 'R' + str(count))
+
+        self.allrxnsrevset = set(self.allrxnsrev)
+        self.allrxnsrev_index = {key: index for index, key in enumerate(self.allrxnsrev)}
+        self.variables = deepcopy(self.variables_load)
