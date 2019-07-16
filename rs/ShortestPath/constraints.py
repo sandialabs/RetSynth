@@ -40,9 +40,10 @@ def load_stoichometry_for_met(reactantrxns, productsrxns, allrxnsrev,
 
 class ConstructInitialLP(object):
     """Constructs A matrix and indidvidual reaction constraints"""
-    def __init__(self, allrxns, allcpds, db, ignorerxns, includerxns, forward_direction=True, reverse_direction=False,
+    def __init__(self, allrxns, allcpds, db, ignorerxns, includerxns,
                  lp=None, variables=None, allrxnsrev_dict_rev=None,
-                 allrxnsrev_dict=None, allrxnsrev=None):
+                 allrxnsrev_dict=None, allrxnsrev=None, forward_direction=True,
+                 reverse_direction=False):
         '''Initalize class'''
 
         self.allrxns = allrxns
